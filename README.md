@@ -75,4 +75,4 @@ Akses panel operasional acara dapat dibuka melalui rute `/admin` dengan memasukk
 ---
 
 ## 4. Informasi Penyelenggara
-Diselenggarakan oleh Persekutuan Warga Kristen (PWK) — Unit Kegiatan Kerohanian Kristen (UK3) Universitas Negeri Semarang.
+Diselenggarakan oleh Paguyuban Warga Kristiani Universitas Negeri Semarang (PWK UNNES)
