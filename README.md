@@ -1,89 +1,78 @@
-# Sistem Registrasi & Presensi Natal PWK 2026
-### Persekutuan Warga Kristen (PWK) — UK3 Universitas Negeri Semarang (UNNES)
+# Sistem Registrasi dan Presensi Natal PWK 2026
+Persekutuan Warga Kristen (PWK) — UK3 Universitas Negeri Semarang (UNNES)
 
-Aplikasi web modern, ringan, dan mandiri yang dirancang khusus untuk memfasilitasi pendaftaran peserta, penerbitan tiket digital, serta presensi kehadiran terpusat (*self check-in*) pada perayaan **Natal PWK 2026**.
+Aplikasi web mandiri yang dirancang untuk memfasilitasi pendaftaran peserta, penerbitan tiket digital, serta pencatatan presensi kehadiran terpusat (self check-in) pada perayaan Natal PWK 2026.
 
-* 📍 **Lokasi Acara**: Gedung B6, Fakultas Bahasa dan Seni (FBS) UNNES
-* 📅 **Tanggal Acara**: 28 Januari 2027
-* 🎯 **Sasaran Kapasitas**: 200–300 Peserta (Mahasiswa, Alumni, dan Tamu Undangan)
-
----
-
-## 🎯 Tujuan Sistem
-
-1. **Pendaftaran Cepat Tanpa Akun (*Accountless*)**: Peserta dapat mendaftar langsung tanpa perlu membuat akun, kata sandi, ataupun terikat login email kampus/Google tertentu.
-2. **Presensi Cepat Ala Kampus UNNES (*Self Check-in*)**: Menghilangkan antrean panjang di pintu masuk aula dengan memanfaatkan 1 QR Code terpusat di proyektor/laptop panitia yang dapat dipindai serentak oleh peserta.
-3. **Anti Titip Absen Jarak Jauh (*Dynamic QR Rotation*)**: Konten QR Code panitia diperbarui secara otomatis setiap 3 menit sehingga foto QR yang disebarkan ke luar ruangan akan segera kedaluwarsa.
-4. **Jaminan Kelancaran Hari-H (*Zero Single Point of Failure*)**: Dilengkapi 3 lapis pengaman presensi (scan kamera web, ketik kode mandiri, dan tombol 1-klik absen di meja bantuan panitia jika peserta kehabisan kuota internet).
-5. **Transparansi & Rekapitulasi Real-Time**: Panitia dapat memantau pergerakan jumlah kehadiran secara langsung dan mengunduh rekapitulasi data lengkap dalam format CSV.
+- Lokasi Acara: Gedung B6, Fakultas Bahasa dan Seni (FBS) UNNES
+- Tanggal Acara: 28 Januari 2027
+- Kapasitas: 200–300 Peserta (Mahasiswa, Alumni, dan Tamu Undangan)
 
 ---
 
-## 📱 Panduan Penggunaan Bagi Peserta
+## 1. Tujuan Sistem
 
-```text
-[ 1. Daftar Online ] ──> [ 2. Simpan Tiket ] ──> [ 3. Datang & Scan QR di Hari-H ]
-```
-
-### 1. Pendaftaran
-* Kunjungi halaman pendaftaran di situs web acara.
-* Masukkan Nama Lengkap, Nomor WhatsApp aktif, Kategori Peserta (Mahasiswa/Alumni/Tamu), Asal Instansi, dan Sumber Informasi.
-* Tekan tombol **Daftar Sekarang**.
-
-### 2. Menyimpan Tiket & Kode Pemulihan
-* Setelah pendaftaran berhasil, Anda akan diarahkan ke **Halaman Tiket Pribadi**.
-* Simpan link tiket Anda dengan menekan tombol **Simpan Tiket ke WhatsApp** (tautan akan dikirimkan ke chat nomor pribadi Anda).
-* Simpan juga **Kode Pemulihan** 6-karakter yang ditampilkan. Kode ini berguna jika Anda ingin membuka tiket di perangkat/HP lain.
-
-### 3. Presensi Saat Tiba di Gedung B6 FBS UNNES
-* Buka halaman tiket Anda di HP masing-masing saat tiba di depan pintu aula.
-* Tekan tombol hijau **`📷 Scan QR Presensi di Layar Proyektor / Banner`**.
-* Izinkan akses kamera browser, lalu arahkan HP Anda ke layar laptop/proyektor yang disediakan panitia.
-* Tiket Anda seketika berubah menjadi hijau mint: **SUDAH HADIR** (tunjukkan ke panitia di pintu masuk).
-
-### 🆘 Bantuan Jika Terjadi Kendala:
-* **Kamera HP Silau dari Layar?**  
-  Tekan opsi *"Kamera silau? Masukkan kode presensi secara manual"* di halaman tiket Anda, lalu ketik 6 karakter kode yang tertulis di bawah QR panitia.
-* **Kuota Internet Habis / HP Lowbat?**  
-  Cukup datangi meja panitia di pintu masuk dan sebutkan nama Anda. Panitia akan langsung mengabsenkan Anda secara manual lewat sistem meja registrasi.
+1. Pendaftaran Mandiri Tanpa Akun: Peserta dapat langsung mendaftar tanpa membuat akun, kata sandi, atau terikat login email kampus/Google tertentu.
+2. Presensi Cepat Ala Kampus (Self Check-in): Mengurangi antrean di pintu masuk aula dengan memanfaatkan satu QR Code terpusat di proyektor atau laptop meja registrasi yang dapat dipindai langsung oleh peserta.
+3. Pencegahan Presensi Jarak Jauh (Rotasi QR 3 Menit): Konten QR Code panitia diperbarui secara berkala setiap 3 menit, sehingga foto QR yang dibagikan ke luar ruangan akan segera kedaluwarsa.
+4. Jaminan Kelancaran Hari-H (Tiga Lapis Pengaman): Menyediakan alur cadangan berupa input kode manual di ponsel peserta, serta tombol absen manual satu klik di meja bantuan panitia untuk peserta yang kehabisan baterai atau kuota internet.
+5. Pemantauan dan Rekapitulasi Real-Time: Panitia dapat memantau pergerakan jumlah kehadiran secara langsung dan mengunduh laporan data lengkap dalam format CSV.
 
 ---
 
-## 💻 Panduan Penggunaan Bagi Panitia (Admin & Helpdesk)
+## 2. Panduan Penggunaan Bagi Peserta
 
-Akses panel operasional acara melalui rute `/admin` menggunakan kata sandi bersama panitia.
+Alur utama peserta:
+Daftar Online -> Simpan Tiket -> Datang dan Pindai QR di Hari-H
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                        DASHBOARD ADMIN PWK 2026                        │
-│  [Total Terdaftar: 250]   [Sudah Hadir: 180]   [Sisa Kuota: 50]        │
-└────────────────────────────────────────────────────────────────────────┘
-```
+### Langkah 1: Pendaftaran Online
+1. Buka formulir pendaftaran pada situs web acara.
+2. Masukkan Nama Lengkap, Nomor WhatsApp aktif, Kategori Peserta (Mahasiswa, Alumni, atau Tamu Undangan), Asal Instansi, dan Sumber Informasi.
+3. Klik tombol "Daftar Sekarang".
 
-### 1. Menayangkan QR Presensi di Pintu Masuk
-* Hubungkan laptop panitia ke layar proyektor atau siapkan 2–3 laptop di meja registrasi depan aula.
-* Klik tombol **`🖥️ Tampilkan QR Presensi (Proyektor)`** di header dashboard.
-* Aktifkan tombol **Mode Proyektor (Fullscreen)**.
-* Layar akan menayangkan 1 QR Code besar beresolusi tinggi yang otomatis berganti token setiap 3 menit (anti titip absen). Peserta yang datang tinggal mengarahkan kamera HP mereka ke layar tersebut.
+### Langkah 2: Menyimpan Tiket dan Kode Pemulihan
+1. Setelah berhasil mendaftar, Anda akan diarahkan ke halaman tiket pribadi.
+2. Simpan tautan tiket ke obrolan WhatsApp pribadi menggunakan tombol yang tersedia.
+3. Catat atau simpan kode pemulihan rahasia yang tertera. Kode ini digunakan untuk membuka kembali tiket jika Anda berpindah perangkat atau browser.
 
-### 2. Mengabsenkan Peserta Tanpa Kuota / HP Mati (Meja Bantuan)
-* Jika ada peserta datang melapor bahwa kuota internetnya habis atau HP-nya mati total:
-  1. Panitia cukup mengetik nama peserta di kolom pencarian dashboard `/admin`.
-  2. Pada baris nama peserta, tekan tombol bulat **`(✓) Absen`**.
-  3. Status peserta seketika berubah menjadi `Hadir` dengan jam kehadiran tercatat rapi berlabel `MANUAL_ADMIN`.
+### Langkah 3: Presensi Saat Tiba di Lokasi
+1. Buka tautan tiket pada ponsel Anda saat tiba di depan pintu masuk aula Gedung B6 FBS UNNES.
+2. Klik tombol "Scan QR Presensi di Layar Proyektor / Banner".
+3. Izinkan akses kamera pada browser, lalu arahkan kamera ke layar laptop atau proyektor panitia.
+4. Halaman tiket akan langsung berubah status menjadi "SUDAH HADIR" lengkap dengan catatan waktu kedatangan.
 
-### 3. Menangani Tamu On-The-Spot (OTS) Saat Kuota Penuh
-* Jika kuota pendaftaran online sudah habis (`300/300`), namun ada tamu kehormatan/undangan khusus yang tiba langsung di lokasi:
-  1. Klik tombol **`🆘 Tamu OTS`** di dashboard admin.
-  2. Isi identitas singkat tamu serta tuliskan alasan penambahan kuota darurat.
-  3. Sistem akan langsung menerbitkan tiket dan menandai tamu tersebut sebagai `HADIR` dengan pencatatan audit resmi.
-
-### 4. Ekspor Data & Pemantauan
-* Dashboard otomatis memperbarui data kehadiran setiap 20 detik tanpa perlu me-refresh halaman.
-* Setelah acara selesai, panitia dapat menekan tombol **`CSV`** untuk mengunduh rekapitulasi data seluruh pendaftar lengkap dengan jam kehadiran masing-masing.
+### Bantuan Kendala Teknis:
+- Jika kamera silau oleh pantulan layar: Klik opsi "Kamera silau? Masukkan kode presensi secara manual" pada halaman tiket, lalu ketikkan 6 karakter kode yang tertulis di bawah QR panitia.
+- Jika ponsel kehabisan kuota internet atau kehabisan baterai: Datangi meja registrasi panitia dan sebutkan nama lengkap Anda. Petugas helpdesk akan memverifikasi dan mengabsenkan Anda secara langsung lewat sistem.
 
 ---
 
-## 🕊️ Informasi Acara
-Diselenggarakan oleh **Persekutuan Warga Kristen (PWK) — Unit Kegiatan Kerohanian Kristen (UK3) Universitas Negeri Semarang**.  
-*Kiranya damai dan sukacita Natal menyertai seluruh pelayanan kita.* 🎄✨
+## 3. Panduan Penggunaan Bagi Panitia (Admin dan Helpdesk)
+
+Akses panel operasional acara dapat dibuka melalui rute `/admin` dengan memasukkan kata sandi panitia.
+
+### Langkah 1: Menayangkan QR Presensi di Pintu Masuk
+1. Hubungkan laptop panitia ke layar proyektor aula, atau tempatkan 2 hingga 3 laptop di meja registrasi depan pintu masuk.
+2. Klik tombol "Tampilkan QR Presensi (Proyektor)" pada bagian atas dashboard.
+3. Pilih "Mode Proyektor (Fullscreen)" untuk menampilkan QR Code dalam ukuran penuh.
+4. QR Code akan otomatis berotasi setiap 3 menit. Peserta yang datang dapat langsung mengarahkan kamera ponsel mereka ke layar tersebut.
+
+### Langkah 2: Mengabsenkan Peserta yang Mengalami Kendala Koneksi
+1. Jika peserta datang dengan kondisi ponsel mati atau tidak memiliki kuota internet:
+   - Ketikkan nama peserta atau nomor WhatsApp pada kolom pencarian dashboard admin.
+   - Pada baris data peserta yang bersangkutan, klik tombol bulat "[Absen]".
+   - Status peserta seketika berubah menjadi "Hadir" dengan metode tercatat "MANUAL_ADMIN".
+
+### Langkah 3: Pendaftaran Tamu On-The-Spot (OTS) Saat Kuota Penuh
+1. Jika kuota pendaftaran online telah habis namun terdapat tamu undangan khusus atau kehormatan yang hadir langsung di lokasi:
+   - Klik tombol "Tamu OTS" pada panel operasional.
+   - Masukkan identitas singkat tamu beserta alasan wajib penambahan kuota.
+   - Sistem akan langsung menerbitkan data peserta baru dengan status "HADIR" serta mencatat alasannya pada log audit.
+
+### Langkah 4: Pemantauan dan Rekapitulasi Data
+1. Statistik total pendaftar, total kehadiran, dan sisa kapasitas akan diperbarui secara otomatis setiap 20 detik.
+2. Klik tombol "CSV" untuk mengunduh seluruh data pendaftar dan timestamp kehadiran ke dalam format spreadsheet untuk arsip pertanggungjawaban panitia.
+
+---
+
+## 4. Informasi Penyelenggara
+Diselenggarakan oleh Persekutuan Warga Kristen (PWK) — Unit Kegiatan Kerohanian Kristen (UK3) Universitas Negeri Semarang.
