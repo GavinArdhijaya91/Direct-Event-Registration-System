@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="260" viewBox="0 0 120 260" fill="none">
+  <defs>
+    <linearGradient id="pine-needle" x1="27" y1="238" x2="91" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#28583B"/>
+      <stop offset=".55" stop-color="#477B53"/>
+      <stop offset="1" stop-color="#8EAD72"/>
+    </linearGradient>
+    <linearGradient id="pine-cone" x1="54" y1="173" x2="85" y2="219" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8B969"/>
+      <stop offset="1" stop-color="#A46B3A"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 247C45 201 43 159 58 119 72 81 83 50 98 17" stroke="#47784F" stroke-linecap="round" stroke-width="5"/>
+  <g stroke="url(#pine-needle)" stroke-linecap="round" stroke-width="3">
+    <path d="m33 220-26-16m28 11-8-30m14 20 20-26m-26 16-33-2m43-8-11-30m17 18 25-20m-38 18-33-13m48 2-5-32m11 24 26-15m-38 14-34-22m48 4 1-32m5 22 24-11m-40 7-30-28m46 4 7-29m1 22 24-7M78 66 51 34m38 11 12-28M18 219l27 7m-17-44 33 8m-19-40 33 7m-13-41 34 3m-1-42 29-1"/>
+  </g>
+  <g fill="url(#pine-needle)" stroke="#B4C99A" stroke-linejoin="round" stroke-width="1">
+    <path d="m14 206-11-10 15 2 5-16 5 18 14 4-14 5-4 16-6-15-15-1Z"/>
+    <path d="m44 167-12-9 15 1 6-15 4 17 15 4-15 4-5 15-5-15-14-2Z"/>
+    <path d="m61 124-12-10 15 2 7-15 3 17 15 5-15 3-6 15-4-15-14-2Z"/>
+    <path d="m77 80-11-11 15 2 8-14 2 17 14 6-15 2-7 14-3-15-13-4Z"/>
+  </g>
+  <path d="M68 172c-4-11 1-22 11-27 10 5 15 16 11 27l-11 37-11-37Z" fill="url(#pine-cone)" stroke="#7D5937" stroke-width="1.5"/>
+  <path d="m68 177 22 6m-25 5 20 6m-22 3 17 6" stroke="#F0D18B" stroke-linecap="round" stroke-width="2"/>
+</svg>

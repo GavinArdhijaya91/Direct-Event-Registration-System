@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="130" height="230" viewBox="0 0 130 230" fill="none">
+  <defs>
+    <linearGradient id="mistletoe-leaf" x1="22" y1="57" x2="100" y2="175" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#91B27D"/>
+      <stop offset="1" stop-color="#467652"/>
+    </linearGradient>
+  </defs>
+  <path d="M65 222c2-48-2-88-8-126M59 163 26 111m33 41 43-52M57 116 33 73m26 27 33-39" stroke="#47784F" stroke-linecap="round" stroke-width="4"/>
+  <g fill="url(#mistletoe-leaf)" stroke="#C1D1A8" stroke-width="1.5">
+    <path d="M26 112C5 101 4 82 12 67c20 7 29 22 24 42 13-18 31-21 48-11-10 20-27 28-50 20Z"/>
+    <path d="M91 109c6-22 23-31 42-27-1 21-12 36-34 40 21 3 33 17 32 38-22 0-37-12-43-36Z"/>
+    <path d="M33 76C15 62 17 44 28 31c17 10 23 25 15 43 15-15 33-15 47-2-13 17-31 21-51 11Z"/>
+    <path d="M91 68c8-20 25-27 43-21-3 20-15 32-37 34 19 5 29 20 25 40-21-3-34-17-37-40Z"/>
+    <path d="M64 182c-17-14-17-31-6-44 17 9 24 24 17 42 14-15 31-16 46-4-12 17-29 22-50 13Z"/>
+  </g>
+  <g fill="#FFF6DF" stroke="#D9C78E" stroke-width="1.5">
+    <circle cx="67" cy="125" r="7"/>
+    <circle cx="80" cy="130" r="6"/>
+    <circle cx="73" cy="141" r="6"/>
+    <circle cx="48" cy="88" r="6"/>
+  </g>
+</svg>

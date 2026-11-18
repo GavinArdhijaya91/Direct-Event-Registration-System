@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="260" viewBox="0 0 140 260" fill="none">
+  <defs>
+    <linearGradient id="holly-leaf" x1="20" y1="50" x2="105" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6F9A62"/>
+      <stop offset="1" stop-color="#28583B"/>
+    </linearGradient>
+    <linearGradient id="holly-berry" x1="55" y1="70" x2="95" y2="115" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F08C70"/>
+      <stop offset="1" stop-color="#A93834"/>
+    </linearGradient>
+  </defs>
+  <path d="M25 250C49 206 57 157 71 112 83 72 99 40 119 13" stroke="#47784F" stroke-width="5" stroke-linecap="round"/>
+  <path d="M49 195 22 174m38-46L33 108m47-28L61 59m-7 99 38-1m-21-46 39 5" stroke="#47784F" stroke-width="3.5" stroke-linecap="round"/>
+  <g fill="url(#holly-leaf)" stroke="#B4C99A" stroke-linejoin="round" stroke-width="1.5">
+    <path d="m22 175-13-3 9-10-8-10 15 1 4-14 8 12 13-7-2 15 13 6-13 7 2 14-13-7-9 12-4-14Z"/>
+    <path d="m33 108-14-1 8-11-8-9 14 1 5-13 7 12 13-7-2 14 12 6-12 7 2 13-12-7-9 11-4-13Z"/>
+    <path d="m61 59-13-3 9-10-6-10 14 3 6-12 5 13 14-4-4 14 11 8-14 4-1 14-10-10-12 8 2-14Z"/>
+    <path d="m91 194-4-14-13-4 11-8-3-14 12 8 11-8-2 14 12 7-13 5-3 14-9-11Z"/>
+    <path d="m92 158-3-14-13-5 12-7-2-14 11 8 12-8-3 14 11 8-13 4-4 14-8-12Z"/>
+    <path d="m114 32-4-13-12-4 11-8-2-12 11 7 10-7-2 13 11 7-12 5-3 12-8-10Z"/>
+  </g>
+  <g fill="url(#holly-berry)" stroke="#F5D79A" stroke-width="2">
+    <circle cx="71" cy="135" r="8"/>
+    <circle cx="87" cy="141" r="7"/>
+    <circle cx="78" cy="153" r="7"/>
+  </g>
+  <path d="m73 133 2-3m13 9 2-3m-11 13 2-3" stroke="#FFF1C8" stroke-linecap="round" stroke-width="2"/>
+</svg>

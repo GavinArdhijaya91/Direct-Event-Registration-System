@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AttendeeStatus {
+  TERDAFTAR
+  HADIR
+}
+
+enum RegistrationCategory {
+  MAHASISWA
+  ALUMNI
+  TAMU_UNDANGAN
+}
+
+enum InformationSource {
+  INSTAGRAM
+  WHATSAPP_GROUP
+  TEMAN_KATING
+  POSTER_KAMPUS
+  GEREJA
+}
+
+enum CheckinMethod {
+  SCAN_MANDIRI
+  MANUAL_ADMIN
+}
+
+model EventSettings {
+  id               Int       @id @default(1)
+  eventName        String    @default("Natal PWK 2026") @map("nama_acara") @db.VarChar(120)
+  eventDate        DateTime  @default("2027-01-28T00:00:00.000Z") @map("tanggal_acara") @db.Date
+  eventLocation    String    @default("Gedung B6, FBS UNNES") @map("lokasi_acara") @db.VarChar(120)
+  locationCode     String?   @map("kode_lokasi_aktif") @db.VarChar(100)
+  maxCapacity      Int       @default(300) @map("kuota_maksimal")
+  registeredCount  Int       @default(0) @map("jumlah_terdaftar")
+  registrationOpen Boolean   @default(false) @map("pendaftaran_dibuka")
+  checkinOpensAt   DateTime? @map("waktu_buka_checkin") @db.Timestamptz(3)
+  checkinClosesAt  DateTime? @map("waktu_tutup_checkin") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("diperbarui_pada") @db.Timestamptz(3)
+
+  @@map("pengaturan_acara")
+}
+
+model Attendee {
+  id                String               @id @default(uuid()) @db.Uuid
+  ticketCode        String               @unique @map("kode_tiket") @db.VarChar(20)
+  ticketTokenHash   String               @unique @map("token_tiket_hash") @db.Char(64)
+  recoveryCodeHash  String               @map("kode_pemulihan_hash") @db.Char(64)
+  fullName          String               @map("nama_lengkap") @db.VarChar(120)
+  whatsappNumber    String               @unique @map("nomor_wa") @db.VarChar(16)
+  category          RegistrationCategory @map("kategori")
+  institution       String               @map("asal_instansi") @db.VarChar(120)
+  informationSource InformationSource    @map("sumber_informasi")
+  status            AttendeeStatus       @default(TERDAFTAR)
+  registeredAt      DateTime             @default(now()) @map("dibuat_pada") @db.Timestamptz(3)
+  checkedInAt       DateTime?            @map("waktu_checkin") @db.Timestamptz(3)
+  checkinMethod     CheckinMethod?       @map("metode_checkin")
+
+  @@index([status, registeredAt])
+  @@map("peserta")
+}
+
+model AdminAuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  actor     String   @default("shared-admin") @db.VarChar(40)
+  action    String   @map("aksi") @db.VarChar(80)
+  reason    String?  @map("alasan") @db.VarChar(500)
+  details   Json?
+  createdAt DateTime @default(now()) @map("dibuat_pada") @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@map("log_admin")
+}
+
+model RateLimit {
+  key             String    @id @map("kunci") @db.Char(64)
+  attempts        Int       @default(0) @map("percobaan")
+  windowStartedAt DateTime  @map("mulai_jendela") @db.Timestamptz(3)
+  blockedUntil    DateTime? @map("diblokir_sampai") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("diperbarui_pada") @db.Timestamptz(3)
+
+  @@index([updatedAt])
+  @@map("batas_permintaan")
+}

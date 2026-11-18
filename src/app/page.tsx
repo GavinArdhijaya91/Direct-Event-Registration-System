@@ -1,0 +1,378 @@
+import Link from "next/link";
+import Image from "next/image";
+import { getPrismaClient } from "@/lib/prisma";
+import RevealObserver from "@/app/reveal-observer";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const activities = [
+  { image: "/images/christmas/svg/candle.svg", title: "Ibadah & Pemberkatan", description: "Merayakan kelahiran Yesus" },
+  { image: "/images/christmas/svg/christmas-tree.svg", title: "Pohon Natal", description: "Dekorasi dan foto bersama" },
+  { image: "/images/christmas/svg/gift-box.svg", title: "Tukar Kado", description: "Berbagi sukacita dan kejutan" },
+  { image: "/images/christmas/svg/bell.svg", title: "Konser Musik", description: "Lagu-lagu Natal penuh sukacita" },
+  { image: "/images/christmas/svg/holly.svg", title: "Makan Bersama", description: "Menikmati kebersamaan komunitas" },
+  { image: "/images/christmas/svg/reindeer.svg", title: "Penampilan & Permainan", description: "Hiburan dan permainan seru" },
+];
+
+export default async function Home() {
+  const settings = await getPrismaClient().eventSettings.findUnique({
+    where: { id: 1 },
+    select: {
+      eventName: true,
+      eventDate: true,
+      eventLocation: true,
+      maxCapacity: true,
+      registeredCount: true,
+      registrationOpen: true,
+    },
+  });
+
+  const isOpen = settings?.registrationOpen ?? false;
+  const isFull = settings ? settings.registeredCount >= settings.maxCapacity : false;
+  const canRegister = isOpen && !isFull;
+  const remaining = settings
+    ? Math.max(settings.maxCapacity - settings.registeredCount, 0)
+    : 0;
+
+  const formattedDate = settings?.eventDate
+    ? new Intl.DateTimeFormat("id-ID", {
+        dateStyle: "long",
+        timeZone: "Asia/Jakarta",
+      }).format(settings.eventDate)
+    : "28 Januari 2027";
+
+  return (
+    <main className="home-page" data-reveal-root>
+      <div aria-hidden="true" className="registration-snowfall">
+        {Array.from({ length: 12 }, (_, index) => (
+          <span className="registration-snowflake" key={index} />
+        ))}
+      </div>
+      <RevealObserver />
+      <header className="site-header" data-reveal>
+        <div className="site-header-inner">
+          <Link href="/" className="brand-lockup" aria-label="Natal PWK UNNES, beranda">
+            <Image
+              src="/images/logos/logo-natal-pwk.png"
+              alt=""
+              width={52}
+              height={52}
+              className="brand-logo"
+              priority
+            />
+            <span className="brand-copy">
+              <span className="brand-name">{settings?.eventName ?? "Natal PWK UNNES 2026"}</span>
+              <span className="brand-tagline">Merayakan Natal, Membagikan Cinta</span>
+            </span>
+          </Link>
+
+          <nav className="header-nav" aria-label="Navigasi utama">
+            <Link href="#kegiatan" className="header-text-link">Kegiatan</Link>
+            <Link href="/daftar#pemulihan" className="btn btn-outline header-recovery">
+              Sudah daftar? Cek tiket
+            </Link>
+            <Link href="/daftar" className="btn btn-primary header-register">Daftar</Link>
+          </nav>
+        </div>
+      </header>
+
+      <section className="christmas-hero">
+        <div className="hero-snow hero-snow-one" aria-hidden="true" />
+        <div className="hero-snow hero-snow-two" aria-hidden="true" />
+        <div className="hero-foliage hero-foliage-left" aria-hidden="true" />
+        <div className="hero-foliage hero-foliage-right" aria-hidden="true" />
+        <div className="hero-layout">
+          <div className="hero-copy" data-reveal>
+            <p className="hero-eyebrow"><span aria-hidden="true">✦</span> Perayaan Natal PWK UNNES 2026</p>
+            <h1 className="hero-title">
+              Rayakan Natal,
+              <br />
+              <span>tebarkan kasih.</span>
+            </h1>
+            <p className="hero-description">
+              Mari berkumpul dalam perayaan iman, kehangatan, dan sukacita.
+              Rayakan kelahiran Yesus Kristus bersama keluarga besar PWK UNNES.
+            </p>
+            <div className="hero-actions">
+              <Link href="/daftar" className="btn btn-light hero-primary">
+                Daftar Sekarang <span aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/daftar#pemulihan" className="hero-ticket-link">
+                Sudah punya tiket? <span>Cek di sini</span>
+              </Link>
+            </div>
+            <p className="hero-note">
+              <span className="hero-note-star" aria-hidden="true">✧</span>
+              Satu perayaan, banyak cerita penuh kasih
+            </p>
+          </div>
+          <div className="hero-artwork" data-reveal>
+            <Image
+              src="/images/natal-winter-scene.svg"
+              alt="Ilustrasi pohon Natal dengan hiasan warna-warni, rusa, hadiah, dan suasana bersalju"
+              width={900}
+              height={760}
+              priority
+              className="hero-illustration"
+            />
+            <span className="artwork-caption">Damai dan Sukacita <span aria-hidden="true">✦</span></span>
+          </div>
+        </div>
+        <div className="hero-bottom-line" aria-hidden="true" />
+      </section>
+
+      <section className="event-details" aria-label="Informasi acara" data-reveal>
+        <div className="event-detail">
+          <span className="detail-icon" aria-hidden="true">✳</span>
+          <div>
+            <p className="detail-label">Tanggal</p>
+            <p className="detail-value">{formattedDate}</p>
+          </div>
+        </div>
+        <div className="event-detail">
+          <span className="detail-icon" aria-hidden="true">⌖</span>
+          <div>
+            <p className="detail-label">Lokasi</p>
+            <p className="detail-value">{settings?.eventLocation ?? "Gedung B6, FBS UNNES"}</p>
+          </div>
+        </div>
+        <div className="event-detail event-status">
+          <span className="detail-icon" aria-hidden="true">✦</span>
+          <div>
+            <p className="detail-label">Pendaftaran</p>
+            {canRegister ? (
+              <p className="detail-value"><span className="status-dot" /> Dibuka · {remaining} tempat tersisa</p>
+            ) : isFull ? (
+              <p className="detail-value status-closed">Kuota penuh</p>
+            ) : (
+              <p className="detail-value status-closed">Sedang ditutup</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="holiday-gallery"
+        aria-labelledby="holiday-gallery-title"
+        data-reveal
+      >
+        <div className="holiday-gallery-heading">
+          <div>
+            <p className="section-kicker">Suasana Natal</p>
+            <h2 id="holiday-gallery-title">Merayakan damai, berbagi sukacita.</h2>
+          </div>
+          <p>
+            Ibadah, kebersamaan, dan berbagi menjadi inti perayaan Natal.
+          </p>
+        </div>
+        <div className="holiday-gallery-grid">
+          <figure className="holiday-photo">
+            <Image
+              src="/images/christmas/photos/01-christmas-church-tree.png"
+              alt="Pohon Natal bercahaya di sisi sebuah gereja pada malam hari"
+              width={702}
+              height={341}
+              sizes="(max-width: 680px) 100vw, (max-width: 900px) 50vw, 33vw"
+              className="holiday-photo-image"
+            />
+            <figcaption><span>01</span> Perayaan penuh terang</figcaption>
+          </figure>
+          <figure className="holiday-photo">
+            <Image
+              src="/images/christmas/photos/03-nativity-scene.png"
+              alt="Adegan palungan dengan bintang terang di langit malam"
+              width={610}
+              height={263}
+              sizes="(max-width: 680px) 50vw, (max-width: 900px) 50vw, 33vw"
+              className="holiday-photo-image"
+            />
+            <figcaption><span>02</span> Kabar sukacita</figcaption>
+          </figure>
+          <figure className="holiday-photo">
+            <Image
+              src="/images/christmas/photos/04-gifts-and-lantern.png"
+              alt="Hadiah Natal dan lentera menyala di dekat pohon cemara"
+              width={497}
+              height={263}
+              sizes="(max-width: 680px) 50vw, (max-width: 900px) 50vw, 33vw"
+              className="holiday-photo-image"
+            />
+            <figcaption><span>03</span> Berbagi dengan kasih</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section className="verse-section" data-reveal>
+        <Image
+          src="/images/christmas/svg/christmas-lights.svg"
+          alt=""
+          aria-hidden="true"
+          width={160}
+          height={80}
+          className="verse-garland"
+        />
+        <div
+          className="verse-holiday-side verse-holiday-side-left"
+          aria-hidden="true"
+        >
+          <Image
+            src="/images/christmas/illustrations/santa.png"
+            alt=""
+            width={88}
+            height={100}
+            className="verse-santa"
+          />
+          <Image
+            src="/images/christmas/illustrations/bauble.png"
+            alt=""
+            width={24}
+            height={32}
+            className="verse-bauble verse-bauble-left"
+          />
+          <Image
+            src="/images/christmas/illustrations/bells.png"
+            alt=""
+            width={44}
+            height={42}
+            className="verse-bells verse-bells-left"
+          />
+        </div>
+        <div
+          className="verse-holiday-side verse-holiday-side-right"
+          aria-hidden="true"
+        >
+          <Image
+            src="/images/christmas/illustrations/reindeer.png"
+            alt=""
+            width={104}
+            height={90}
+            className="verse-reindeer"
+          />
+          <Image
+            src="/images/christmas/illustrations/snowman.png"
+            alt=""
+            width={42}
+            height={38}
+            className="verse-snowman"
+          />
+          <Image
+            src="/images/christmas/illustrations/bauble.png"
+            alt=""
+            width={24}
+            height={32}
+            className="verse-bauble verse-bauble-right"
+          />
+          <Image
+            src="/images/christmas/illustrations/bells.png"
+            alt=""
+            width={44}
+            height={42}
+            className="verse-bells verse-bells-right"
+          />
+        </div>
+        <div className="verse-ornament" aria-hidden="true">✧</div>
+        <p className="section-kicker">Pesan Natal</p>
+        <blockquote>
+          “Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal.”
+        </blockquote>
+        <p className="verse-reference">Yohanes 3:16</p>
+      </section>
+
+      <section id="kegiatan" className="activities-section" data-reveal>
+        <div className="section-heading">
+          <p className="section-kicker">Hangatnya kebersamaan</p>
+          <h2>Manisnya momen Natal</h2>
+          <p>Luangkan waktu untuk beribadah, berbagi, dan merayakan bersama.</p>
+        </div>
+        <div className="activities-grid">
+          {activities.map((activity, index) => (
+            <article className={`activity-card activity-card-${index + 1}`} key={activity.title}>
+              <div className="activity-art" aria-hidden="true">
+                <Image
+                  src={activity.image}
+                  alt=""
+                  width={56}
+                  height={56}
+                  className="activity-illustration"
+                />
+                <i className="activity-spark activity-spark-one" />
+                <i className="activity-spark activity-spark-two" />
+              </div>
+              <div className="activity-copy">
+                <h3>{activity.title}</h3>
+                <p>{activity.description}</p>
+              </div>
+              <span className="activity-number" aria-hidden="true">0{index + 1}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="attendee-info" data-reveal>
+        <div className="info-card">
+          <span className="info-icon" aria-hidden="true">✦</span>
+          <h3>Sebelum mendaftar</h3>
+          <ul>
+            <li>Satu nomor WhatsApp untuk satu peserta</li>
+            <li>Isi data diri dengan benar</li>
+            <li>Simpan tautan tiket dan kode pemulihan</li>
+          </ul>
+        </div>
+        <div className="info-card">
+          <span className="info-icon" aria-hidden="true">❋</span>
+          <h3>Terbuka untuk</h3>
+          <div className="category-tags">
+            <span>Mahasiswa</span>
+            <span>Alumni</span>
+            <span>Tamu Undangan</span>
+          </div>
+        </div>
+        <div className="info-card capacity-card">
+          <span className="info-icon" aria-hidden="true">♡</span>
+          <h3>Kapasitas acara</h3>
+          <p className="capacity-number">{settings?.maxCapacity ?? 300}</p>
+          <p className="capacity-caption">tempat untuk merayakan bersama</p>
+          <p className="capacity-remaining">Tersedia: {remaining}</p>
+        </div>
+      </section>
+
+      <section className="privacy-section" data-reveal>
+        <div className="privacy-card">
+          <span className="privacy-mark" aria-hidden="true">⌑</span>
+          <div>
+            <h2>Data Anda tetap terjaga</h2>
+            <p>
+              Nomor WhatsApp dan data identitas hanya digunakan untuk kebutuhan acara ini.
+              Simpan tautan tiket serta kode pemulihan dengan aman dan jangan membagikan tautan tiket pribadi Anda.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="site-footer" data-reveal>
+        <div className="footer-gift-border" aria-hidden="true" />
+        <div className="footer-inner">
+          <div className="footer-organizer">
+            <Image
+              src="/images/logos/logo-uk3unnes.png"
+              alt="UK3 UNNES"
+              width={44}
+              height={44}
+              className="footer-uk3-logo"
+            />
+            <div><strong>UK3 UNNES</strong><span>Unit Kegiatan Kristiani</span></div>
+          </div>
+          <p className="footer-note">© 2026 UK3 UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span></p>
+          <Image
+            src="/images/logos/logo-unnes.png"
+            alt="Universitas Negeri Semarang"
+            width={42}
+            height={42}
+            className="footer-unnes-logo"
+          />
+        </div>
+      </footer>
+    </main>
+  );
+}
