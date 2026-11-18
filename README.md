@@ -1,5 +1,5 @@
 # Sistem Registrasi dan Presensi Natal PWK 2026
-Persekutuan Warga Kristen (PWK) — UK3 Universitas Negeri Semarang (UNNES)
+Paguyuban Warga Kristiani Universitas Negeri Semarang (PWK UNNES)
 
 Aplikasi web mandiri yang dirancang untuk memfasilitasi pendaftaran peserta, penerbitan tiket digital, serta pencatatan presensi kehadiran terpusat (self check-in) pada perayaan Natal PWK 2026.
 
