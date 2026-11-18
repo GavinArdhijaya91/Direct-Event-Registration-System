@@ -20,6 +20,15 @@ export const metadata: Metadata = {
   title: "Natal PWK UNNES 2026 - Pendaftaran",
   description: "Rayakan Natal PWK UNNES 2026 bersama kami. Perayaan iman, kebersamaan, dan kegembiraan. Daftar sekarang untuk mendapatkan tiket Anda.",
   referrer: "no-referrer",
+  icons: {
+    icon: [
+      { url: "/images/logos/logo-natal-pwk.png", type: "image/png" },
+    ],
+    shortcut: ["/images/logos/logo-natal-pwk.png"],
+    apple: [
+      { url: "/images/logos/logo-natal-pwk.png" },
+    ],
+  },
 };
 
 export const viewport: Viewport = {

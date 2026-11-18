@@ -445,15 +445,23 @@ export default function RegistrationForm({
       ) : null}
 
       <button
-        className="min-h-12 w-full rounded-full bg-[var(--forest)] px-6 font-semibold text-white hover:bg-[var(--forest-deep)] disabled:cursor-not-allowed disabled:opacity-50"
+        className="group min-h-12 w-full rounded-full bg-gradient-to-r from-[var(--emeral)] to-[var(--forest)] px-6 text-base font-semibold !text-white shadow-md hover:from-[var(--forest)] hover:to-[var(--forest-deep)] hover:!text-white hover:shadow-lg active:scale-[0.99] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
         disabled={!canRegister || isPending}
         type="submit"
       >
-        {isPending
-          ? "Mengirim pendaftaran…"
-          : !canRegister
-            ? "Pendaftaran tidak tersedia"
-            : "Daftar sekarang"}
+        {isPending ? (
+          <span className="inline-flex items-center justify-center gap-2">
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            <span>Memproses pendaftaran…</span>
+          </span>
+        ) : !canRegister ? (
+          <span>Pendaftaran tidak tersedia</span>
+        ) : (
+          <span className="inline-flex items-center justify-center gap-2">
+            <span>Daftar sekarang</span>
+            <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">→</span>
+          </span>
+        )}
       </button>
       <p className="text-xs leading-5 text-[var(--muted)]">
         Nomor WhatsApp tidak diverifikasi. Tiket dan kode pemulihan ditampilkan
