@@ -105,7 +105,7 @@ export default async function Home() {
                   <span aria-hidden="true" className="!text-white transition-transform duration-150 group-hover:translate-x-1">↗</span>
                 </Link>
                 <div className="pointer-events-none absolute left-1/2 -bottom-8 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
-                  Buka formulir pendaftaran tiket gratis
+                  Buka formulir pendaftaran
                   <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
                 </div>
               </div>
