@@ -368,18 +368,18 @@ export default async function Home() {
             <Image
               src="/images/logos/logo-uk3unnes.png"
               alt="UK3 UNNES"
-              width={44}
-              height={44}
+              width={48}
+              height={28}
               className="footer-uk3-logo"
             />
             <div><strong>UK3 UNNES</strong><span>Unit Kegiatan Kristiani</span></div>
           </div>
-          <p className="footer-note">© 2026 UK3 UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span></p>
+          <p className="footer-note">© 2026 PWK UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span></p>
           <Image
             src="/images/logos/logo-unnes.png"
             alt="Universitas Negeri Semarang"
-            width={42}
-            height={42}
+            width={30}
+            height={40}
             className="footer-unnes-logo"
           />
         </div>

@@ -1544,8 +1544,10 @@ a.btn-light:focus {
 }
 
 .footer-uk3-logo {
-  width: 44px;
-  height: 44px;
+  width: auto;
+  height: 28px;
+  max-width: 52px;
+  object-fit: contain;
 }
 
 .footer-organizer strong {
@@ -1568,8 +1570,9 @@ a.btn-light:focus {
 }
 
 .footer-unnes-logo {
-  width: 42px;
-  height: 42px;
+  width: auto;
+  height: 40px;
+  max-width: 32px;
   object-fit: contain;
 }
 
@@ -1634,21 +1637,27 @@ a.btn-light:focus {
 
 @media (max-width: 680px) {
   .site-header-inner {
-    width: min(100% - 2rem, 1320px);
-    min-height: 76px;
+    width: min(100% - 1.5rem, 1320px);
+    min-height: 64px;
+    gap: 0.75rem;
+  }
+
+  .brand-lockup {
+    gap: 0.55rem;
   }
 
   .brand-logo {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
   }
 
   .brand-name {
     font-size: 0.82rem;
+    line-height: 1.2;
   }
 
   .brand-tagline {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
   }
 
   .header-nav {
@@ -1661,9 +1670,9 @@ a.btn-light:focus {
   }
 
   .header-nav .btn {
-    min-height: 38px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
+    min-height: 36px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.74rem;
     white-space: nowrap;
   }
 
@@ -1865,36 +1874,207 @@ a.btn-light:focus {
   }
 
   .footer-inner {
-    width: calc(100% - 2rem);
+    width: calc(100% - 1.5rem);
     min-height: 0;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 1.25rem 0;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 0;
+  }
+
+  .footer-organizer {
+    gap: 0.55rem;
+  }
+
+  .footer-uk3-logo {
+    width: auto;
+    height: 22px;
+    max-width: 40px;
+    object-fit: contain;
+  }
+
+  .footer-unnes-logo {
+    width: auto;
+    height: 32px;
+    max-width: 26px;
+    object-fit: contain;
+  }
+
+  .footer-organizer strong {
+    font-size: 0.78rem;
+  }
+
+  .footer-organizer span {
+    font-size: 0.65rem;
   }
 
   .footer-note {
     order: 3;
     width: 100%;
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .footer-note span {
+    font-size: 0.65rem;
+  }
+
+  .registration-footer-inner {
+    min-height: 56px;
+    padding: 0.75rem 0;
+  }
+
+  .registration-footer-inner p {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header-inner {
+    width: calc(100% - 1.25rem);
+    min-height: 58px;
+    gap: 0.5rem;
+  }
+
+  .brand-lockup {
+    gap: 0.45rem;
+  }
+
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-name {
+    max-width: 175px;
+    font-size: 0.76rem;
+    line-height: 1.18;
+  }
+
+  .brand-tagline {
+    font-size: 0.58rem;
+  }
+
+  .header-nav .btn {
+    min-height: 34px;
+    padding: 0.4rem 0.55rem;
+    font-size: 0.7rem;
+  }
+
+  .footer-inner {
+    gap: 0.75rem;
+    padding: 0.9rem 0;
+  }
+
+  .footer-uk3-logo {
+    width: auto;
+    height: 19px;
+    max-width: 34px;
+    object-fit: contain;
+  }
+
+  .footer-unnes-logo {
+    width: auto;
+    height: 28px;
+    max-width: 22px;
+    object-fit: contain;
+  }
+
+  .footer-organizer strong {
+    font-size: 0.74rem;
+  }
+
+  .footer-organizer span {
+    font-size: 0.62rem;
+  }
+
+  .footer-note {
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+
+  .footer-note span {
+    font-size: 0.62rem;
+  }
+
+  .registration-footer-inner p {
+    font-size: 0.7rem;
   }
 }
 
 @media (max-width: 390px) {
+  .site-header-inner {
+    width: calc(100% - 1rem);
+    min-height: 52px;
+    gap: 0.35rem;
+  }
+
+  .brand-lockup {
+    gap: 0.4rem;
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+  }
+
   .brand-name {
-    max-width: 155px;
-    font-size: 0.74rem;
+    max-width: 140px;
+    font-size: 0.7rem;
   }
 
   .brand-tagline {
-    font-size: 0.6rem;
+    display: none;
   }
 
-  .site-header-inner {
-    width: calc(100% - 1.2rem);
-    gap: 0.5rem;
+  .header-nav {
+    gap: 0.35rem;
   }
 
   .header-nav .btn {
-    padding: 0.45rem 0.55rem;
+    min-height: 32px;
+    padding: 0.35rem 0.45rem;
+    font-size: 0.64rem;
+  }
+
+  .footer-inner {
+    gap: 0.6rem;
+    padding: 0.8rem 0;
+  }
+
+  .footer-uk3-logo {
+    width: auto;
+    height: 17px;
+    max-width: 30px;
+    object-fit: contain;
+  }
+
+  .footer-unnes-logo {
+    width: auto;
+    height: 24px;
+    max-width: 20px;
+    object-fit: contain;
+  }
+
+  .footer-organizer strong {
+    font-size: 0.7rem;
+  }
+
+  .footer-organizer span {
+    font-size: 0.58rem;
+  }
+
+  .footer-note {
+    font-size: 0.65rem;
+    line-height: 1.4;
+  }
+
+  .footer-note span {
+    font-size: 0.58rem;
+  }
+
+  .registration-footer-inner p {
     font-size: 0.66rem;
   }
 }

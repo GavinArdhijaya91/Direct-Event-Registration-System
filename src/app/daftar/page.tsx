@@ -232,7 +232,7 @@ export default async function DaftarPage() {
         <div className="footer-gift-border" aria-hidden="true" />
         <div className="footer-inner registration-footer-inner">
           <p className="text-sm text-gray-500">
-            © 2026 UK3 UNNES · Rayakan kasih, bagikan sukacita.
+            © 2026 PWK UNNES · Rayakan kasih, bagikan sukacita.
           </p>
         </div>
       </footer>
