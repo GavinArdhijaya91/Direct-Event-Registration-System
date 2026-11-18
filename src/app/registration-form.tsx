@@ -444,25 +444,31 @@ export default function RegistrationForm({
         </div>
       ) : null}
 
-      <button
-        className="group min-h-12 w-full rounded-full bg-gradient-to-r from-[var(--emeral)] to-[var(--forest)] px-6 text-base font-semibold !text-white shadow-md hover:from-[var(--forest)] hover:to-[var(--forest-deep)] hover:!text-white hover:shadow-lg active:scale-[0.99] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
-        disabled={!canRegister || isPending}
-        type="submit"
-      >
-        {isPending ? (
-          <span className="inline-flex items-center justify-center gap-2">
-            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            <span>Memproses pendaftaran…</span>
-          </span>
-        ) : !canRegister ? (
-          <span>Pendaftaran tidak tersedia</span>
-        ) : (
-          <span className="inline-flex items-center justify-center gap-2">
-            <span>Daftar sekarang</span>
-            <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">→</span>
-          </span>
-        )}
-      </button>
+      <div className="w-full">
+        <button
+          className="group min-h-12 w-full rounded-full bg-gradient-to-r from-[var(--emeral)] to-[var(--forest)] px-6 text-base font-semibold !text-white shadow-md hover:from-[var(--forest)] hover:to-[var(--forest-deep)] hover:!text-white hover:shadow-lg active:scale-[0.99] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={!canRegister || isPending}
+          type="submit"
+          title="Kirim pendaftaran dan dapatkan tiket acara"
+        >
+          {isPending ? (
+            <span className="inline-flex items-center justify-center gap-2 !text-white">
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              <span className="!text-white">Memproses pendaftaran…</span>
+            </span>
+          ) : !canRegister ? (
+            <span className="!text-white">Pendaftaran tidak tersedia</span>
+          ) : (
+            <span className="inline-flex items-center justify-center gap-2 !text-white">
+              <span className="!text-white font-semibold">Daftar Sekarang</span>
+              <span aria-hidden="true" className="!text-white transition-transform duration-150 group-hover:translate-x-1">→</span>
+            </span>
+          )}
+        </button>
+        <p className="mt-1.5 text-center text-[11px] text-[var(--muted)]">
+          Tiket dan kode pemulihan akan langsung diterbitkan setelah Anda menekan tombol ini.
+        </p>
+      </div>
       <p className="text-xs leading-5 text-[var(--muted)]">
         Nomor WhatsApp tidak diverifikasi. Tiket dan kode pemulihan ditampilkan
         setelah pendaftaran berhasil; simpan keduanya dengan aman.

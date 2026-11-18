@@ -95,9 +95,20 @@ export default async function Home() {
               Rayakan kelahiran Yesus Kristus bersama keluarga besar PWK UNNES.
             </p>
             <div className="hero-actions">
-              <Link href="/daftar" className="btn btn-light hero-primary">
-                Daftar Sekarang <span aria-hidden="true">↗</span>
-              </Link>
+              <div className="relative group inline-block">
+                <Link
+                  href="/daftar"
+                  className="btn btn-primary hero-primary inline-flex items-center gap-2 !text-white shadow-md hover:shadow-lg transition-all"
+                  title="Buka formulir pendaftaran online Natal PWK UNNES 2026"
+                >
+                  <span className="font-semibold !text-white">Daftar Sekarang</span>
+                  <span aria-hidden="true" className="!text-white transition-transform duration-150 group-hover:translate-x-1">↗</span>
+                </Link>
+                <div className="pointer-events-none absolute left-1/2 -bottom-8 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
+                  Buka formulir pendaftaran tiket gratis
+                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
+                </div>
+              </div>
               <Link href="/daftar#pemulihan" className="hero-ticket-link">
                 Sudah punya tiket? <span>Cek di sini</span>
               </Link>

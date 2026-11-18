@@ -137,18 +137,34 @@ export default async function DaftarPage() {
         </div>
 
         <div className="mb-8 flex flex-col sm:flex-row justify-center gap-2.5 sm:gap-3" data-reveal>
-          <a
-            href="#daftar"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--emeral)] bg-[var(--emeral)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--emeral-dark)] hover:text-white transition"
-          >
-            Formulir Pendaftaran
-          </a>
-          <a
-            href="#pemulihan"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--line)] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--forest)] transition"
-          >
-            Pulihkan Tiket (Sudah Daftar)
-          </a>
+          <div className="relative group">
+            <a
+              href="#daftar"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--emeral)] bg-[var(--emeral)] px-6 py-2.5 text-sm font-semibold !text-white shadow-sm hover:bg-[var(--emeral-dark)] hover:!text-white transition"
+              title="Isi formulir pendaftaran peserta baru"
+            >
+              <span className="!text-white font-semibold">Formulir Pendaftaran</span>
+              <span aria-hidden="true" className="!text-white transition-transform group-hover:translate-y-0.5">↓</span>
+            </a>
+            <div className="pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
+              Isi data pendaftaran peserta baru
+              <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
+            </div>
+          </div>
+          <div className="relative group">
+            <a
+              href="#pemulihan"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--line)] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--forest)] transition"
+              title="Buka kembali tiket yang sudah pernah didaftarkan"
+            >
+              <span>Pulihkan Tiket (Sudah Daftar)</span>
+              <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
+            </a>
+            <div className="pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
+              Buka tiket yang sudah terdaftar
+              <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
+            </div>
+          </div>
         </div>
 
         <section id="daftar" className="registration-section" data-reveal>

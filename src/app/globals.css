@@ -724,15 +724,19 @@ a.btn-light:focus {
   min-height: 54px;
   padding: 0.9rem 1.45rem;
   border-radius: 999px;
-  color: #12392d;
-  background: #f0d99e;
+  color: #ffffff !important;
+  background: var(--forest);
   font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(6, 78, 59, 0.35);
+  transition: all 0.2s ease;
 }
 
 .hero-primary:hover {
-  color: #fffaf0;
-  background: #a74338;
+  color: #ffffff !important;
+  background: var(--forest-deep);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 78, 59, 0.45);
 }
 
 .hero-primary span {
