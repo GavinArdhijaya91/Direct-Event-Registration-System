@@ -4165,6 +4165,9 @@ a[href].inline-flex:hover {
 
   .admin-content { padding: 1rem 0.75rem 2.25rem; }
   .admin-section { margin-bottom: 1.25rem; }
+  .admin-section-head,
+  .admin-info { margin-inline: 0.25rem; }
+  .admin-info { padding: 0.8rem 0.95rem; }
   .admin-card-head { padding: 0.8rem 0.9rem; }
   .admin-card-body { padding: 0.9rem; }
   .admin-stat-grid { gap: 0.6rem; }
