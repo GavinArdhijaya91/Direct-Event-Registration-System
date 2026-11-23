@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
+import AdminIcon from "@/app/admin/admin-icons";
 
 type VenueQrData = {
   status: "available";
@@ -59,6 +60,11 @@ export default function AdminVenueQrModal({
   const [now, setNow] = useState(0);
   const [fetchedAt, setFetchedAt] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   const loadVenueQr = useCallback(async () => {
     try {
@@ -139,12 +145,19 @@ export default function AdminVenueQrModal({
   }, [isOpen, qrData?.payload]);
 
   useEffect(() => {
-    const handleFullscreenChange = () => {
+    function handleFullscreenChange() {
       setIsFullscreen(Boolean(document.fullscreenElement));
-    };
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && !document.fullscreenElement) {
+        onCloseRef.current();
+      }
+    }
     document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -192,156 +205,166 @@ export default function AdminVenueQrModal({
       : null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 sm:p-6 backdrop-blur-sm overflow-y-auto"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="venue-qr-title"
-    >
+    <div className="admin-modal" role="presentation">
       <div
         ref={containerRef}
-        className={`relative flex w-full flex-col items-center justify-between rounded-3xl bg-white p-6 sm:p-10 text-center shadow-2xl transition-all ${
+        aria-labelledby="venue-qr-title"
+        aria-modal="true"
+        className={`admin-dialog admin-dialog--wide flex flex-col items-center text-center transition-all ${
           isFullscreen
-            ? "h-screen w-screen max-w-none rounded-none justify-center overflow-auto py-8"
-            : "max-w-2xl"
+            ? "admin-dialog--fullscreen justify-center overflow-auto py-8"
+            : ""
         }`}
+        role="dialog"
       >
         {!isFullscreen && (
-          <button
-            onClick={onClose}
-            className="absolute top-5 right-5 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--cream)] text-sm font-semibold text-[var(--ink)] hover:bg-white"
-            type="button"
-            aria-label="Tutup modal"
-          >
-            ✕
-          </button>
+          <div className="admin-dialog-head" style={{ width: "100%" }}>
+            <div>
+              <h2 className="admin-dialog-title" id="venue-qr-title">
+                <AdminIcon name="monitor" /> QR presensi untuk proyektor
+              </h2>
+              <p className="admin-dialog-sub">
+                Tayangkan layar ini di aula agar peserta memindai satu QR yang
+                sama.
+              </p>
+            </div>
+            <button
+              aria-label="Tutup QR presensi"
+              className="admin-close"
+              onClick={onClose}
+              type="button"
+            >
+              <AdminIcon name="close" />
+            </button>
+          </div>
         )}
 
-        <div className="max-w-lg">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--moss)] px-3.5 py-1 text-xs font-semibold tracking-wide text-[var(--forest-deep)] uppercase">
-            <span>✨</span> Presensi Kehadiran Terpusat
-          </div>
-          <h2
-            id="venue-qr-title"
-            className="mt-3 text-2xl sm:text-4xl font-extrabold tracking-tight text-[var(--forest-deep)]"
-          >
-            {eventName || "Natal PWK 2026"}
-          </h2>
-          <p className="mt-1 text-sm sm:text-base font-medium text-[var(--muted)]">
-            📍 {eventLocation || "Gedung B6 FBS UNNES"}
-          </p>
-
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--cream)] px-3 py-1 text-xs">
-            <span className="font-medium text-[var(--muted)]">Mode QR:</span>
-            <span className="rounded-full bg-[var(--forest)] px-2.5 py-0.5 text-xs font-bold text-white">
-              {qrData
-                ? qrData.mode === "DYNAMIC"
-                  ? "Dinamis (Rotasi 3 Menit)"
-                  : "Statis (Banner/Cetak)"
-                : "Memuat…"}
-            </span>
-          </div>
-        </div>
-
-        <div className="my-5 flex flex-col items-center">
-          {secondsRemaining !== null ? (
-            <div className="mb-3 flex items-center gap-2 rounded-full bg-[var(--moss)] px-4 py-1.5 text-xs font-bold text-[var(--forest-deep)]">
-              <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>QR berganti dalam: {formatTimer(secondsRemaining)}</span>
-              {progressPercent !== null ? (
-                <span className="text-[10px] opacity-75 font-mono">
-                  ({progressPercent}%)
-                </span>
-              ) : null}
-            </div>
-          ) : null}
-
-          <div className="rounded-3xl border-4 border-[var(--forest)] bg-white p-4 sm:p-6 shadow-xl">
-            {currentQrUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={currentQrUrl}
-                alt={`QR Presensi ${qrData?.payload ?? ""}`}
-                className="h-56 w-56 sm:h-80 sm:w-80 md:h-96 md:w-96 object-contain"
-                height={384}
-                width={384}
-              />
-            ) : (
-              <div className="flex h-56 w-56 sm:h-80 sm:w-80 items-center justify-center">
-                <span className="text-sm text-[var(--muted)] animate-pulse">
-                  Menyiapkan QR Presensi…
-                </span>
-              </div>
-            )}
-          </div>
-
-          {error ? (
-            <p
-              className="mt-3 rounded-xl bg-[var(--rose)] px-4 py-2 text-sm text-[var(--red)]"
-              role="alert"
+        <div className="admin-dialog-body" style={{ width: "100%" }}>
+          <div>
+            <p className="admin-kicker" style={{ justifyContent: "center" }}>
+              Presensi kehadiran terpusat
+            </p>
+            <h3
+              className="admin-section-title"
+              id={isFullscreen ? "venue-qr-title" : undefined}
             >
-              {error}
+              {eventName || "Natal PWK 2026"}
+            </h3>
+            <p className="admin-section-note">
+              <AdminIcon name="pin" style={{ width: 13, height: 13, verticalAlign: -2 }} />{" "}
+              {eventLocation || "Gedung B6 FBS UNNES"}
             </p>
-          ) : null}
-
-          <div className="mt-4 max-w-md rounded-2xl bg-[var(--cream)] px-4 py-3 border border-[var(--line)]">
-            <p className="text-xs sm:text-sm font-semibold text-[var(--ink)]">
-              📱 Petunjuk untuk Seluruh Peserta:
+            <p className="admin-section-note" style={{ marginTop: "0.6rem" }}>
+              Mode QR:{" "}
+              <strong style={{ color: "#064e3b" }}>
+                {qrData
+                  ? qrData.mode === "DYNAMIC"
+                    ? "Dinamis — berganti tiap 3 menit"
+                    : "Statis — untuk banner/cetak"
+                  : "Memuat…"}
+              </strong>
             </p>
-            <ol className="mt-1.5 text-left text-xs sm:text-sm text-[var(--muted)] space-y-1 list-decimal list-inside">
-              <li>Buka halaman tiket di HP Anda masing-masing.</li>
-              <li>Klik tombol hijau <strong>&ldquo;Scan QR Lokasi&rdquo;</strong>.</li>
-              <li>Arahkan kamera HP ke QR Code di layar proyektor ini.</li>
-            </ol>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-[var(--muted)]">
-            <span>Kamera silau? Cukup ketik kode token di HP:</span>
-            <code className="rounded-lg bg-[var(--cream)] px-3 py-1 font-mono font-extrabold text-base text-[var(--forest)] border border-[var(--line)] tracking-wider">
-              {qrData?.token ?? "(Belum diatur)"}
-            </code>
+          <div className="flex flex-col items-center" style={{ marginTop: "1.1rem" }}>
+            {secondsRemaining !== null ? (
+              <div
+                className="admin-event-chip"
+                style={{ marginBottom: "0.8rem" }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="admin-live-dot"
+                />
+                QR berganti dalam {formatTimer(secondsRemaining)}
+                {progressPercent !== null ? ` (${progressPercent}%)` : ""}
+              </div>
+            ) : null}
+
+            <div
+              className="rounded-lg border border-[var(--a-line)] bg-white p-3"
+            >
+              {currentQrUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  alt={`QR Presensi ${qrData?.payload ?? ""}`}
+                  className="h-56 w-56 object-contain sm:h-72 sm:w-72"
+                  height={384}
+                  src={currentQrUrl}
+                  width={384}
+                />
+              ) : (
+                <div className="flex h-56 w-56 items-center justify-center sm:h-72 sm:w-72">
+                  <span className="admin-section-note">Menyiapkan QR presensi…</span>
+                </div>
+              )}
+            </div>
+
+            {error ? (
+              <div
+                className="admin-notice admin-notice--error"
+                role="alert"
+                style={{ marginTop: "0.9rem", marginBottom: 0 }}
+              >
+                <AdminIcon name="alert" /> <span>{error}</span>
+              </div>
+            ) : null}
+
+            <div
+              className="admin-card"
+              style={{ marginTop: "1.1rem", maxWidth: "30rem", textAlign: "left" }}
+            >
+              <div className="admin-card-body">
+                <p className="admin-label">Petunjuk untuk seluruh peserta</p>
+                <ol className="admin-guide" style={{ marginTop: "0.4rem" }}>
+                  <li>Buka halaman tiket di HP masing-masing.</li>
+                  <li>Ketuk tombol hijau &ldquo;Scan QR Lokasi&rdquo;.</li>
+                  <li>Arahkan kamera ke QR di layar proyektor ini.</li>
+                </ol>
+                <p className="admin-help" style={{ marginTop: "0.6rem" }}>
+                  Kamera silau? Ketik kode token berikut di halaman tiket:
+                </p>
+                <code className="admin-mono" style={{ fontSize: "1rem", fontWeight: 800 }}>
+                  {qrData?.token ?? "(Belum diatur)"}
+                </code>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full pt-2">
+        <div className="admin-dialog-foot" style={{ justifyContent: "center" }}>
           <button
-            onClick={toggleFullscreen}
+            className="admin-btn admin-btn-primary"
+            onClick={() => void toggleFullscreen()}
             type="button"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--forest)] px-5 text-xs sm:text-sm font-semibold text-white hover:bg-[var(--forest-deep)] transition shadow-sm active:scale-95"
           >
-            <span>
-              {isFullscreen
-                ? "🗗 Keluar Fullscreen"
-                : "🖥️ Mode Proyektor (Fullscreen)"}
-            </span>
+            <AdminIcon name="monitor" />
+            {isFullscreen ? "Keluar fullscreen" : "Mode proyektor"}
           </button>
-
           <button
+            className="admin-btn admin-btn-ghost"
+            disabled={!currentQrUrl}
             onClick={downloadQr}
             type="button"
-            disabled={!currentQrUrl}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 text-xs sm:text-sm font-semibold text-[var(--ink)] hover:bg-[var(--cream)] transition shadow-sm disabled:opacity-50"
           >
-            <span>💾 Unduh Gambar QR</span>
+            <AdminIcon name="download" /> Unduh QR
           </button>
-
           <button
+            className="admin-btn admin-btn-ghost"
             onClick={handlePrint}
             type="button"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 text-xs sm:text-sm font-semibold text-[var(--ink)] hover:bg-[var(--cream)] transition shadow-sm"
           >
-            <span>🖨️ Cetak Poster</span>
+            <AdminIcon name="calendar" /> Cetak poster
           </button>
-
-          {isFullscreen && (
+          {isFullscreen ? (
             <button
-              onClick={toggleFullscreen}
+              className="admin-btn admin-btn-danger"
+              onClick={() => void toggleFullscreen()}
               type="button"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 text-xs sm:text-sm font-semibold text-[var(--red)] hover:bg-[var(--rose)] transition shadow-sm"
             >
-              <span>✕ Tutup Layar</span>
+              <AdminIcon name="close" /> Tutup layar
             </button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

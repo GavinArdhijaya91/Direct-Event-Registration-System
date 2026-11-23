@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition, type FormEvent } from "react";
+import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
 import { UNNES_FACULTIES } from "@/lib/registration";
+import AdminIcon from "@/app/admin/admin-icons";
 
 export default function AdminWalkinModal({
   onClose,
@@ -12,10 +13,23 @@ export default function AdminWalkinModal({
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   const [participantType, setParticipantType] = useState<"MAHASISWA_ALUMNI" | "UMUM">("MAHASISWA_ALUMNI");
   const [academicStatus, setAcademicStatus] = useState<"MAHASISWA" | "ALUMNI">("MAHASISWA");
   const [campusType, setCampusType] = useState<"UNNES" | "LUAR_UNNES">("UNNES");
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") onCloseRef.current();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,331 +59,308 @@ export default function AdminWalkinModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+    <div className="admin-modal" role="presentation">
+      <div
+        aria-labelledby="walkin-title"
+        aria-modal="true"
+        className="admin-dialog admin-dialog--wide"
+        role="dialog"
+      >
+        <div className="admin-dialog-head">
           <div>
-            <h3 className="text-lg font-bold text-[var(--ink)]">
-              🆘 Pendaftaran OTS / Walk-In (Penyelamat)
+            <h3 className="admin-dialog-title" id="walkin-title">
+              <AdminIcon name="userPlus" /> Pendaftaran tamu OTS / walk-in
             </h3>
-            <p className="text-xs text-[var(--muted)]">
-              Gunakan saat tamu datang namun kuota online penuh. Peserta langsung tercatat HADIR.
+            <p className="admin-dialog-sub">
+              Gunakan bila tamu datang langsung dan kuota online penuh. Peserta
+              langsung tercatat HADIR oleh server.
             </p>
           </div>
           <button
+            aria-label="Tutup pendaftaran tamu"
+            className="admin-close"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 font-bold text-gray-700 hover:bg-gray-200"
             type="button"
           >
-            ✕
+            <AdminIcon name="close" />
           </button>
         </div>
 
         {error ? (
-          <div className="mt-4 rounded-xl border border-[var(--red)] bg-[var(--rose)] p-3 text-xs text-[var(--red)]">
-            {error}
+          <div
+            aria-live="assertive"
+            className="admin-notice admin-notice--error"
+            role="alert"
+            style={{ margin: "1rem 1.25rem 0" }}
+          >
+            <AdminIcon name="alert" /> <span>{error}</span>
           </div>
         ) : null}
 
-        <form onSubmit={submit} className="mt-4 space-y-3.5">
-          {/* Tipe Peserta */}
-          <div>
-            <label className="mb-1 block text-xs font-semibold text-[var(--ink)]">
-              Kategori Pendaftar
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+        <form className="admin-dialog-body admin-form-grid" onSubmit={submit}>
+          <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
+            <legend className="admin-label">Kategori pendaftar</legend>
+            <div className="admin-actions-row" style={{ marginTop: "0.35rem" }}>
+              <label className="admin-check">
                 <input
-                  type="radio"
-                  name="participantType"
-                  value="MAHASISWA_ALUMNI"
                   checked={participantType === "MAHASISWA_ALUMNI"}
-                  onChange={() => setParticipantType("MAHASISWA_ALUMNI")}
-                  className="accent-[var(--forest)]"
-                />
-                Mahasiswa / Alumni
-              </label>
-              <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
-                <input
-                  type="radio"
                   name="participantType"
-                  value="UMUM"
-                  checked={participantType === "UMUM"}
-                  onChange={() => setParticipantType("UMUM")}
-                  className="accent-[var(--forest)]"
+                  onChange={() => setParticipantType("MAHASISWA_ALUMNI")}
+                  type="radio"
+                  value="MAHASISWA_ALUMNI"
                 />
-                Umum / Tamu Undangan
+                Mahasiswa / alumni
+              </label>
+              <label className="admin-check">
+                <input
+                  checked={participantType === "UMUM"}
+                  name="participantType"
+                  onChange={() => setParticipantType("UMUM")}
+                  type="radio"
+                  value="UMUM"
+                />
+                Umum / tamu undangan
               </label>
             </div>
-          </div>
+          </fieldset>
 
-          {/* Form Khusus Mahasiswa / Alumni */}
           {participantType === "MAHASISWA_ALUMNI" ? (
-            <div className="rounded-xl border border-[var(--line)] bg-gray-50 p-3 space-y-2.5">
-              <div className="flex gap-4">
-                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
-                  <input
-                    type="radio"
-                    name="academicStatus"
-                    value="MAHASISWA"
-                    checked={academicStatus === "MAHASISWA"}
-                    onChange={() => setAcademicStatus("MAHASISWA")}
-                    className="accent-[var(--forest)]"
-                  />
-                  Mahasiswa
-                </label>
-                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
-                  <input
-                    type="radio"
-                    name="academicStatus"
-                    value="ALUMNI"
-                    checked={academicStatus === "ALUMNI"}
-                    onChange={() => setAcademicStatus("ALUMNI")}
-                    className="accent-[var(--forest)]"
-                  />
-                  Alumni
-                </label>
-              </div>
-
-              {academicStatus === "ALUMNI" ? (
-                <div>
-                  <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-grad-year">
-                    Alumni Tahun Berapa?
+            <div className="admin-card" style={{ background: "#f9faf7" }}>
+              <div className="admin-card-body admin-form-grid">
+                <div className="admin-actions-row">
+                  <label className="admin-check">
+                    <input
+                      checked={academicStatus === "MAHASISWA"}
+                      name="academicStatus"
+                      onChange={() => setAcademicStatus("MAHASISWA")}
+                      type="radio"
+                      value="MAHASISWA"
+                    />
+                    Mahasiswa
                   </label>
-                  <input
-                    id="walkin-grad-year"
-                    name="graduationYear"
-                    pattern="\d{4}"
-                    maxLength={4}
-                    required
-                    placeholder="Contoh: 2022"
-                    className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-xs"
-                  />
+                  <label className="admin-check">
+                    <input
+                      checked={academicStatus === "ALUMNI"}
+                      name="academicStatus"
+                      onChange={() => setAcademicStatus("ALUMNI")}
+                      type="radio"
+                      value="ALUMNI"
+                    />
+                    Alumni
+                  </label>
                 </div>
-              ) : null}
 
-              <div className="flex gap-4 pt-1">
-                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
-                  <input
-                    type="radio"
-                    name="campusType"
-                    value="UNNES"
-                    checked={campusType === "UNNES"}
-                    onChange={() => setCampusType("UNNES")}
-                    className="accent-[var(--forest)]"
-                  />
-                  UNNES
-                </label>
-                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
-                  <input
-                    type="radio"
-                    name="campusType"
-                    value="LUAR_UNNES"
-                    checked={campusType === "LUAR_UNNES"}
-                    onChange={() => setCampusType("LUAR_UNNES")}
-                    className="accent-[var(--forest)]"
-                  />
-                  Luar UNNES
-                </label>
-              </div>
-
-              {campusType === "UNNES" ? (
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-fac">
-                      Fakultas
-                    </label>
-                    <select
-                      id="walkin-fac"
-                      name="faculty"
-                      required
-                      defaultValue=""
-                      className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2 text-xs"
-                    >
-                      <option value="" disabled>Pilih Fakultas</option>
-                      {UNNES_FACULTIES.map((f) => (
-                        <option key={f} value={f}>{f}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-prodi">
-                      Prodi
+                {academicStatus === "ALUMNI" ? (
+                  <div className="admin-field">
+                    <label className="admin-label" htmlFor="walkin-grad-year">
+                      Tahun kelulusan
                     </label>
                     <input
-                      id="walkin-prodi"
-                      name="studyProgram"
+                      className="admin-input"
+                      id="walkin-grad-year"
+                      maxLength={4}
+                      name="graduationYear"
+                      pattern="\d{4}"
+                      placeholder="Contoh: 2022"
                       required
-                      placeholder="Teknik Informatika"
-                      className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
                     />
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <div>
-                    <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-camp-name">
-                      Nama Kampus / Univ
-                    </label>
+                ) : null}
+
+                <div className="admin-actions-row">
+                  <label className="admin-check">
                     <input
-                      id="walkin-camp-name"
-                      name="campusName"
-                      required
-                      placeholder="Contoh: UNDIP"
-                      className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
+                      checked={campusType === "UNNES"}
+                      name="campusType"
+                      onChange={() => setCampusType("UNNES")}
+                      type="radio"
+                      value="UNNES"
                     />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-fac-other">
-                        Fakultas
-                      </label>
-                      <input
-                        id="walkin-fac-other"
+                    UNNES
+                  </label>
+                  <label className="admin-check">
+                    <input
+                      checked={campusType === "LUAR_UNNES"}
+                      name="campusType"
+                      onChange={() => setCampusType("LUAR_UNNES")}
+                      type="radio"
+                      value="LUAR_UNNES"
+                    />
+                    Luar UNNES
+                  </label>
+                </div>
+
+                {campusType === "UNNES" ? (
+                  <div className="admin-field-grid">
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="walkin-fac">Fakultas</label>
+                      <select
+                        className="admin-select"
+                        defaultValue=""
+                        id="walkin-fac"
                         name="faculty"
                         required
-                        placeholder="Fakultas Teknik"
-                        className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
-                      />
+                      >
+                        <option disabled value="">Pilih fakultas</option>
+                        {UNNES_FACULTIES.map((faculty) => (
+                          <option key={faculty} value={faculty}>{faculty}</option>
+                        ))}
+                      </select>
                     </div>
-                    <div>
-                      <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-prodi-other">
-                        Prodi
-                      </label>
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="walkin-prodi">Program studi</label>
                       <input
-                        id="walkin-prodi-other"
+                        className="admin-input"
+                        id="walkin-prodi"
                         name="studyProgram"
+                        placeholder="Teknik Informatika"
                         required
-                        placeholder="Teknik Sipil"
-                        className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
                       />
                     </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="admin-form-grid">
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="walkin-camp-name">
+                        Nama kampus / universitas
+                      </label>
+                      <input
+                        className="admin-input"
+                        id="walkin-camp-name"
+                        name="campusName"
+                        placeholder="Contoh: UNDIP"
+                        required
+                      />
+                    </div>
+                    <div className="admin-field-grid">
+                      <div className="admin-field">
+                        <label className="admin-label" htmlFor="walkin-fac-other">Fakultas</label>
+                        <input
+                          className="admin-input"
+                          id="walkin-fac-other"
+                          name="faculty"
+                          placeholder="Fakultas Teknik"
+                          required
+                        />
+                      </div>
+                      <div className="admin-field">
+                        <label className="admin-label" htmlFor="walkin-prodi-other">Program studi</label>
+                        <input
+                          className="admin-input"
+                          id="walkin-prodi-other"
+                          name="studyProgram"
+                          placeholder="Teknik Sipil"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ) : null}
 
-          {/* Data Diri Umum */}
-          <div>
-            <label
-              className="mb-1 block text-xs font-semibold text-[var(--ink)]"
-              htmlFor="walkin-name"
-            >
-              Nama Lengkap Peserta
-            </label>
+          <div className="admin-field">
+            <label className="admin-label" htmlFor="walkin-name">Nama lengkap peserta</label>
             <input
+              className="admin-input"
               id="walkin-name"
-              name="fullName"
-              required
               maxLength={120}
-              className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
+              name="fullName"
               placeholder="Nama lengkap tamu/peserta"
-            />
-          </div>
-
-          <div>
-            <label
-              className="mb-1 block text-xs font-semibold text-[var(--ink)]"
-              htmlFor="walkin-wa"
-            >
-              Nomor WhatsApp
-            </label>
-            <input
-              id="walkin-wa"
-              name="whatsappNumber"
               required
-              type="tel"
-              className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
-              placeholder="08xxxxxxxxxx"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-birth-place">
-                Tempat Lahir
-              </label>
+          <div className="admin-field-grid">
+            <div className="admin-field">
+              <label className="admin-label" htmlFor="walkin-wa">Nomor WhatsApp</label>
               <input
+                className="admin-input"
+                id="walkin-wa"
+                name="whatsappNumber"
+                placeholder="08xxxxxxxxxx"
+                required
+                type="tel"
+              />
+            </div>
+            <div className="admin-field">
+              <label className="admin-label" htmlFor="walkin-birth-place">Tempat lahir</label>
+              <input
+                className="admin-input"
                 id="walkin-birth-place"
                 name="birthPlace"
-                required
                 placeholder="Semarang"
-                className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
+                required
               />
             </div>
-            <div>
-              <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-birth-date">
-                Tanggal Lahir
-              </label>
+          </div>
+
+          <div className="admin-field-grid">
+            <div className="admin-field">
+              <label className="admin-label" htmlFor="walkin-birth-date">Tanggal lahir</label>
               <input
+                className="admin-input"
                 id="walkin-birth-date"
                 name="birthDate"
-                type="date"
                 required
-                className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
+                type="date"
+              />
+            </div>
+            <div className="admin-field">
+              <label className="admin-label" htmlFor="walkin-church">
+                Stasi asal / gereja
+              </label>
+              <input
+                className="admin-input"
+                id="walkin-church"
+                name="churchOrigin"
+                placeholder="Contoh: Gereja Santo Fransiskus Asisi"
+                required
               />
             </div>
           </div>
 
-          <div>
-            <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-church">
-              Stasi Asal / Identitas Gereja
+          <div className="admin-field">
+            <label className="admin-label" htmlFor="walkin-domicile">
+              Alamat domisili
             </label>
             <input
-              id="walkin-church"
-              name="churchOrigin"
-              required
-              placeholder="Contoh: Gereja Santo Fransiskus Asisi, Batam"
-              className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-domicile">
-              Alamat Domisili / Tempat Tinggal
-            </label>
-            <input
+              className="admin-input"
               id="walkin-domicile"
               name="domicile"
+              placeholder="Jl. Melati No. 12, Semarang"
               required
-              placeholder="Contoh: Jl. Melati Blok B No. 12, Kel. Sekaran, Kec. Gunungpati, Kota Semarang, Jawa Tengah"
-              className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
             />
           </div>
 
-          <div>
-            <label
-              className="mb-1 block text-xs font-semibold text-[var(--ink)]"
-              htmlFor="walkin-reason"
-            >
-              Alasan Penerimaan OTS (Wajib untuk Audit)
+          <div className="admin-field">
+            <label className="admin-label" htmlFor="walkin-reason">
+              Alasan penerimaan OTS (wajib untuk audit)
             </label>
             <textarea
+              className="admin-textarea"
               id="walkin-reason"
-              name="reason"
-              required
-              rows={2}
               maxLength={500}
-              className="w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
+              name="reason"
               placeholder="Contoh: Tamu undangan hadir langsung tanpa tiket online, disetujui panitia."
+              required
             />
           </div>
 
-          <div className="flex gap-2 pt-2">
+          <div className="admin-dialog-foot" style={{ padding: 0 }}>
             <button
-              type="submit"
+              className="admin-btn admin-btn-primary"
               disabled={pending}
-              className="min-h-11 flex-1 rounded-full bg-[var(--forest)] px-4 text-sm font-semibold text-white hover:bg-[var(--forest-deep)] disabled:opacity-50"
+              type="submit"
             >
-              {pending
-                ? "Mendaftarkan & Absenkan…"
-                : "✓ Daftarkan & Langsung Hadirkan"}
+              <AdminIcon name="check" />
+              {pending ? "Mendaftarkan & mengabsenkan…" : "Daftarkan & absenkan hadir"}
             </button>
             <button
-              type="button"
+              className="admin-btn admin-btn-ghost"
               onClick={onClose}
-              className="min-h-11 rounded-full border border-[var(--line)] px-4 text-sm font-semibold hover:bg-gray-100"
+              type="button"
             >
               Batal
             </button>
