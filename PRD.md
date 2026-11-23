@@ -64,9 +64,20 @@ Setiap pengiriman formulir adalah untuk satu orang. Field registrasi yang disetu
 |---|---|
 | `nama_lengkap` | Wajib; maksimal 120 karakter |
 | `nomor_wa` | Wajib; dinormalisasi ke format internasional Indonesia sebelum pemeriksaan duplikasi |
-| `kategori` | Wajib; `MAHASISWA`, `ALUMNI`, atau `TAMU_UNDANGAN` |
-| `asal_instansi` | Wajib; maksimal 120 karakter; label/contoh menyesuaikan kategori |
-| `sumber_informasi` | Wajib; `INSTAGRAM`, `GRUP_WA`, `TEMAN_KATING`, `POSTER_KAMPUS`, atau `GEREJA_PMK` |
+| `tempat_lahir` | Wajib; teks kota/kabupaten tempat lahir (maksimal 100 karakter) |
+| `tanggal_lahir` | Wajib; format tanggal `YYYY-MM-DD` |
+| `stasi_asal_gereja` | Wajib; asal gereja/stasi identitas jemaat (maksimal 150 karakter) |
+| `domisili` | Wajib; alamat tempat tinggal sekarang/kost (maksimal 255 karakter) |
+| `tipe_peserta` | Wajib; `MAHASISWA_ALUMNI` atau `UMUM` |
+| `status_akademik` | Wajib jika tipe peserta `MAHASISWA_ALUMNI`; `MAHASISWA` atau `ALUMNI` |
+| `tahun_kelulusan` | Wajib jika status `ALUMNI`; 4 digit tahun kelulusan |
+| `tipe_kampus` | Wajib jika tipe peserta `MAHASISWA_ALUMNI`; `UNNES` atau `LUAR_UNNES` |
+| `fakultas` | Dropdown 9 fakultas jika UNNES (`FK`, `FEB`, `FIPP`, `FMIPA`, `FBS`, `FISIP`, `FH`, `FT`, `FIK`); input teks jika Luar UNNES |
+| `prodi` | Wajib untuk mahasiswa/alumni; teks nama program studi |
+| `nama_kampus` | Wajib jika kampus `LUAR_UNNES`; teks nama universitas |
+| `kategori` | Diturunkan otomatis di server: `MAHASISWA`, `ALUMNI`, atau `TAMU_UNDANGAN` |
+| `asal_instansi` | Diturunkan otomatis atau input instansi; maksimal 120 karakter |
+| `sumber_informasi` | Wajib; `INSTAGRAM`, `TEMAN_GRUP_GEREJA`, atau `POSTER_KAMPUS` |
 
 Mode pendaftaran satu orang atau kelompok tidak digunakan. Afiliasi kelompok/PMK dicatat sebagai asal/instansi. Satu nomor WA hanya boleh digunakan untuk satu peserta setelah dinormalisasi.
 

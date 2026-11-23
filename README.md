@@ -1,78 +1,122 @@
-# Sistem Registrasi dan Presensi Natal PWK 2026
-Paguyuban Warga Kristiani Universitas Negeri Semarang (PWK UNNES)
-
-Aplikasi web mandiri yang dirancang untuk memfasilitasi pendaftaran peserta, penerbitan tiket digital, serta pencatatan presensi kehadiran terpusat (self check-in) pada perayaan Natal PWK 2026.
-
-- Lokasi Acara: Gedung B6, Fakultas Bahasa dan Seni (FBS) UNNES
-- Tanggal Acara: 28 Januari 2027
-- Kapasitas: 200–300 Peserta (Mahasiswa, Alumni, dan Tamu Undangan)
+# Sistem Registrasi & Presensi Natal PWK UNNES 2026
+> **A High-Reliability, Serverless Event Registration & Verification System**  
+> Diselenggarakan oleh Paguyuban Warga Kristiani Universitas Negeri Semarang (PWK UNNES)
 
 ---
 
-## 1. Tujuan Sistem
+## Latar Belakang Masalah (Background Story)
 
-1. Pendaftaran Mandiri Tanpa Akun: Peserta dapat langsung mendaftar tanpa membuat akun, kata sandi, atau terikat login email kampus/Google tertentu.
-2. Presensi Cepat Ala Kampus (Self Check-in): Mengurangi antrean di pintu masuk aula dengan memanfaatkan satu QR Code terpusat di proyektor atau laptop meja registrasi yang dapat dipindai langsung oleh peserta.
-3. Pencegahan Presensi Jarak Jauh (Rotasi QR 3 Menit): Konten QR Code panitia diperbarui secara berkala setiap 3 menit, sehingga foto QR yang dibagikan ke luar ruangan akan segera kedaluwarsa.
-4. Jaminan Kelancaran Hari-H (Tiga Lapis Pengaman): Menyediakan alur cadangan berupa input kode manual di ponsel peserta, serta tombol absen manual satu klik di meja bantuan panitia untuk peserta yang kehabisan baterai atau kuota internet.
-5. Pemantauan dan Rekapitulasi Real-Time: Panitia dapat memantau pergerakan jumlah kehadiran secara langsung dan mengunduh laporan data lengkap dalam format CSV.
+Perayaan Natal PWK UNNES merupakan **acara tahunan akbar** yang mempertemukan mahasiswa aktif, alumni lintas angkatan, jemaat gereja, hingga tamu undangan umum di lingkungan Universitas Negeri Semarang. 
 
----
+Pada tahun-tahun sebelumnya, proses registrasi dan presensi acara mengandalkan **Google Form konvensional dan pencarian manual lembar spreadsheet di meja registrasi**. Kendala nyata yang kerap dihadapi setiap tahun:
+1. **Antrean Mengular di Pintu Masuk:** Pencarian nama ratusan jemaat satu per satu di spreadsheet memakan waktu lama dan menyebabkan penumpukan di pintu aula.
+2. **Data Ganda & Format Tidak Baku:** Peserta sering mendaftar ulang berkali-kali karena lupa apakah sudah terdaftar, serta format penulisan fakultas/instansi yang berantakan.
+3. **Keterbatasan Hubungan Jangka Panjang:** Karena acara setahun sekali, panitia kesulitan memetakan persebaran mahasiswa (fakultas/prodi), jejaring alumni, serta stasi/gereja asal jemaat untuk pembinaan dan relasi persaudaraan pasca-acara.
+4. **Tantangan Biaya Infrastruktur:** Acara berbasis organisasi kemahasiswaan membutuhkan sistem mandiri yang andal, aman, namun **harus efisien secara anggaran (target Rp0 / Free-Tier Friendly)**.
 
-## 2. Panduan Penggunaan Bagi Peserta
-
-Alur utama peserta:
-Daftar Online -> Simpan Tiket -> Datang dan Pindai QR di Hari-H
-
-### Langkah 1: Pendaftaran Online
-1. Buka formulir pendaftaran pada situs web acara.
-2. Masukkan Nama Lengkap, Nomor WhatsApp aktif, Kategori Peserta (Mahasiswa, Alumni, atau Tamu Undangan), Asal Instansi, dan Sumber Informasi.
-3. Klik tombol "Daftar Sekarang".
-
-### Langkah 2: Menyimpan Tiket dan Kode Pemulihan
-1. Setelah berhasil mendaftar, Anda akan diarahkan ke halaman tiket pribadi.
-2. Simpan tautan tiket ke obrolan WhatsApp pribadi menggunakan tombol yang tersedia.
-3. Catat atau simpan kode pemulihan rahasia yang tertera. Kode ini digunakan untuk membuka kembali tiket jika Anda berpindah perangkat atau browser.
-
-### Langkah 3: Presensi Saat Tiba di Lokasi
-1. Buka tautan tiket pada ponsel Anda saat tiba di depan pintu masuk aula Gedung B6 FBS UNNES.
-2. Klik tombol "Scan QR Presensi di Layar Proyektor / Banner".
-3. Izinkan akses kamera pada browser, lalu arahkan kamera ke layar laptop atau proyektor panitia.
-4. Halaman tiket akan langsung berubah status menjadi "SUDAH HADIR" lengkap dengan catatan waktu kedatangan.
-
-### Bantuan Kendala Teknis:
-- Jika kamera silau oleh pantulan layar: Klik opsi "Kamera silau? Masukkan kode presensi secara manual" pada halaman tiket, lalu ketikkan 6 karakter kode yang tertulis di bawah QR panitia.
-- Jika ponsel kehabisan kuota internet atau kehabisan baterai: Datangi meja registrasi panitia dan sebutkan nama lengkap Anda. Petugas helpdesk akan memverifikasi dan mengabsenkan Anda secara langsung lewat sistem.
+Untuk menjawab persoalan tersebut, sistem ini dibangun secara khusus dari nol (*custom-built*) dengan arsitektur modern yang mengedepankan **integritas data, kecepatan presensi di pintu masuk, dan keamanan informasi**.
 
 ---
 
-## 3. Panduan Penggunaan Bagi Panitia (Admin dan Helpdesk)
+## Arsitektur & Rekayasa Sistem (Key Engineering Highlights)
 
-Akses panel operasional acara dapat dibuka melalui rute `/admin` dengan memasukkan kata sandi panitia.
+Aplikasi ini dibangun menggunakan arsitektur **Modern Serverless Web Application** dengan pertimbangan teknis tinggi:
 
-### Langkah 1: Menayangkan QR Presensi di Pintu Masuk
-1. Hubungkan laptop panitia ke layar proyektor aula, atau tempatkan 2 hingga 3 laptop di meja registrasi depan pintu masuk.
-2. Klik tombol "Tampilkan QR Presensi (Proyektor)" pada bagian atas dashboard.
-3. Pilih "Mode Proyektor (Fullscreen)" untuk menampilkan QR Code dalam ukuran penuh.
-4. QR Code akan otomatis berotasi setiap 3 menit. Peserta yang datang dapat langsung mengarahkan kamera ponsel mereka ke layar tersebut.
+### 1. Concurrency-Safe & Zero Overbooking (Atomic Transactions)
+- Menggunakan **Prisma Transaction (`$transaction`)** pada PostgreSQL untuk menangani perebutan sisa kuota registrasi (*race condition*).
+- Jika puluhan pendaftar menekan tombol *submit* di milidetik yang sama menjelang kuota habis, database menjamin tidak ada tiket lebih yang diterbitkan melebihi kapasitas aula (*pessimistic/atomic reservation*).
 
-### Langkah 2: Mengabsenkan Peserta yang Mengalami Kendala Koneksi
-1. Jika peserta datang dengan kondisi ponsel mati atau tidak memiliki kuota internet:
-   - Ketikkan nama peserta atau nomor WhatsApp pada kolom pencarian dashboard admin.
-   - Pada baris data peserta yang bersangkutan, klik tombol bulat "[Absen]".
-   - Status peserta seketika berubah menjadi "Hadir" dengan metode tercatat "MANUAL_ADMIN".
+### 2. Time-Based Dynamic Rotating QR Code (Anti-Cheat Presence)
+- Presensi venue menggunakan kode QR yang **berotasi otomatis setiap 3 menit** di layar proyektor / laptop panitia.
+- Ditenagai algoritma **HMAC-SHA256 time-slice token**, sehingga foto atau tangkapan layar (*screenshot*) QR yang dikirimkan ke grup chat di luar venue akan segera hangus dan ditolak server.
 
-### Langkah 3: Pendaftaran Tamu On-The-Spot (OTS) Saat Kuota Penuh
-1. Jika kuota pendaftaran online telah habis namun terdapat tamu undangan khusus atau kehormatan yang hadir langsung di lokasi:
-   - Klik tombol "Tamu OTS" pada panel operasional.
-   - Masukkan identitas singkat tamu beserta alasan wajib penambahan kuota.
-   - Sistem akan langsung menerbitkan data peserta baru dengan status "HADIR" serta mencatat alasannya pada log audit.
+### 3. Serverless Connection Pooling
+- Dirancang untuk lingkungan hosting *serverless* (Vercel) yang rentan terhadap *connection exhaust*.
+- Menggunakan **PgBouncer Connection Pooling (Port 6543)** via `@prisma/adapter-pg` pada Supabase PostgreSQL, menjaga performa tetap stabil di bawah batas kuota gratis.
 
-### Langkah 4: Pemantauan dan Rekapitulasi Data
-1. Statistik total pendaftar, total kehadiran, dan sisa kapasitas akan diperbarui secara otomatis setiap 20 detik.
-2. Klik tombol "CSV" untuk mengunduh seluruh data pendaftar dan timestamp kehadiran ke dalam format spreadsheet untuk arsip pertanggungjawaban panitia.
+### 4. Zero Credential Leakage & Token Recovery
+- Peserta tidak perlu membuat akun/kata sandi baru. Tiket diakses via URL bertoken kriptografis acak (43-char Base64URL).
+- Dilengkapi **High-Entropy Recovery Code** dan tombol integrasi cepat *"Simpan ke WA Saya"*. Nomor WhatsApp tidak pernah dijadikan satu-satunya kredensial pembuka tiket guna mencegah kebocoran data pribadi oleh pihak asing.
+
+### 5. Multi-Layer Fault Tolerance (Hari-H Disaster Recovery)
+Sistem memiliki 3 lapis perlindungan operasional meja registrasi:
+- **Jalur Utama:** Peserta memindai QR dinamis di layar laptop/proyektor panitia secara mandiri.
+- **Jalur Bantuan (Helpdesk):** Fitur *Check-in Manual* instan oleh panitia jika baterai HP peserta habis atau kamera silau.
+- **Jalur Penyelamat (OTS / Walk-In):** Modal pendaftaran darurat untuk tamu terhormat yang datang langsung tanpa tiket saat kuota penuh, lengkap dengan pencatatan alasan wajib pada **Admin Audit Log**.
+
+### 6. Security Hardening & Privacy
+- **Row-Level Security (RLS):** Seluruh tabel PostgreSQL dikunci dengan RLS untuk memblokir akses REST API anonim publik (mencegah scraping Supabase PostgREST).
+- **Anti Formula-Injection:** Proteksi otomatis terhadap karakter manipulasi spreadsheet (`=`, `+`, `-`, `@`) saat panitia mengekspor laporan CSV.
+- **CSRF & Origin Verification:** Verifikasi origin ketat pada seluruh mutasi data sensitif admin.
+- **Timing-Safe Comparison:** Mengamankan autentikasi admin panel dari ancaman *timing attacks*.
 
 ---
 
-## 4. Informasi Penyelenggara
-Diselenggarakan oleh Paguyuban Warga Kristiani Universitas Negeri Semarang (PWK UNNES)
+## Struktur & Skema Profil Peserta
+
+Formulir registrasi mengadopsi struktur bercabang dinamis (*Dynamic Categorization*):
+* **Mahasiswa / Alumni:**
+  * Status: Mahasiswa Aktif vs Alumni (khusus alumni wajib input tahun kelulusan).
+  * Asal Kampus:
+    * **UNNES:** Pilihan dropdown fakultas baku (`FK`, `FEB`, `FIPP`, `FMIPA`, `FBS`, `FISIP`, `FH`, `FT`, `FIK`) dan prodi.
+    * **Luar UNNES:** Input bebas nama perguruan tinggi, fakultas, dan prodi.
+* **Umum / Tamu Undangan:** Jalur khusus jemaat dan undangan luar kampus tanpa isian akademik.
+* **Data Relasi Komunitas (Semua Peserta):** Tempat & tanggal lahir, stasi/identitas gereja asal, alamat domisili, dan nomor WhatsApp.
+
+---
+
+## Tech Stack
+
+| Komponen | Teknologi |
+|---|---|
+| **Framework** | Next.js (App Router, Server Actions, Route Handlers) |
+| **Language** | TypeScript (Strict Type Safety) |
+| **Database** | PostgreSQL (Supabase Managed Database) |
+| **ORM** | Prisma ORM dengan `@prisma/adapter-pg` |
+| **Validation** | Zod Schema Validation |
+| **Styling** | Tailwind CSS (Mobile-First, Ergonomic Touch Targets) |
+| **Deployment** | Vercel (Serverless Edge & Node.js Runtime) |
+| **Testing** | Node.js Native Test Runner (`tsx --test`) |
+
+---
+
+## Panduan Menjalankan Secara Lokal
+
+1. **Clone repositori:**
+   ```bash
+   git clone https://github.com/username/Direct-Event-Registration-System.git
+   cd Direct-Event-Registration-System
+   ```
+
+2. **Pasang dependensi:**
+   ```bash
+   npm install
+   ```
+
+3. **Konfigurasi Environment (`.env`):**
+   Salin berkas template:
+   ```bash
+   cp .env.example .env
+   ```
+   Isi `DATABASE_URL`, `DIRECT_URL`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET`.
+
+4. **Migrasi Database:**
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+5. **Jalankan Pengujian Unit:**
+   ```bash
+   npm test
+   ```
+
+6. **Mulai Server Pengembangan:**
+   ```bash
+   npm run dev
+   ```
+   Buka [http://localhost:3000](http://localhost:3000) pada browser Anda.
+
+---
+
+## Lisensi & Kontribusi
+Dikembangkan dengan penuh dedikasi untuk melayani perayaan Natal PWK UNNES 2026. Hak cipta milik tim pengembang sistem Natal PWK UNNES.
