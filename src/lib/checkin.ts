@@ -1,7 +1,8 @@
 import { getPrismaClient } from "@/lib/prisma";
 import { getCheckinWindowStatus } from "@/lib/checkin-window";
 import { hashCredential } from "@/lib/ticket-credentials";
-import { verifyLocationCode } from "@/lib/dynamic-qr";
+import { verifyLocationCodeForMode } from "@/lib/dynamic-qr";
+import { getQrSigningSecret } from "@/lib/qr-secret";
 
 type CheckinResult =
   | { status: "checked-in"; checkedInAt: Date }
@@ -21,6 +22,7 @@ export async function checkInWithTicketToken(
         where: { id: 1 },
         select: {
           locationCode: true,
+          qrMode: true,
           checkinOpensAt: true,
           checkinClosesAt: true,
         },
@@ -39,7 +41,17 @@ export async function checkInWithTicketToken(
         return { status: windowStatus };
       }
 
-      if (!verifyLocationCode(locationCode, settings.locationCode, now.getTime())) {
+      const signingSecret =
+        settings.qrMode === "DYNAMIC" ? getQrSigningSecret() : null;
+      if (
+        !verifyLocationCodeForMode(
+          locationCode,
+          settings.locationCode,
+          settings.qrMode,
+          signingSecret,
+          now.getTime(),
+        )
+      ) {
         return { status: "invalid-location" };
       }
 

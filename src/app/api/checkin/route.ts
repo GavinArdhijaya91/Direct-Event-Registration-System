@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkInWithTicketToken } from "@/lib/checkin";
+import {
+  consumeRateLimit,
+  hashRateLimitIdentity,
+  rateLimitKey,
+} from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const checkinSchema = z.object({
   ticketToken: z.string().regex(/^[A-Za-z0-9_-]{43}$/),
-  locationCode: z.string().trim().min(1).max(100),
+  locationCode: z.string().trim().min(1).max(120),
 });
+
+const rateLimitedResponse = {
+  status: "rate-limited",
+  message: "Terlalu banyak percobaan check-in. Coba lagi nanti.",
+};
 
 function formatWib(date: Date) {
   return new Intl.DateTimeFormat("id-ID", {
@@ -19,6 +29,19 @@ function formatWib(date: Date) {
 }
 
 export async function POST(request: Request) {
+  if (
+    await consumeRateLimit(rateLimitKey("checkin-ip", request), {
+      limit: 600,
+      windowMilliseconds: 15 * 60 * 1000,
+      blockMilliseconds: 15 * 60 * 1000,
+    })
+  ) {
+    return NextResponse.json(rateLimitedResponse, {
+      status: 429,
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -35,6 +58,22 @@ export async function POST(request: Request) {
       { status: "invalid", message: "Data check-in tidak valid." },
       { status: 400 },
     );
+  }
+
+  const tokenKey = hashRateLimitIdentity(
+    `checkin-token:${parsed.data.ticketToken}`,
+  );
+  if (
+    await consumeRateLimit(tokenKey, {
+      limit: 30,
+      windowMilliseconds: 15 * 60 * 1000,
+      blockMilliseconds: 15 * 60 * 1000,
+    })
+  ) {
+    return NextResponse.json(rateLimitedResponse, {
+      status: 429,
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   const result = await checkInWithTicketToken(

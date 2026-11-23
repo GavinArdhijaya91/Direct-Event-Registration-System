@@ -28,12 +28,19 @@ test("rejects malformed or implausible WhatsApp numbers", () => {
   assert.equal(normalizeWhatsappNumber("08123"), null);
 });
 
-test("normalizes allowed registration fields and rejects oversized names", () => {
+test("normalizes allowed registration fields and handles UNNES mahasiswa", () => {
   const result = registrationSchema.safeParse({
     fullName: "  Peserta Natal  ",
     whatsappNumber: "081234567890",
-    category: "MAHASISWA",
-    institution: "  fmipa   - teknik  informatika  ",
+    birthPlace: "Semarang",
+    birthDate: "2003-05-12",
+    churchOrigin: "Gereja Santo Fransiskus Asisi, Batam",
+    domicile: "Sekaran, Gunungpati, Semarang",
+    participantType: "MAHASISWA_ALUMNI",
+    academicStatus: "MAHASISWA",
+    campusType: "UNNES",
+    faculty: "FMIPA",
+    studyProgram: "teknik informatika",
     informationSource: "INSTAGRAM",
   });
 
@@ -41,17 +48,92 @@ test("normalizes allowed registration fields and rejects oversized names", () =>
   if (result.success) {
     assert.equal(result.data.fullName, "Peserta Natal");
     assert.equal(result.data.whatsappNumber, "6281234567890");
-    assert.equal(result.data.institution, "FMIPA - Teknik Informatika");
+    assert.equal(result.data.category, "MAHASISWA");
+    assert.equal(result.data.institution, "FMIPA - Teknik Informatika UNNES");
+  }
+});
+
+test("validates alumni with graduation year", () => {
+  const result = registrationSchema.safeParse({
+    fullName: "Alumni Sukses",
+    whatsappNumber: "081234567891",
+    birthPlace: "Medan",
+    birthDate: "2000-01-01",
+    churchOrigin: "GKJ Semarang",
+    domicile: "Semarang",
+    participantType: "MAHASISWA_ALUMNI",
+    academicStatus: "ALUMNI",
+    graduationYear: "2022",
+    campusType: "UNNES",
+    faculty: "FT",
+    studyProgram: "Teknik Sipil",
+    informationSource: "TEMAN_GRUP_GEREJA",
+  });
+
+  assert.equal(result.success, true);
+  if (result.success) {
+    assert.equal(result.data.category, "ALUMNI");
+    assert.equal(result.data.graduationYear, "2022");
   }
 
-  const oversized = registrationSchema.safeParse({
-    fullName: "N".repeat(121),
-    whatsappNumber: "081234567890",
-    category: "MAHASISWA",
-    institution: "Universitas PWK",
-    informationSource: "INSTAGRAM",
+  // Missing graduation year
+  const invalidAlumni = registrationSchema.safeParse({
+    fullName: "Alumni Tanpa Tahun",
+    whatsappNumber: "081234567891",
+    birthPlace: "Medan",
+    birthDate: "2000-01-01",
+    churchOrigin: "GKJ Semarang",
+    domicile: "Semarang",
+    participantType: "MAHASISWA_ALUMNI",
+    academicStatus: "ALUMNI",
+    campusType: "UNNES",
+    faculty: "FT",
+    studyProgram: "Teknik Sipil",
+    informationSource: "TEMAN_GRUP_GEREJA",
   });
-  assert.equal(oversized.success, false);
+  assert.equal(invalidAlumni.success, false);
+});
+
+test("validates outside campus participant", () => {
+  const result = registrationSchema.safeParse({
+    fullName: "Mahasiswa Undip",
+    whatsappNumber: "081234567892",
+    birthPlace: "Solo",
+    birthDate: "2002-04-10",
+    churchOrigin: "GKI",
+    domicile: "Tembalang",
+    participantType: "MAHASISWA_ALUMNI",
+    academicStatus: "MAHASISWA",
+    campusType: "LUAR_UNNES",
+    campusName: "Universitas Diponegoro",
+    faculty: "Fakultas Hukum",
+    studyProgram: "Ilmu Hukum",
+    informationSource: "TEMAN_GRUP_GEREJA",
+  });
+
+  assert.equal(result.success, true);
+  if (result.success) {
+    assert.equal(result.data.institution, "Universitas Diponegoro - Fakultas Hukum / Ilmu Hukum");
+  }
+});
+
+test("validates umum / tamu undangan", () => {
+  const result = registrationSchema.safeParse({
+    fullName: "Tamu Terhormat",
+    whatsappNumber: "081234567893",
+    birthPlace: "Jakarta",
+    birthDate: "1995-12-25",
+    churchOrigin: "Gereja Katedral Semarang",
+    domicile: "Kota Semarang",
+    participantType: "UMUM",
+    informationSource: "POSTER_KAMPUS",
+  });
+
+  assert.equal(result.success, true);
+  if (result.success) {
+    assert.equal(result.data.category, "TAMU_UNDANGAN");
+    assert.equal(result.data.institution, "Gereja Katedral Semarang");
+  }
 });
 
 test("keeps configured institution abbreviations uppercase", () => {

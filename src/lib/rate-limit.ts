@@ -8,9 +8,24 @@ type RateLimitConfig = {
 };
 
 function requestAddress(request: Request) {
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) {
+    return realIp;
+  }
+
   const forwardedFor = request.headers.get("x-forwarded-for");
-  const address = forwardedFor?.split(",")[0]?.trim();
-  return address || request.headers.get("x-real-ip") || "unknown";
+  const forwardedAddress = forwardedFor?.split(",")[0]?.trim();
+  return forwardedAddress || "unknown";
+}
+
+function rateLimitIdentityKey() {
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (!secret || Buffer.byteLength(secret) < 32) {
+    throw new Error("ADMIN_SESSION_SECRET harus diatur dengan minimal 32 byte acak.");
+  }
+  return createHmac("sha256", secret)
+    .update("rate-limit-identity-v1")
+    .digest();
 }
 
 export function rateLimitKey(scope: string, request: Request) {
@@ -18,23 +33,27 @@ export function rateLimitKey(scope: string, request: Request) {
 }
 
 export function hashRateLimitIdentity(identity: string) {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret || Buffer.byteLength(secret) < 32) {
-    throw new Error("ADMIN_SESSION_SECRET harus diatur dengan minimal 32 byte acak.");
-  }
-  return createHmac("sha256", secret).update(identity).digest("hex");
+  return createHmac("sha256", rateLimitIdentityKey())
+    .update(identity)
+    .digest("hex");
 }
+
+let lastCleanupAt = 0;
 
 export async function consumeRateLimit(
   key: string,
   config: RateLimitConfig,
 ) {
   const prisma = getPrismaClient();
-  await prisma.rateLimit.deleteMany({
-    where: {
-      updatedAt: { lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-    },
-  });
+  const now = Date.now();
+  if (now - lastCleanupAt > 10 * 60 * 1000) {
+    lastCleanupAt = now;
+    await prisma.rateLimit.deleteMany({
+      where: {
+        updatedAt: { lt: new Date(now - 30 * 24 * 60 * 60 * 1000) },
+      },
+    });
+  }
   const rows = await prisma.$queryRaw<
     Array<{ blocked: boolean }>
   >`

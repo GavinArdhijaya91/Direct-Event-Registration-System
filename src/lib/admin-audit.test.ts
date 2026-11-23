@@ -67,11 +67,11 @@ test("summarizes walk-in OTS registration override", () => {
       reason: "Tamu kehormatan datang langsung",
       details: {
         ticketCode: "EVT-WALK",
-        fullName: "Yohanes Silalahi",
-        whatsappNumber: "081234567890",
+        capacityBefore: 300,
+        capacityAfter: 301,
       },
       createdAt: "2026-12-10T10:00:00.000Z",
     }),
-    "Pendaftaran OTS: EVT-WALK · Yohanes Silalahi",
+    "Pendaftaran OTS: EVT-WALK · kuota 301",
   );
 });

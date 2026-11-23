@@ -1,10 +1,29 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { hasAdminSession, hasSameOrigin } from "@/lib/admin-session";
+import {
+  canonicalizeLocationCode,
+  isValidLocationCode,
+} from "@/lib/dynamic-qr";
 import { getPrismaClient } from "@/lib/prisma";
+import { getQrSigningSecret } from "@/lib/qr-secret";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const locationCodeSchema = z.union([
+  z.null(),
+  z
+    .string()
+    .trim()
+    .max(100)
+    .transform(canonicalizeLocationCode)
+    .refine(
+      (value) => value === "" || isValidLocationCode(value),
+      "Kode lokasi hanya boleh berisi huruf, angka, tanda hubung, dan garis bawah.",
+    )
+    .transform((value) => value || null),
+]);
 
 const settingsSchema = z.object({
   eventName: z.string().trim().min(1).max(120),
@@ -12,7 +31,8 @@ const settingsSchema = z.object({
   eventLocation: z.string().trim().min(1).max(120),
   maxCapacity: z.number().int().min(1).max(2_147_483_647),
   registrationOpen: z.boolean(),
-  locationCode: z.string().trim().max(100).nullable(),
+  locationCode: locationCodeSchema,
+  qrMode: z.enum(["STATIC", "DYNAMIC"]),
   checkinOpensAt: z.string().datetime({ offset: true }).nullable(),
   checkinClosesAt: z.string().datetime({ offset: true }).nullable(),
   capacityOverrideReason: z.string().trim().max(500).optional(),
@@ -69,6 +89,21 @@ export async function PATCH(request: Request) {
     );
   }
 
+  if (data.qrMode === "DYNAMIC") {
+    try {
+      getQrSigningSecret();
+    } catch {
+      return NextResponse.json(
+        {
+          status: "unavailable",
+          message:
+            "Mode QR dinamis memerlukan QR_SIGNING_SECRET yang valid di server.",
+        },
+        { status: 503, headers: { "Cache-Control": "no-store" } },
+      );
+    }
+  }
+
   const prisma = getPrismaClient();
   const result = await prisma.$transaction(async (transaction) => {
     const current = await transaction.eventSettings.findUnique({
@@ -93,7 +128,8 @@ export async function PATCH(request: Request) {
         eventLocation: data.eventLocation,
         maxCapacity: data.maxCapacity,
         registrationOpen: data.registrationOpen,
-        locationCode: data.locationCode || null,
+        locationCode: data.locationCode,
+        qrMode: data.qrMode,
         checkinOpensAt: opensAt,
         checkinClosesAt: closesAt,
       },
@@ -111,6 +147,7 @@ export async function PATCH(request: Request) {
             maxCapacity: current.maxCapacity,
             registrationOpen: current.registrationOpen,
             locationCode: current.locationCode,
+            qrMode: current.qrMode,
             checkinOpensAt: current.checkinOpensAt?.toISOString() ?? null,
             checkinClosesAt: current.checkinClosesAt?.toISOString() ?? null,
           },
@@ -121,6 +158,7 @@ export async function PATCH(request: Request) {
             maxCapacity: updated.maxCapacity,
             registrationOpen: updated.registrationOpen,
             locationCode: updated.locationCode,
+            qrMode: updated.qrMode,
             checkinOpensAt: updated.checkinOpensAt?.toISOString() ?? null,
             checkinClosesAt: updated.checkinClosesAt?.toISOString() ?? null,
           },

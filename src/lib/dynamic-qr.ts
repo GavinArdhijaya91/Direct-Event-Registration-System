@@ -1,88 +1,140 @@
 import { createHmac } from "node:crypto";
 
-/**
- * Durasi rotasi QR presensi: 3 menit (180 detik).
- * Memberi cukup waktu bagi peserta untuk scan dengan santai di aula,
- * sekaligus mencegah foto QR disebarkan ke peserta di luar lokasi.
- */
 export const QR_ROTATION_INTERVAL_SECONDS = 180;
+export const QR_TOKEN_LENGTH = 10;
+export const QR_MESSAGE_PREFIX = "PWK2026";
 
-/**
- * Menghasilkan token dinamis berbasis waktu (3 menit) menggunakan HMAC-SHA256.
- * Bersifat stateless (tanpa query database).
- */
+const crockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const locationCodePattern = /^[A-Z0-9][A-Z0-9_-]{2,99}$/;
+
+export type QrMode = "STATIC" | "DYNAMIC";
+
+export function canonicalizeLocationCode(value: string) {
+  return value.trim().toUpperCase().replace(/\s+/g, "-");
+}
+
+export function isValidLocationCode(value: string) {
+  return locationCodePattern.test(value);
+}
+
+function encodeToken(buffer: Buffer) {
+  let token = "";
+  for (let index = 0; index < QR_TOKEN_LENGTH; index += 1) {
+    const bitOffset = index * 5;
+    const byteIndex = Math.floor(bitOffset / 8);
+    const bitInByte = bitOffset % 8;
+    const pair =
+      (buffer[byteIndex] << 8) | (buffer[byteIndex + 1] ?? 0);
+    const shift = 11 - bitInByte - 5;
+    token += crockfordAlphabet[(pair >> shift) & 31];
+  }
+  return token;
+}
+
+function createToken(
+  signingSecret: string,
+  locationCode: string,
+  step: number,
+) {
+  const hmac = createHmac("sha256", signingSecret);
+  hmac.update(`${QR_MESSAGE_PREFIX}:${locationCode}:${step}`);
+  return encodeToken(hmac.digest());
+}
+
 export function getDynamicQrToken(
-  secretOrLocationCode: string,
+  signingSecret: string,
+  locationCode: string,
   timestampMs = Date.now(),
-): { token: string; step: number; secondsRemaining: number } {
+) {
   const intervalMs = QR_ROTATION_INTERVAL_SECONDS * 1000;
   const step = Math.floor(timestampMs / intervalMs);
   const secondsRemaining = Math.ceil(
     (intervalMs - (timestampMs % intervalMs)) / 1000,
   );
+  const canonicalCode = canonicalizeLocationCode(locationCode);
 
-  const hmac = createHmac("sha256", secretOrLocationCode);
-  hmac.update(`PWK2026-STEP-${step}`);
-  // Ambil 6 karakter alphanumeric kapital yang mudah dibaca
-  const token = hmac.digest("hex").slice(0, 6).toUpperCase();
+  if (!signingSecret) {
+    throw new Error("Secret penandatangan QR wajib tersedia.");
+  }
+  if (!isValidLocationCode(canonicalCode)) {
+    throw new Error("Kode lokasi QR tidak valid.");
+  }
 
-  return { token, step, secondsRemaining };
+  return {
+    token: createToken(signingSecret, canonicalCode, step),
+    step,
+    secondsRemaining,
+  };
 }
 
-/**
- * Membuat payload lengkap yang dikodekan ke dalam QR Code proyektor.
- * Format: KODE_LOKASI.TOKEN (contoh: PWK2026-B6-FBS.A3F9B2)
- */
 export function buildDynamicQrPayload(
-  baseLocationCode: string,
+  signingSecret: string,
+  locationCode: string,
   timestampMs = Date.now(),
-): string {
-  const { token } = getDynamicQrToken(baseLocationCode, timestampMs);
-  return `${baseLocationCode}.${token}`;
+) {
+  const canonicalCode = canonicalizeLocationCode(locationCode);
+  const { token } = getDynamicQrToken(
+    signingSecret,
+    canonicalCode,
+    timestampMs,
+  );
+  return `${canonicalCode}.${token}`;
 }
 
-/**
- * Memvalidasi apakah kode presensi yang discan atau diketik peserta cocok.
- * Mendukung:
- * 1. Format Dinamis: KODE_LOKASI.TOKEN (dengan toleransi window sekarang dan 1 window sebelumnya/sesudahnya)
- * 2. Format Token Saja: TOKEN (jika peserta hanya mengetik 6 karakter token yang tampil di proyektor)
- * 3. Format Statis: KODE_LOKASI (jika dicetak di banner / mode manual)
- */
-export function verifyLocationCode(
+function normalizeScannedCode(value: string) {
+  return value.trim().toUpperCase();
+}
+
+export function verifyDynamicQrCode(
   scannedCode: string,
   activeLocationCode: string,
+  signingSecret: string,
   timestampMs = Date.now(),
-): boolean {
-  const trimmed = scannedCode.trim().toUpperCase();
-  const base = activeLocationCode.trim().toUpperCase();
+) {
+  if (!signingSecret) {
+    return false;
+  }
 
-  // 1. Cocok persis dengan kode lokasi statis
-  if (trimmed === base) {
-    return true;
+  const scanned = normalizeScannedCode(scannedCode);
+  const base = canonicalizeLocationCode(activeLocationCode);
+  if (!scanned || !isValidLocationCode(base)) {
+    return false;
   }
 
   const intervalMs = QR_ROTATION_INTERVAL_SECONDS * 1000;
   const currentStep = Math.floor(timestampMs / intervalMs);
-
-  // Periksa jendela toleransi: step saat ini, 1 step sebelumnya (-1), dan 1 step sesudahnya (+1)
-  // Menghindari kegagalan jika jam server/klien selisih sedikit atau sinyal HP lemot saat perpindahan
-  const candidateSteps = [currentStep, currentStep - 1, currentStep + 1];
+  const candidateSteps = [currentStep, currentStep - 1];
 
   for (const step of candidateSteps) {
-    const hmac = createHmac("sha256", activeLocationCode);
-    hmac.update(`PWK2026-STEP-${step}`);
-    const token = hmac.digest("hex").slice(0, 6).toUpperCase();
-
-    // Cek format lengkap: "BASE.TOKEN"
-    if (trimmed === `${base}.${token}`) {
-      return true;
-    }
-
-    // Cek format singkat jika peserta mengetik token 6-karakter saja
-    if (trimmed === token) {
+    const token = createToken(signingSecret, base, step);
+    if (scanned === `${base}.${token}` || scanned === token) {
       return true;
     }
   }
 
   return false;
+}
+
+export function verifyLocationCodeForMode(
+  scannedCode: string,
+  activeLocationCode: string,
+  mode: QrMode,
+  signingSecret: string | null,
+  timestampMs = Date.now(),
+) {
+  const scanned = normalizeScannedCode(scannedCode);
+  const base = canonicalizeLocationCode(activeLocationCode);
+  if (!scanned || !isValidLocationCode(base)) {
+    return false;
+  }
+
+  if (mode === "STATIC") {
+    return scanned === base;
+  }
+
+  if (!signingSecret) {
+    return false;
+  }
+
+  return verifyDynamicQrCode(scanned, base, signingSecret, timestampMs);
 }

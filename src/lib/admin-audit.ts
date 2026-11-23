@@ -59,6 +59,7 @@ export function describeAuditLog(log: AdminAuditEntry) {
       maxCapacity: "Kuota",
       registrationOpen: "Pendaftaran",
       locationCode: "Kode lokasi",
+      qrMode: "Mode QR",
       checkinOpensAt: "Check-in dibuka",
       checkinClosesAt: "Check-in ditutup",
     };
@@ -85,8 +86,11 @@ export function describeAuditLog(log: AdminAuditEntry) {
     log.action === "walkin-registration-override" &&
     typeof details.ticketCode === "string"
   ) {
-    const nameStr = typeof details.fullName === "string" ? ` · ${details.fullName}` : "";
-    return `Pendaftaran OTS: ${details.ticketCode}${nameStr}`;
+    const capacity =
+      typeof details.capacityAfter === "number"
+        ? ` · kuota ${details.capacityAfter}`
+        : "";
+    return `Pendaftaran OTS: ${details.ticketCode}${capacity}`;
   }
   if (
     log.action === "attendee-deleted" &&
@@ -108,3 +112,4 @@ export function describeAuditLog(log: AdminAuditEntry) {
   }
   return log.action;
 }
+

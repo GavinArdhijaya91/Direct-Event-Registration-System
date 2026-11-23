@@ -32,6 +32,17 @@ export async function GET(request: Request) {
         ticketCode: true,
         fullName: true,
         whatsappNumber: true,
+        birthPlace: true,
+        birthDate: true,
+        churchOrigin: true,
+        domicile: true,
+        participantType: true,
+        academicStatus: true,
+        graduationYear: true,
+        campusType: true,
+        campusName: true,
+        faculty: true,
+        studyProgram: true,
         category: true,
         institution: true,
         informationSource: true,
@@ -54,19 +65,46 @@ export async function GET(request: Request) {
     "Kode Tiket",
     "Nama Lengkap",
     "Nomor WA",
-    "Kategori",
+    "Tempat Lahir",
+    "Tanggal Lahir",
+    "Asal Stasi / Gereja",
+    "Domisili",
+    "Tipe Peserta",
+    "Status Akademik",
+    "Tahun Kelulusan (Alumni)",
+    "Asal Kampus",
+    "Nama Universitas",
+    "Fakultas",
+    "Program Studi",
+    "Kategori Final",
     "Asal Instansi",
     "Sumber Informasi",
     "Waktu Daftar (WIB)",
-    "Status",
+    "Status Kehadiran",
     "Waktu Check-in (WIB)",
     "Metode Check-in",
   ];
+
   const rows = attendees.map((attendee) =>
     [
       attendee.ticketCode,
       attendee.fullName,
       attendee.whatsappNumber,
+      attendee.birthPlace,
+      attendee.birthDate,
+      attendee.churchOrigin,
+      attendee.domicile,
+      attendee.participantType === "MAHASISWA_ALUMNI" ? "Mahasiswa / Alumni" : "Umum",
+      attendee.academicStatus ?? "",
+      attendee.graduationYear ?? "",
+      attendee.campusType === "UNNES"
+        ? "UNNES"
+        : attendee.campusType === "LUAR_UNNES"
+          ? "Luar UNNES"
+          : "",
+      attendee.campusName ?? "",
+      attendee.faculty ?? "",
+      attendee.studyProgram ?? "",
       attendee.category,
       attendee.institution,
       attendee.informationSource,
@@ -78,6 +116,7 @@ export async function GET(request: Request) {
       .map(csvCell)
       .join(","),
   );
+
   const csv = `\uFEFF${[header.map(csvCell).join(","), ...rows].join("\r\n")}`;
 
   return new NextResponse(csv, {

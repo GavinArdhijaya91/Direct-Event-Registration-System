@@ -13,10 +13,8 @@ function toDbInformationSource(
   source: RegistrationInput["informationSource"],
 ): InformationSource {
   switch (source) {
-    case "GRUP_WA":
+    case "TEMAN_GRUP_GEREJA":
       return "WHATSAPP_GROUP";
-    case "GEREJA_PMK":
-      return "GEREJA";
     default:
       return source;
   }
@@ -105,6 +103,17 @@ export async function registerAttendee(
             recoveryCodeHash: hashCredential(recoveryCode),
             fullName: input.fullName,
             whatsappNumber: input.whatsappNumber,
+            birthPlace: input.birthPlace,
+            birthDate: input.birthDate,
+            churchOrigin: input.churchOrigin,
+            domicile: input.domicile,
+            participantType: input.participantType,
+            academicStatus: input.academicStatus ?? null,
+            graduationYear: input.graduationYear ?? null,
+            campusType: input.campusType ?? null,
+            campusName: input.campusName ?? null,
+            faculty: input.faculty ?? null,
+            studyProgram: input.studyProgram ?? null,
             category: input.category,
             institution: input.institution,
             informationSource: toDbInformationSource(input.informationSource),

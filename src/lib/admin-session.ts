@@ -30,6 +30,9 @@ export function verifyAdminPassword(candidate: string) {
   if (!password) {
     throw new Error("ADMIN_PASSWORD harus diatur.");
   }
+  if (password.length < 12) {
+    throw new Error("ADMIN_PASSWORD harus memiliki minimal 12 karakter.");
+  }
   return safeCompare(candidate, password);
 }
 

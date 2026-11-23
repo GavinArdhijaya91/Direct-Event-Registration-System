@@ -99,6 +99,7 @@ export async function POST(request: Request) {
     {
       status: "recovered",
       ticketPath: `/ticket/${result.ticketToken}`,
+      recoveryCode: result.recoveryCode,
     },
     { headers: { "Cache-Control": "no-store" } },
   );

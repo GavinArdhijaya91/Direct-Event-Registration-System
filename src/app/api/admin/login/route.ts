@@ -53,7 +53,20 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!verifyAdminPassword(parsed.data.password)) {
+  let passwordMatches = false;
+  try {
+    passwordMatches = verifyAdminPassword(parsed.data.password);
+  } catch {
+    return NextResponse.json(
+      {
+        status: "unavailable",
+        message: "Konfigurasi admin belum aman. Hubungi penanggung jawab.",
+      },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
+  if (!passwordMatches) {
     return NextResponse.json(
       { status: "unauthorized", message: "Kata sandi tidak cocok." },
       { status: 401, headers: { "Cache-Control": "no-store" } },

@@ -18,6 +18,21 @@ enum RegistrationCategory {
   TAMU_UNDANGAN
 }
 
+enum ParticipantType {
+  MAHASISWA_ALUMNI
+  UMUM
+}
+
+enum AcademicStatus {
+  MAHASISWA
+  ALUMNI
+}
+
+enum CampusType {
+  UNNES
+  LUAR_UNNES
+}
+
 enum InformationSource {
   INSTAGRAM
   WHATSAPP_GROUP
@@ -31,12 +46,18 @@ enum CheckinMethod {
   MANUAL_ADMIN
 }
 
+enum QrMode {
+  STATIC
+  DYNAMIC
+}
+
 model EventSettings {
   id               Int       @id @default(1)
   eventName        String    @default("Natal PWK 2026") @map("nama_acara") @db.VarChar(120)
   eventDate        DateTime  @default("2027-01-28T00:00:00.000Z") @map("tanggal_acara") @db.Date
   eventLocation    String    @default("Gedung B6, FBS UNNES") @map("lokasi_acara") @db.VarChar(120)
   locationCode     String?   @map("kode_lokasi_aktif") @db.VarChar(100)
+  qrMode           QrMode    @default(DYNAMIC) @map("mode_qr")
   maxCapacity      Int       @default(300) @map("kuota_maksimal")
   registeredCount  Int       @default(0) @map("jumlah_terdaftar")
   registrationOpen Boolean   @default(false) @map("pendaftaran_dibuka")
@@ -54,6 +75,17 @@ model Attendee {
   recoveryCodeHash  String               @map("kode_pemulihan_hash") @db.Char(64)
   fullName          String               @map("nama_lengkap") @db.VarChar(120)
   whatsappNumber    String               @unique @map("nomor_wa") @db.VarChar(16)
+  birthPlace        String               @default("") @map("tempat_lahir") @db.VarChar(100)
+  birthDate         String               @default("") @map("tanggal_lahir") @db.VarChar(10)
+  churchOrigin      String               @default("") @map("stasi_asal_gereja") @db.VarChar(150)
+  domicile          String               @default("") @map("domisili") @db.VarChar(255)
+  participantType   ParticipantType      @default(MAHASISWA_ALUMNI) @map("tipe_peserta")
+  academicStatus    AcademicStatus?      @map("status_akademik")
+  graduationYear    String?              @map("tahun_kelulusan") @db.VarChar(4)
+  campusType        CampusType?          @map("tipe_kampus")
+  campusName        String?              @map("nama_kampus") @db.VarChar(120)
+  faculty           String?              @map("fakultas") @db.VarChar(100)
+  studyProgram      String?              @map("prodi") @db.VarChar(100)
   category          RegistrationCategory @map("kategori")
   institution       String               @map("asal_instansi") @db.VarChar(120)
   informationSource InformationSource    @map("sumber_informasi")

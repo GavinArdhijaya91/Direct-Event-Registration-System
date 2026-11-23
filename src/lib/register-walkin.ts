@@ -9,11 +9,25 @@ import {
 import type {
   RegistrationCategory,
   InformationSource,
+  ParticipantType,
+  AcademicStatus,
+  CampusType,
 } from "@/generated/prisma/client";
 
 export type WalkinInput = {
   fullName: string;
   whatsappNumber: string;
+  birthPlace: string;
+  birthDate: string;
+  churchOrigin: string;
+  domicile: string;
+  participantType: ParticipantType;
+  academicStatus?: AcademicStatus | null;
+  graduationYear?: string | null;
+  campusType?: CampusType | null;
+  campusName?: string | null;
+  faculty?: string | null;
+  studyProgram?: string | null;
   category: RegistrationCategory;
   institution: string;
   informationSource?: InformationSource;
@@ -34,6 +48,64 @@ export type WalkinOutcome =
   | { status: "checked-in-existing"; message: string }
   | { status: "unavailable"; message: string };
 
+type ExistingAttendee = {
+  id: string;
+  ticketCode: string;
+  fullName: string;
+  status: "TERDAFTAR" | "HADIR";
+};
+
+async function checkInExistingAttendee(
+  existing: ExistingAttendee,
+  reason: string,
+): Promise<WalkinOutcome> {
+  if (existing.status === "HADIR") {
+    return {
+      status: "already-present",
+      message: `Peserta atas nama ${existing.fullName} (${existing.ticketCode}) sudah berstatus HADIR.`,
+    };
+  }
+
+  const prisma = getPrismaClient();
+  const now = new Date();
+  const checkedIn = await prisma.$transaction(async (transaction) => {
+    const updated = await transaction.attendee.updateMany({
+      where: { id: existing.id, status: "TERDAFTAR" },
+      data: {
+        status: "HADIR",
+        checkedInAt: now,
+        checkinMethod: "MANUAL_ADMIN",
+      },
+    });
+
+    if (updated.count === 0) {
+      return false;
+    }
+
+    await transaction.adminAuditLog.create({
+      data: {
+        action: "walkin-checkin-existing",
+        reason,
+        details: { ticketCode: existing.ticketCode },
+      },
+    });
+
+    return true;
+  });
+
+  if (!checkedIn) {
+    return {
+      status: "already-present",
+      message: `Peserta (${existing.ticketCode}) sudah berstatus HADIR.`,
+    };
+  }
+
+  return {
+    status: "checked-in-existing",
+    message: `Peserta (${existing.ticketCode}) sebelumnya sudah terdaftar dan kini berhasil diabsenkan HADIR.`,
+  };
+}
+
 export async function registerWalkinAttendee(
   input: WalkinInput,
 ): Promise<WalkinOutcome> {
@@ -46,46 +118,11 @@ export async function registerWalkinAttendee(
       ticketCode: true,
       fullName: true,
       status: true,
-      checkedInAt: true,
     },
   });
 
   if (existing) {
-    if (existing.status === "HADIR") {
-      return {
-        status: "already-present",
-        message: `Peserta atas nama ${existing.fullName} (${existing.ticketCode}) sudah berstatus HADIR.`,
-      };
-    }
-
-    const now = new Date();
-    await prisma.$transaction(async (transaction) => {
-      await transaction.attendee.update({
-        where: { id: existing.id },
-        data: {
-          status: "HADIR",
-          checkedInAt: now,
-          checkinMethod: "MANUAL_ADMIN",
-        },
-      });
-
-      await transaction.adminAuditLog.create({
-        data: {
-          action: "walkin-checkin-existing",
-          reason: input.reason,
-          details: {
-            ticketCode: existing.ticketCode,
-            fullName: existing.fullName,
-            whatsappNumber: input.whatsappNumber,
-          },
-        },
-      });
-    });
-
-    return {
-      status: "checked-in-existing",
-      message: `Peserta (${existing.ticketCode}) sebelumnya sudah terdaftar dan kini berhasil diabsenkan HADIR.`,
-    };
+    return checkInExistingAttendee(existing, input.reason);
   }
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -108,9 +145,10 @@ export async function registerWalkinAttendee(
           };
         }
 
-        await transaction.eventSettings.update({
+        const updatedSettings = await transaction.eventSettings.update({
           where: { id: 1 },
           data: { registeredCount: { increment: 1 } },
+          select: { registeredCount: true },
         });
 
         await transaction.attendee.create({
@@ -120,9 +158,20 @@ export async function registerWalkinAttendee(
             recoveryCodeHash: hashCredential(recoveryCode),
             fullName: input.fullName,
             whatsappNumber: input.whatsappNumber,
+            birthPlace: input.birthPlace,
+            birthDate: input.birthDate,
+            churchOrigin: input.churchOrigin,
+            domicile: input.domicile,
+            participantType: input.participantType,
+            academicStatus: input.academicStatus ?? null,
+            graduationYear: input.graduationYear ?? null,
+            campusType: input.campusType ?? null,
+            campusName: input.campusName ?? null,
+            faculty: input.faculty ?? null,
+            studyProgram: input.studyProgram ?? null,
             category: input.category,
             institution: input.institution,
-            informationSource: input.informationSource ?? "TEMAN_KATING",
+            informationSource: input.informationSource ?? "WHATSAPP_GROUP",
             status: "HADIR",
             checkedInAt: now,
             checkinMethod: "MANUAL_ADMIN",
@@ -139,6 +188,9 @@ export async function registerWalkinAttendee(
               whatsappNumber: input.whatsappNumber,
               category: input.category,
               institution: input.institution,
+              registeredCountBefore: settings.registeredCount,
+              registeredCountAfter: updatedSettings.registeredCount,
+              maxCapacity: settings.maxCapacity,
             },
           },
         });
@@ -158,11 +210,43 @@ export async function registerWalkinAttendee(
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
       ) {
-        continue;
+        const target = Array.isArray(error.meta?.target)
+          ? error.meta.target.map(String)
+          : [String(error.meta?.target ?? "")];
+        const targetString = target.join(",");
+
+        if (
+          targetString.includes("whatsappNumber") ||
+          targetString.includes("nomor_wa")
+        ) {
+          const rechecked = await prisma.attendee.findUnique({
+            where: { whatsappNumber: input.whatsappNumber },
+            select: {
+              id: true,
+              ticketCode: true,
+              fullName: true,
+              status: true,
+            },
+          });
+          if (rechecked) {
+            return checkInExistingAttendee(rechecked, input.reason);
+          }
+        }
+
+        if (
+          targetString.includes("ticketCode") ||
+          targetString.includes("kode_tiket")
+        ) {
+          continue;
+        }
       }
+
       throw error;
     }
   }
 
-  throw new Error("Gagal membuat peserta OTS setelah beberapa percobaan.");
+  return {
+    status: "unavailable",
+    message: "Gagal membuat kode tiket unik untuk peserta OTS.",
+  };
 }

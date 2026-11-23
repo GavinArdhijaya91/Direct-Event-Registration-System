@@ -23,6 +23,17 @@ export async function GET(request: Request) {
         ticketCode: true,
         fullName: true,
         whatsappNumber: true,
+        birthPlace: true,
+        birthDate: true,
+        churchOrigin: true,
+        domicile: true,
+        participantType: true,
+        academicStatus: true,
+        graduationYear: true,
+        campusType: true,
+        campusName: true,
+        faculty: true,
+        studyProgram: true,
         category: true,
         institution: true,
         informationSource: true,
@@ -48,28 +59,71 @@ export async function GET(request: Request) {
 
   if (!settings) {
     return NextResponse.json(
-      { status: "unavailable", message: "Konfigurasi acara belum tersedia." },
-      { status: 503, headers: { "Cache-Control": "no-store" } },
+      { status: "unavailable", message: "Pengaturan acara belum tersedia." },
+      { status: 500, headers: { "Cache-Control": "no-store" } },
     );
   }
 
-  const checkedInCount = attendees.reduce(
-    (count, attendee) => count + Number(attendee.status === "HADIR"),
+  const totalRegistered = attendees.length;
+  const totalCheckedIn = attendees.filter(
+    (attendee) => attendee.status === "HADIR",
+  ).length;
+  const capacityRemaining = Math.max(
     0,
+    settings.maxCapacity - settings.registeredCount,
   );
 
   return NextResponse.json(
     {
-      status: "available",
-      settings,
-      auditLogs,
-      bulkDeletionAllowed: isBulkDeletionWindowOpen(new Date()),
-      stats: {
-        totalRegistered: settings.registeredCount,
-        totalCheckedIn: checkedInCount,
-        capacityRemaining: settings.maxCapacity - settings.registeredCount,
+      settings: {
+        eventName: settings.eventName,
+        eventDate: settings.eventDate.toISOString(),
+        eventLocation: settings.eventLocation,
+        maxCapacity: settings.maxCapacity,
+        registeredCount: settings.registeredCount,
+        registrationOpen: settings.registrationOpen,
+        locationCode: settings.locationCode,
+        qrMode: settings.qrMode,
+        checkinOpensAt: settings.checkinOpensAt?.toISOString() ?? null,
+        checkinClosesAt: settings.checkinClosesAt?.toISOString() ?? null,
       },
-      attendees,
+      stats: {
+        totalRegistered,
+        totalCheckedIn,
+        capacityRemaining,
+      },
+      bulkDeletionAllowed: isBulkDeletionWindowOpen(new Date()),
+      attendees: attendees.map((attendee) => ({
+        ticketCode: attendee.ticketCode,
+        fullName: attendee.fullName,
+        whatsappNumber: attendee.whatsappNumber,
+        birthPlace: attendee.birthPlace,
+        birthDate: attendee.birthDate,
+        churchOrigin: attendee.churchOrigin,
+        domicile: attendee.domicile,
+        participantType: attendee.participantType,
+        academicStatus: attendee.academicStatus,
+        graduationYear: attendee.graduationYear,
+        campusType: attendee.campusType,
+        campusName: attendee.campusName,
+        faculty: attendee.faculty,
+        studyProgram: attendee.studyProgram,
+        category: attendee.category,
+        institution: attendee.institution,
+        informationSource: attendee.informationSource,
+        status: attendee.status,
+        registeredAt: attendee.registeredAt.toISOString(),
+        checkedInAt: attendee.checkedInAt?.toISOString() ?? null,
+        checkinMethod: attendee.checkinMethod,
+      })),
+      auditLogs: auditLogs.map((log) => ({
+        id: log.id,
+        actor: log.actor,
+        action: log.action,
+        reason: log.reason,
+        details: log.details,
+        createdAt: log.createdAt.toISOString(),
+      })),
     },
     { headers: { "Cache-Control": "no-store" } },
   );

@@ -1,10 +1,20 @@
 import { NextResponse } from "next/server";
 import { getPrismaClient } from "@/lib/prisma";
+import {
+  consumeRateLimit,
+  hashRateLimitIdentity,
+  rateLimitKey,
+} from "@/lib/rate-limit";
 import { registerAttendee } from "@/lib/register-attendee";
 import { registrationSchema } from "@/lib/registration";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const rateLimitedResponse = {
+  status: "rate-limited",
+  message: "Terlalu banyak percobaan pendaftaran. Coba lagi nanti.",
+};
 
 export async function GET() {
   const settings = await getPrismaClient().eventSettings.findUnique({
@@ -33,6 +43,19 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (
+    await consumeRateLimit(rateLimitKey("register-ip", request), {
+      limit: 300,
+      windowMilliseconds: 15 * 60 * 1000,
+      blockMilliseconds: 15 * 60 * 1000,
+    })
+  ) {
+    return NextResponse.json(rateLimitedResponse, {
+      status: 429,
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
+
   let body: unknown;
 
   try {
@@ -54,6 +77,22 @@ export async function POST(request: Request) {
       },
       { status: 400 },
     );
+  }
+
+  const numberKey = hashRateLimitIdentity(
+    `register-wa:${parsed.data.whatsappNumber}`,
+  );
+  if (
+    await consumeRateLimit(numberKey, {
+      limit: 5,
+      windowMilliseconds: 60 * 60 * 1000,
+      blockMilliseconds: 60 * 60 * 1000,
+    })
+  ) {
+    return NextResponse.json(rateLimitedResponse, {
+      status: 429,
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   const result = await registerAttendee(parsed.data);
