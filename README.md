@@ -155,6 +155,7 @@ Uji alur lengkap di URL deployment: daftar satu peserta → simpan kode pemuliha
 - Supabase Free dapat dijeda setelah sekitar 7 hari tanpa aktivitas. **Resume** project sebelum pendaftaran dibuka dan sebelum hari-H, dan tentukan penanggung jawabnya.
 - Paket Free tidak menyediakan backup harian. Siapkan prosedur backup manual; ekspor CSV **bukan** backup database.
 - Koneksi database memakai `sslmode=verify-full`. Jangan menonaktifkan verifikasi sertifikat untuk mengatasi error TLS.
+- `supabase-ca.crt` harus berisi **Supabase Root 2021 CA** yang di-download dari **Supabase Dashboard → Project Settings → Database → SSL Configuration → Download Certificate**. Bundle CA Amazon RDS tidak akan terverifikasi oleh pooler Supabase dan membuat halaman menampilkan "Layanan belum tersedia".
 - Vercel tidak menjalankan migrasi secara otomatis; langkah `npm run db:prepare` tetap wajib dilakukan setelah deploy ke database baru.
 
 ---
