@@ -3631,23 +3631,25 @@ a[href].inline-flex:hover {
 
 .admin-search {
   position: relative;
-  flex: 1 1 220px;
-  max-width: 400px;
+  flex: 0 1 280px;
+  max-width: 300px;
 }
 
 .admin-search > svg {
   position: absolute;
   top: 50%;
-  left: 0.7rem;
-  width: 15px;
-  height: 15px;
+  left: 0.65rem;
+  width: 14px;
+  height: 14px;
   color: var(--a-muted);
   transform: translateY(-50%);
   pointer-events: none;
 }
 
 .admin-search .admin-input {
-  padding-left: 2.1rem;
+  min-height: 36px;
+  padding: 0.35rem 0.6rem 0.35rem 1.95rem;
+  font-size: var(--a-xs);
 }
 
 .admin-actions-row {

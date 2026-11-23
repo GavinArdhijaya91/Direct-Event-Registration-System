@@ -107,7 +107,7 @@ export default function AdminPesertaPage() {
               <input
                 className="admin-input"
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Cari nama, nomor WA, kode tiket, atau instansi"
+                placeholder="Cari nama atau kode tiket"
                 type="search"
                 value={search}
               />
