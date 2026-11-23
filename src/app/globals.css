@@ -3852,10 +3852,12 @@ a[href].inline-flex:hover {
 }
 
 .admin-footnote {
-  margin: 1.5rem 0 0;
+  max-width: 42rem;
+  margin: 1.5rem auto 0;
   color: var(--a-muted);
   font-size: var(--a-xs);
   line-height: 1.5;
+  text-align: center;
 }
 
 /* Login */
@@ -4172,7 +4174,8 @@ a[href].inline-flex:hover {
   .admin-content { padding: 1rem 0.75rem 2.25rem; }
   .admin-section { margin-bottom: 1.25rem; }
   .admin-section-head,
-  .admin-info { margin-inline: 0.25rem; }
+  .admin-info,
+  .admin-footnote { margin-inline: 0.25rem; }
   .admin-info { padding: 0.8rem 0.95rem; }
   .admin-card-head { padding: 0.8rem 0.9rem; }
   .admin-card-body { padding: 0.9rem; }
