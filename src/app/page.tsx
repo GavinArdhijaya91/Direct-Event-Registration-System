@@ -2,6 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPrismaClient } from "@/lib/prisma";
 import RevealObserver from "@/app/reveal-observer";
+import ChristmasAudioPlayer from "@/app/christmas-audio-player";
+import HeaderNav from "@/app/header-nav";
+import HeroActions from "@/app/hero-actions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,11 +53,12 @@ export default async function Home() {
         ))}
       </div>
       <RevealObserver />
+      <ChristmasAudioPlayer />
       <header className="site-header" data-reveal>
         <div className="site-header-inner">
           <Link href="/" className="brand-lockup" aria-label="Natal PWK UNNES, beranda">
             <Image
-              src="/images/logos/logo-natal-pwk.png"
+              src="/images/logos/logo-natal-pwk-2026.png"
               alt=""
               width={52}
               height={52}
@@ -67,13 +71,7 @@ export default async function Home() {
             </span>
           </Link>
 
-          <nav className="header-nav" aria-label="Navigasi utama">
-            <Link href="#kegiatan" className="header-text-link">Kegiatan</Link>
-            <Link href="/daftar#pemulihan" className="btn btn-outline header-recovery">
-              Sudah daftar? Cek tiket
-            </Link>
-            <Link href="/daftar" className="btn btn-primary header-register">Daftar</Link>
-          </nav>
+          <HeaderNav />
         </div>
       </header>
 
@@ -94,25 +92,7 @@ export default async function Home() {
               Mari berkumpul dalam perayaan iman, kehangatan, dan sukacita.
               Rayakan kelahiran Yesus Kristus bersama keluarga besar PWK UNNES.
             </p>
-            <div className="hero-actions">
-              <div className="relative group inline-block">
-                <Link
-                  href="/daftar"
-                  className="btn btn-primary hero-primary inline-flex items-center gap-2 !text-white shadow-md hover:shadow-lg transition-all"
-                  title="Buka formulir pendaftaran online Natal PWK UNNES 2026"
-                >
-                  <span className="font-semibold !text-white">Daftar Sekarang</span>
-                  <span aria-hidden="true" className="!text-white transition-transform duration-150 group-hover:translate-x-1">↗</span>
-                </Link>
-                <div className="pointer-events-none absolute left-1/2 -bottom-8 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
-                  Buka formulir pendaftaran
-                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
-                </div>
-              </div>
-              <Link href="/daftar#pemulihan" className="hero-ticket-link">
-                Sudah punya tiket? <span>Cek di sini</span>
-              </Link>
-            </div>
+            <HeroActions />
             <p className="hero-note">
               <span className="hero-note-star" aria-hidden="true">✧</span>
               Satu perayaan, banyak cerita penuh kasih
@@ -173,7 +153,7 @@ export default async function Home() {
             <p className="section-kicker">Suasana Natal</p>
             <h2 id="holiday-gallery-title">Merayakan damai, berbagi sukacita.</h2>
           </div>
-          <p>
+          <p className="holiday-gallery-desc">
             Ibadah, kebersamaan, dan berbagi menjadi inti perayaan Natal.
           </p>
         </div>
@@ -350,7 +330,20 @@ export default async function Home() {
 
       <section className="privacy-section" data-reveal>
         <div className="privacy-card">
-          <span className="privacy-mark" aria-hidden="true">⌑</span>
+          <span className="privacy-mark" aria-hidden="true">
+            <svg
+              className="h-5 w-5 text-emerald-800"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </span>
           <div>
             <h2>Data Anda tetap terjaga</h2>
             <p>
@@ -372,7 +365,6 @@ export default async function Home() {
               height={28}
               className="footer-uk3-logo"
             />
-            <div><strong>UK3 UNNES</strong><span>Unit Kegiatan Kristiani</span></div>
           </div>
           <p className="footer-note">© 2026 PWK UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span></p>
           <Image

@@ -5,6 +5,7 @@ import { useState, useTransition, type FormEvent } from "react";
 type RecoveryResponse = {
   status: string;
   ticketPath?: string;
+  recoveryCode?: string;
   message?: string;
 };
 
@@ -21,18 +22,23 @@ function isRecoveryResponse(value: unknown): value is RecoveryResponse {
     value.status !== "recovered" ||
     ("ticketPath" in value &&
       typeof value.ticketPath === "string" &&
-      /^\/ticket\/[A-Za-z0-9_-]{43}$/.test(value.ticketPath))
+      /^\/ticket\/[A-Za-z0-9_-]{43}$/.test(value.ticketPath) &&
+      "recoveryCode" in value &&
+      typeof value.recoveryCode === "string" &&
+      /^[A-F0-9]{32}$/.test(value.recoveryCode))
   );
 }
 
 export default function TicketRecoveryForm() {
   const [pending, startTransition] = useTransition();
   const [ticketPath, setTicketPath] = useState<string | null>(null);
+  const [recoveryCode, setRecoveryCode] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setTicketPath(null);
+    setRecoveryCode(null);
     setMessage(null);
 
     const form = event.currentTarget;
@@ -64,8 +70,9 @@ export default function TicketRecoveryForm() {
         return;
       }
 
-      if (body.status === "recovered" && body.ticketPath) {
+      if (body.status === "recovered" && body.ticketPath && body.recoveryCode) {
         setTicketPath(body.ticketPath);
+        setRecoveryCode(body.recoveryCode);
         form.reset();
         return;
       }
@@ -85,6 +92,16 @@ export default function TicketRecoveryForm() {
             Tiket berhasil dipulihkan. Tautan tiket sebelumnya sudah tidak
             berlaku.
           </p>
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--cream)] px-4 py-3">
+            <p className="text-sm font-semibold">Kode pemulihan baru</p>
+            <p className="mt-2 break-all rounded-lg bg-white px-3 py-2 font-mono text-sm tracking-wider">
+              {recoveryCode}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
+              Simpan kode ini sekarang. Kode lama tidak berlaku dan kode baru
+              hanya ditampilkan sekali.
+            </p>
+          </div>
           <a
             className="inline-flex min-h-11 items-center rounded-full bg-[var(--forest)] px-5 font-semibold text-white hover:bg-[var(--forest-deep)] hover:text-white"
             href={ticketPath}
@@ -158,7 +175,7 @@ export default function TicketRecoveryForm() {
           <p className="text-xs leading-5 text-[var(--muted)]">
             Untuk melindungi data peserta, pesan kegagalan tidak membedakan
             nomor atau kode yang tidak cocok. Pemulihan akan menerbitkan
-            tautan baru dan mencabut tautan sebelumnya.
+            tautan dan kode pemulihan baru, lalu mencabut yang sebelumnya.
           </p>
         </form>
       )}

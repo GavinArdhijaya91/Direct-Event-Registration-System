@@ -30,6 +30,7 @@ type EventSettings = {
   registeredCount: number;
   registrationOpen: boolean;
   locationCode: string | null;
+  qrMode: "STATIC" | "DYNAMIC";
   checkinOpensAt: string | null;
   checkinClosesAt: string | null;
 };
@@ -53,6 +54,7 @@ type SettingsDraft = {
   maxCapacity: string;
   registrationOpen: boolean;
   locationCode: string;
+  qrMode: "STATIC" | "DYNAMIC";
   checkinOpensAt: string;
   checkinClosesAt: string;
   capacityOverrideReason: string;
@@ -126,6 +128,7 @@ const emptyDraft: SettingsDraft = {
   maxCapacity: "",
   registrationOpen: false,
   locationCode: "",
+  qrMode: "DYNAMIC",
   checkinOpensAt: "",
   checkinClosesAt: "",
   capacityOverrideReason: "",
@@ -191,6 +194,7 @@ export default function AdminPanel() {
           maxCapacity: String(body.settings.maxCapacity),
           registrationOpen: body.settings.registrationOpen,
           locationCode: body.settings.locationCode ?? "",
+          qrMode: body.settings.qrMode,
           checkinOpensAt: dateToWibInput(body.settings.checkinOpensAt),
           checkinClosesAt: dateToWibInput(body.settings.checkinClosesAt),
           capacityOverrideReason: "",
@@ -301,6 +305,7 @@ export default function AdminPanel() {
           maxCapacity: Number(draft.maxCapacity),
           registrationOpen: draft.registrationOpen,
           locationCode: draft.locationCode || null,
+          qrMode: draft.qrMode,
           checkinOpensAt: wibInputToIso(draft.checkinOpensAt),
           checkinClosesAt: wibInputToIso(draft.checkinClosesAt),
           capacityOverrideReason: draft.capacityOverrideReason,
@@ -511,14 +516,15 @@ export default function AdminPanel() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
-            className="min-h-10 rounded-full bg-[var(--forest)] px-4 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-[var(--forest-deep)] transition"
+            className="min-h-11 rounded-full bg-[var(--forest)] px-4 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-[var(--forest-deep)] transition"
             onClick={() => setShowVenueQrModal(true)}
             type="button"
           >
-            🖥️ Tampilkan QR Presensi (Proyektor)
+            🖥️ <span className="sm:hidden">QR Proyektor</span>
+            <span className="hidden sm:inline">Tampilkan QR Presensi (Proyektor)</span>
           </button>
           <button
-            className="min-h-10 rounded-full border border-[var(--line)] bg-white px-4 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--forest)]"
+            className="min-h-11 rounded-full border border-[var(--line)] bg-white px-4 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--forest)]"
             disabled={loading}
             onClick={() => {
               setLoading(true);
@@ -529,7 +535,7 @@ export default function AdminPanel() {
             {loading ? "Memuat…" : "Refresh"}
           </button>
           <button
-            className="min-h-10 rounded-full border border-[var(--line)] bg-white px-4 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--red)]"
+            className="min-h-11 rounded-full border border-[var(--line)] bg-white px-4 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--red)]"
             onClick={() => void logout()}
             type="button"
           >
@@ -672,6 +678,32 @@ export default function AdminPanel() {
               />
               Buka pendaftaran
             </label>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold" htmlFor="qr-mode">
+                Mode QR presensi
+              </label>
+              <select
+                className="min-h-11 w-full rounded-lg border border-[var(--line)] bg-white px-3"
+                id="qr-mode"
+                onChange={(event) =>
+                  setDraft({
+                    ...draft,
+                    qrMode:
+                      event.target.value === "STATIC" ? "STATIC" : "DYNAMIC",
+                  })
+                }
+                value={draft.qrMode}
+              >
+                <option value="DYNAMIC">
+                  Dinamis (berputar tiap 3 menit)
+                </option>
+                <option value="STATIC">Statis (cetak/banner)</option>
+              </select>
+              <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
+                QR dinamis memerlukan QR_SIGNING_SECRET di server. Mode statis
+                hanya untuk poster cetak dan lebih mudah disalahgunakan.
+              </p>
+            </div>
             <div>
               <div className="mb-1.5 flex items-center justify-between">
                 <label className="block text-sm font-semibold" htmlFor="location-code">
@@ -858,7 +890,7 @@ export default function AdminPanel() {
               <button
                 type="button"
                 onClick={() => setShowScanner(true)}
-                className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[var(--forest)] bg-white px-3 text-xs font-semibold text-[var(--forest)] shadow-sm hover:bg-[var(--moss)] hover:text-[var(--forest-deep)] transition"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--forest)] bg-white px-3 text-xs font-semibold text-[var(--forest)] shadow-sm hover:bg-[var(--moss)] hover:text-[var(--forest-deep)] transition"
               >
                 <span>📷</span>
                 <span>Scan QR</span>
@@ -866,7 +898,7 @@ export default function AdminPanel() {
               <button
                 type="button"
                 onClick={() => setShowWalkinModal(true)}
-                className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[var(--forest)] px-3 text-xs font-semibold text-white shadow-sm hover:bg-[var(--forest-deep)] transition"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[var(--forest)] px-3 text-xs font-semibold text-white shadow-sm hover:bg-[var(--forest-deep)] transition"
               >
                 <span>🆘</span>
                 <span>Tamu OTS</span>
@@ -880,7 +912,7 @@ export default function AdminPanel() {
                 Auto-refresh
               </label>
               <a
-                className="inline-flex min-h-9 items-center rounded-full bg-[var(--forest)] px-3 text-xs font-semibold text-white hover:bg-[var(--forest-deep)] hover:text-white"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--forest)] px-3 text-xs font-semibold text-white hover:bg-[var(--forest-deep)] hover:text-white"
                 href="/api/admin/export"
               >
                 CSV
@@ -979,7 +1011,7 @@ export default function AdminPanel() {
                             value={deleteReason}
                           />
                           <button
-                            className="min-h-9 rounded-full bg-[var(--red)] px-3 text-xs font-semibold text-white disabled:opacity-50"
+                            className="min-h-11 rounded-full bg-[var(--red)] px-3 text-xs font-semibold text-white disabled:opacity-50"
                             disabled={
                               !deleteReason.trim() ||
                               deletingTicketCode !== null ||
@@ -992,7 +1024,7 @@ export default function AdminPanel() {
                               : "Konfirmasi hapus"}
                           </button>
                           <button
-                            className="ml-2 min-h-9 px-2 text-xs underline"
+                            className="ml-2 min-h-11 px-2 text-xs underline"
                             onClick={() => {
                               setDeleteTargetTicketCode(null);
                               setDeleteReason("");
@@ -1004,7 +1036,7 @@ export default function AdminPanel() {
                         </form>
                       ) : (
                         <button
-                          className="min-h-9 rounded-full border border-[var(--red)] px-3 text-xs font-semibold text-[var(--red)]"
+                          className="min-h-11 rounded-full border border-[var(--red)] px-3 text-xs font-semibold text-[var(--red)]"
                           disabled={
                             deletingTicketCode !== null || bulkDeleting
                           }
@@ -1102,7 +1134,6 @@ export default function AdminPanel() {
           eventName={draft.eventName || dashboard.settings.eventName || "Natal PWK 2026"}
           eventLocation={draft.eventLocation || dashboard.settings.eventLocation || "Gedung B6 FBS UNNES"}
           isOpen={showVenueQrModal}
-          locationCode={draft.locationCode || dashboard.settings.locationCode || ""}
           onClose={() => setShowVenueQrModal(false)}
         />
       ) : null}

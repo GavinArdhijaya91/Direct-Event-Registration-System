@@ -22,11 +22,11 @@ export const metadata: Metadata = {
   referrer: "no-referrer",
   icons: {
     icon: [
-      { url: "/images/logos/logo-natal-pwk.png", type: "image/png" },
+      { url: "/images/logos/logo-natal-pwk-2026.png", type: "image/png" },
     ],
-    shortcut: ["/images/logos/logo-natal-pwk.png"],
+    shortcut: ["/images/logos/logo-natal-pwk-2026.png"],
     apple: [
-      { url: "/images/logos/logo-natal-pwk.png" },
+      { url: "/images/logos/logo-natal-pwk-2026.png" },
     ],
   },
 };

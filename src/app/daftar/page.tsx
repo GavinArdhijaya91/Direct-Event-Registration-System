@@ -53,12 +53,11 @@ export default async function DaftarPage() {
             aria-label="Natal PWK UNNES, kembali ke beranda"
           >
             <Image
-              src="/images/logos/logo-natal-pwk.png"
+              src="/images/logos/logo-natal-pwk-2026.png"
               alt=""
               width={52}
               height={52}
               className="brand-logo"
-              unoptimized
               priority
             />
             <span className="brand-copy">
@@ -115,20 +114,20 @@ export default async function DaftarPage() {
               </div>
               
               <div className="md:col-span-2">
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-xl bg-gray-50/80 p-2 sm:p-0 sm:bg-transparent">
-                    <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mb-1">TANGGAL</p>
-                    <p className="text-xs sm:text-sm font-semibold text-ink leading-tight">{formattedDate}</p>
+                <div className="grid grid-cols-1 gap-2 text-left sm:grid-cols-3 sm:text-center">
+                  <div className="rounded-xl bg-gray-50/80 p-3 sm:p-0 sm:bg-transparent">
+                    <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider mb-0.5">TANGGAL</p>
+                    <p className="text-sm font-semibold text-ink leading-snug">{formattedDate}</p>
                   </div>
-                  <div className="rounded-xl bg-gray-50/80 p-2 sm:p-0 sm:bg-transparent">
-                    <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mb-1">LOKASI</p>
-                    <p className="text-xs sm:text-sm font-semibold text-ink leading-tight">
+                  <div className="rounded-xl bg-gray-50/80 p-3 sm:p-0 sm:bg-transparent">
+                    <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider mb-0.5">LOKASI</p>
+                    <p className="text-sm font-semibold text-ink leading-snug">
                       {settings?.eventLocation ?? "Gedung B6, FBS UNNES"}
                     </p>
                   </div>
-                  <div className="rounded-xl bg-gray-50/80 p-2 sm:p-0 sm:bg-transparent">
-                    <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mb-1">KUOTA</p>
-                    <p className="text-xs sm:text-sm font-semibold text-emeral leading-tight">{remaining} tersisa</p>
+                  <div className="rounded-xl bg-gray-50/80 p-3 sm:p-0 sm:bg-transparent">
+                    <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider mb-0.5">KUOTA</p>
+                    <p className="text-sm font-semibold text-emeral leading-snug">{remaining} tersisa</p>
                   </div>
                 </div>
               </div>
@@ -146,7 +145,7 @@ export default async function DaftarPage() {
               <span className="!text-white font-semibold">Formulir Pendaftaran</span>
               <span aria-hidden="true" className="!text-white transition-transform group-hover:translate-y-0.5">↓</span>
             </a>
-            <div className="pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
+            <div className="hover-hint pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
               Isi data pendaftaran peserta baru
               <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
             </div>
@@ -160,7 +159,7 @@ export default async function DaftarPage() {
               <span>Pulihkan Tiket (Sudah Daftar)</span>
               <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
             </a>
-            <div className="pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
+            <div className="hover-hint pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
               Buka tiket yang sudah terdaftar
               <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
             </div>

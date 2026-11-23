@@ -74,7 +74,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
       <div className="mb-3 w-full max-w-[42rem]" data-reveal>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--forest)] active:scale-[0.98] transition"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 py-1.5 text-xs sm:text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] hover:text-[var(--forest)] active:scale-[0.98] transition"
         >
           ← Kembali ke Beranda
         </Link>

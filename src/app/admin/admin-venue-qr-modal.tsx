@@ -1,20 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import {
-  buildDynamicQrPayload,
-  getDynamicQrToken,
-  QR_ROTATION_INTERVAL_SECONDS,
-} from "@/lib/dynamic-qr";
+
+type VenueQrData = {
+  status: "available";
+  mode: "STATIC" | "DYNAMIC";
+  payload: string;
+  token: string;
+  secondsRemaining: number | null;
+  rotationSeconds: number | null;
+};
 
 type VenueQrModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  locationCode: string;
   eventName: string;
   eventLocation: string;
 };
+
+function isVenueQrData(value: unknown): value is VenueQrData {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const data = value as Record<string, unknown>;
+  return (
+    data.status === "available" &&
+    (data.mode === "STATIC" || data.mode === "DYNAMIC") &&
+    typeof data.payload === "string" &&
+    typeof data.token === "string" &&
+    (data.secondsRemaining === null ||
+      typeof data.secondsRemaining === "number") &&
+    (data.rotationSeconds === null ||
+      typeof data.rotationSeconds === "number")
+  );
+}
 
 function formatTimer(seconds: number) {
   const m = Math.floor(seconds / 60);
@@ -25,68 +46,90 @@ function formatTimer(seconds: number) {
 export default function AdminVenueQrModal({
   isOpen,
   onClose,
-  locationCode,
   eventName,
   eventLocation,
 }: VenueQrModalProps) {
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrImage, setQrImage] = useState<{
+    payload: string;
+    url: string;
+  } | null>(null);
+  const [qrData, setQrData] = useState<VenueQrData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isDynamic, setIsDynamic] = useState(true);
   const [now, setNow] = useState(0);
+  const [fetchedAt, setFetchedAt] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Timer 1 detik untuk hitung mundur rotasi 3 menit
+  const loadVenueQr = useCallback(async () => {
+    try {
+      const response = await fetch("/api/admin/venue-qr", {
+        cache: "no-store",
+      });
+      const body: unknown = await response.json();
+      if (!response.ok || !isVenueQrData(body)) {
+        setError("QR presensi tidak dapat dimuat.");
+        return;
+      }
+      setQrData(body);
+      setFetchedAt(Date.now());
+      setNow(Date.now());
+      setError(null);
+    } catch {
+      setError("Koneksi ke layanan QR presensi gagal.");
+    }
+  }, []);
+
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-    const initialTick = window.setTimeout(() => setNow(Date.now()), 0);
-    if (!isDynamic) {
-      return () => window.clearTimeout(initialTick);
-    }
-    const interval = window.setInterval(() => {
-      setNow(Date.now());
-    }, 1000);
-    return () => {
-      window.clearTimeout(initialTick);
-      window.clearInterval(interval);
+
+    let active = true;
+    const load = async () => {
+      if (active) {
+        await loadVenueQr();
+      }
     };
-  }, [isOpen, isDynamic]);
 
-  const activeTimestamp = now || 1;
-  const { token, secondsRemaining } = getDynamicQrToken(
-    locationCode || "EVENT",
-    activeTimestamp,
-  );
+    void load();
+    const refresh = window.setInterval(() => {
+      void load();
+    }, 15_000);
+    const tick = window.setInterval(() => setNow(Date.now()), 1000);
 
-  const activePayload = isDynamic
-    ? buildDynamicQrPayload(locationCode || "EVENT", activeTimestamp)
-    : locationCode || "EVENT";
+    return () => {
+      active = false;
+      window.clearInterval(refresh);
+      window.clearInterval(tick);
+    };
+  }, [isOpen, loadVenueQr]);
 
-  // Re-generate QR setiap ada perubahan payload / step
   useEffect(() => {
     let active = true;
-    if (isOpen && activePayload) {
-      QRCode.toDataURL(activePayload, {
-        width: 480,
-        margin: 2,
-        color: {
-          dark: "#064e3b",
-          light: "#ffffff",
-        },
-        errorCorrectionLevel: "H",
-      })
-        .then((url) => {
-          if (active) {
-            setQrDataUrl(url);
-          }
-        })
-        .catch((err) => console.error("Gagal membuat QR Code Lokasi:", err));
+    if (!isOpen || !qrData?.payload) {
+      return;
     }
+
+    QRCode.toDataURL(qrData.payload, {
+      width: 480,
+      margin: 2,
+      color: {
+        dark: "#064e3b",
+        light: "#ffffff",
+      },
+      errorCorrectionLevel: "H",
+    })
+      .then((url) => {
+        if (active && qrData.payload) {
+          setQrImage({ payload: qrData.payload, url });
+        }
+      })
+      .catch((caught) => console.error("Gagal membuat QR Code Lokasi:", caught));
+
     return () => {
       active = false;
     };
-  }, [isOpen, activePayload]);
+  }, [isOpen, qrData?.payload]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -100,6 +143,9 @@ export default function AdminVenueQrModal({
 
   if (!isOpen) return null;
 
+  const currentQrUrl =
+    qrData && qrImage?.payload === qrData.payload ? qrImage.url : null;
+
   const toggleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -109,8 +155,8 @@ export default function AdminVenueQrModal({
       } else {
         await document.exitFullscreen();
       }
-    } catch (err) {
-      console.warn("Fullscreen tidak didukung atau diblokir:", err);
+    } catch (caught) {
+      console.warn("Fullscreen tidak didukung atau diblokir:", caught);
     }
   };
 
@@ -119,16 +165,24 @@ export default function AdminVenueQrModal({
   };
 
   const downloadQr = () => {
-    if (!qrDataUrl) return;
+    if (!currentQrUrl || !qrData) return;
     const a = document.createElement("a");
-    a.href = qrDataUrl;
-    a.download = `QR-Presensi-${isDynamic ? "Dinamis" : "Statis"}-${locationCode}.png`;
+    a.href = currentQrUrl;
+    a.download = `QR-Presensi-${qrData.mode === "DYNAMIC" ? "Dinamis" : "Statis"}.png`;
     a.click();
   };
 
-  const progressPercent = Math.round(
-    (secondsRemaining / QR_ROTATION_INTERVAL_SECONDS) * 100,
-  );
+  const secondsRemaining =
+    qrData?.secondsRemaining === null || qrData?.secondsRemaining === undefined
+      ? null
+      : Math.max(
+          0,
+          qrData.secondsRemaining - Math.floor(Math.max(now - fetchedAt, 0) / 1000),
+        );
+  const progressPercent =
+    secondsRemaining !== null && qrData?.rotationSeconds
+      ? Math.round((secondsRemaining / qrData.rotationSeconds) * 100)
+      : null;
 
   return (
     <div
@@ -145,7 +199,6 @@ export default function AdminVenueQrModal({
             : "max-w-2xl"
         }`}
       >
-        {/* Tombol Tutup (sembunyi saat fullscreen mode proyektor) */}
         {!isFullscreen && (
           <button
             onClick={onClose}
@@ -157,7 +210,6 @@ export default function AdminVenueQrModal({
           </button>
         )}
 
-        {/* Header Acara */}
         <div className="max-w-lg">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--moss)] px-3.5 py-1 text-xs font-semibold tracking-wide text-[var(--forest-deep)] uppercase">
             <span>✨</span> Presensi Kehadiran Terpusat
@@ -172,39 +224,37 @@ export default function AdminVenueQrModal({
             📍 {eventLocation || "Gedung B6 FBS UNNES"}
           </p>
 
-          {/* Saklar Mode Dinamis vs Statis */}
           <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--cream)] px-3 py-1 text-xs">
-            <span className="font-medium text-[var(--muted)]">Rotasi QR (3 Menit):</span>
-            <button
-              type="button"
-              onClick={() => setIsDynamic(!isDynamic)}
-              className={`rounded-full px-2.5 py-0.5 text-xs font-bold transition ${
-                isDynamic
-                  ? "bg-[var(--forest)] text-white shadow-xs"
-                  : "bg-white text-[var(--ink)] border border-[var(--line)]"
-              }`}
-            >
-              {isDynamic ? "Aktif (Anti Titip Absen)" : "Statis (Banner/Cetak)"}
-            </button>
+            <span className="font-medium text-[var(--muted)]">Mode QR:</span>
+            <span className="rounded-full bg-[var(--forest)] px-2.5 py-0.5 text-xs font-bold text-white">
+              {qrData
+                ? qrData.mode === "DYNAMIC"
+                  ? "Dinamis (Rotasi 3 Menit)"
+                  : "Statis (Banner/Cetak)"
+                : "Memuat…"}
+            </span>
           </div>
         </div>
 
-        {/* Kotak QR Code Proyektor */}
         <div className="my-5 flex flex-col items-center">
-          {isDynamic && (
+          {secondsRemaining !== null ? (
             <div className="mb-3 flex items-center gap-2 rounded-full bg-[var(--moss)] px-4 py-1.5 text-xs font-bold text-[var(--forest-deep)]">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>QR berganti dalam: {formatTimer(secondsRemaining)}</span>
-              <span className="text-[10px] opacity-75 font-mono">({progressPercent}%)</span>
+              {progressPercent !== null ? (
+                <span className="text-[10px] opacity-75 font-mono">
+                  ({progressPercent}%)
+                </span>
+              ) : null}
             </div>
-          )}
+          ) : null}
 
           <div className="rounded-3xl border-4 border-[var(--forest)] bg-white p-4 sm:p-6 shadow-xl">
-            {qrDataUrl ? (
+            {currentQrUrl ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                src={qrDataUrl}
-                alt={`QR Presensi ${activePayload}`}
+                src={currentQrUrl}
+                alt={`QR Presensi ${qrData?.payload ?? ""}`}
                 className="h-56 w-56 sm:h-80 sm:w-80 md:h-96 md:w-96 object-contain"
                 height={384}
                 width={384}
@@ -218,7 +268,15 @@ export default function AdminVenueQrModal({
             )}
           </div>
 
-          {/* Teks Petunjuk untuk Mahasiswa / Peserta */}
+          {error ? (
+            <p
+              className="mt-3 rounded-xl bg-[var(--rose)] px-4 py-2 text-sm text-[var(--red)]"
+              role="alert"
+            >
+              {error}
+            </p>
+          ) : null}
+
           <div className="mt-4 max-w-md rounded-2xl bg-[var(--cream)] px-4 py-3 border border-[var(--line)]">
             <p className="text-xs sm:text-sm font-semibold text-[var(--ink)]">
               📱 Petunjuk untuk Seluruh Peserta:
@@ -230,29 +288,31 @@ export default function AdminVenueQrModal({
             </ol>
           </div>
 
-          {/* Kode Alternatif jika kamera peserta silau/buram */}
           <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-[var(--muted)]">
             <span>Kamera silau? Cukup ketik kode token di HP:</span>
             <code className="rounded-lg bg-[var(--cream)] px-3 py-1 font-mono font-extrabold text-base text-[var(--forest)] border border-[var(--line)] tracking-wider">
-              {isDynamic ? token : locationCode || "(Belum diatur)"}
+              {qrData?.token ?? "(Belum diatur)"}
             </code>
           </div>
         </div>
 
-        {/* Toolbar Kontrol Panitia */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full pt-2">
           <button
             onClick={toggleFullscreen}
             type="button"
             className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--forest)] px-5 text-xs sm:text-sm font-semibold text-white hover:bg-[var(--forest-deep)] transition shadow-sm active:scale-95"
           >
-            <span>{isFullscreen ? "🗗 Keluar Fullscreen" : "🖥️ Mode Proyektor (Fullscreen)"}</span>
+            <span>
+              {isFullscreen
+                ? "🗗 Keluar Fullscreen"
+                : "🖥️ Mode Proyektor (Fullscreen)"}
+            </span>
           </button>
 
           <button
             onClick={downloadQr}
             type="button"
-            disabled={!qrDataUrl}
+            disabled={!currentQrUrl}
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 text-xs sm:text-sm font-semibold text-[var(--ink)] hover:bg-[var(--cream)] transition shadow-sm disabled:opacity-50"
           >
             <span>💾 Unduh Gambar QR</span>

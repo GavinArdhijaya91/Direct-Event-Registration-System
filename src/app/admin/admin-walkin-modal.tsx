@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, type FormEvent } from "react";
+import { UNNES_FACULTIES } from "@/lib/registration";
 
 export default function AdminWalkinModal({
   onClose,
@@ -10,8 +11,11 @@ export default function AdminWalkinModal({
   onSuccess: () => Promise<void>;
 }) {
   const [pending, startTransition] = useTransition();
-  const [category, setCategory] = useState("MAHASISWA");
   const [error, setError] = useState<string | null>(null);
+
+  const [participantType, setParticipantType] = useState<"MAHASISWA_ALUMNI" | "UMUM">("MAHASISWA_ALUMNI");
+  const [academicStatus, setAcademicStatus] = useState<"MAHASISWA" | "ALUMNI">("MAHASISWA");
+  const [campusType, setCampusType] = useState<"UNNES" | "LUAR_UNNES">("UNNES");
 
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,6 +72,185 @@ export default function AdminWalkinModal({
         ) : null}
 
         <form onSubmit={submit} className="mt-4 space-y-3.5">
+          {/* Tipe Peserta */}
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-[var(--ink)]">
+              Kategori Pendaftar
+            </label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                <input
+                  type="radio"
+                  name="participantType"
+                  value="MAHASISWA_ALUMNI"
+                  checked={participantType === "MAHASISWA_ALUMNI"}
+                  onChange={() => setParticipantType("MAHASISWA_ALUMNI")}
+                  className="accent-[var(--forest)]"
+                />
+                Mahasiswa / Alumni
+              </label>
+              <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                <input
+                  type="radio"
+                  name="participantType"
+                  value="UMUM"
+                  checked={participantType === "UMUM"}
+                  onChange={() => setParticipantType("UMUM")}
+                  className="accent-[var(--forest)]"
+                />
+                Umum / Tamu Undangan
+              </label>
+            </div>
+          </div>
+
+          {/* Form Khusus Mahasiswa / Alumni */}
+          {participantType === "MAHASISWA_ALUMNI" ? (
+            <div className="rounded-xl border border-[var(--line)] bg-gray-50 p-3 space-y-2.5">
+              <div className="flex gap-4">
+                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                  <input
+                    type="radio"
+                    name="academicStatus"
+                    value="MAHASISWA"
+                    checked={academicStatus === "MAHASISWA"}
+                    onChange={() => setAcademicStatus("MAHASISWA")}
+                    className="accent-[var(--forest)]"
+                  />
+                  Mahasiswa
+                </label>
+                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                  <input
+                    type="radio"
+                    name="academicStatus"
+                    value="ALUMNI"
+                    checked={academicStatus === "ALUMNI"}
+                    onChange={() => setAcademicStatus("ALUMNI")}
+                    className="accent-[var(--forest)]"
+                  />
+                  Alumni
+                </label>
+              </div>
+
+              {academicStatus === "ALUMNI" ? (
+                <div>
+                  <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-grad-year">
+                    Alumni Tahun Berapa?
+                  </label>
+                  <input
+                    id="walkin-grad-year"
+                    name="graduationYear"
+                    pattern="\d{4}"
+                    maxLength={4}
+                    required
+                    placeholder="Contoh: 2022"
+                    className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-xs"
+                  />
+                </div>
+              ) : null}
+
+              <div className="flex gap-4 pt-1">
+                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                  <input
+                    type="radio"
+                    name="campusType"
+                    value="UNNES"
+                    checked={campusType === "UNNES"}
+                    onChange={() => setCampusType("UNNES")}
+                    className="accent-[var(--forest)]"
+                  />
+                  UNNES
+                </label>
+                <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                  <input
+                    type="radio"
+                    name="campusType"
+                    value="LUAR_UNNES"
+                    checked={campusType === "LUAR_UNNES"}
+                    onChange={() => setCampusType("LUAR_UNNES")}
+                    className="accent-[var(--forest)]"
+                  />
+                  Luar UNNES
+                </label>
+              </div>
+
+              {campusType === "UNNES" ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-fac">
+                      Fakultas
+                    </label>
+                    <select
+                      id="walkin-fac"
+                      name="faculty"
+                      required
+                      defaultValue=""
+                      className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2 text-xs"
+                    >
+                      <option value="" disabled>Pilih Fakultas</option>
+                      {UNNES_FACULTIES.map((f) => (
+                        <option key={f} value={f}>{f}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-prodi">
+                      Prodi
+                    </label>
+                    <input
+                      id="walkin-prodi"
+                      name="studyProgram"
+                      required
+                      placeholder="Teknik Informatika"
+                      className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div>
+                    <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-camp-name">
+                      Nama Kampus / Univ
+                    </label>
+                    <input
+                      id="walkin-camp-name"
+                      name="campusName"
+                      required
+                      placeholder="Contoh: UNDIP"
+                      className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-fac-other">
+                        Fakultas
+                      </label>
+                      <input
+                        id="walkin-fac-other"
+                        name="faculty"
+                        required
+                        placeholder="Fakultas Teknik"
+                        className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-prodi-other">
+                        Prodi
+                      </label>
+                      <input
+                        id="walkin-prodi-other"
+                        name="studyProgram"
+                        required
+                        placeholder="Teknik Sipil"
+                        className="min-h-9 w-full rounded-lg border border-[var(--line)] bg-white px-2.5 text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
+
+          {/* Data Diri Umum */}
           <div>
             <label
               className="mb-1 block text-xs font-semibold text-[var(--ink)]"
@@ -102,46 +285,56 @@ export default function AdminWalkinModal({
             />
           </div>
 
-          <div>
-            <label
-              className="mb-1 block text-xs font-semibold text-[var(--ink)]"
-              htmlFor="walkin-category"
-            >
-              Kategori
-            </label>
-            <select
-              id="walkin-category"
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
-            >
-              <option value="MAHASISWA">Mahasiswa</option>
-              <option value="ALUMNI">Alumni</option>
-              <option value="TAMU_UNDANGAN">Tamu Undangan</option>
-            </select>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-birth-place">
+                Tempat Lahir
+              </label>
+              <input
+                id="walkin-birth-place"
+                name="birthPlace"
+                required
+                placeholder="Semarang"
+                className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-birth-date">
+                Tanggal Lahir
+              </label>
+              <input
+                id="walkin-birth-date"
+                name="birthDate"
+                type="date"
+                required
+                className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
+              />
+            </div>
           </div>
 
           <div>
-            <label
-              className="mb-1 block text-xs font-semibold text-[var(--ink)]"
-              htmlFor="walkin-institution"
-            >
-              Asal / Instansi
+            <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-church">
+              Stasi Asal / Identitas Gereja
             </label>
             <input
-              id="walkin-institution"
-              name="institution"
+              id="walkin-church"
+              name="churchOrigin"
               required
-              maxLength={120}
+              placeholder="Contoh: Gereja Santo Fransiskus Asisi, Batam"
               className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
-              placeholder={
-                category === "MAHASISWA"
-                  ? "Contoh: FMIPA - Teknik Informatika UNNES"
-                  : category === "ALUMNI"
-                    ? "Contoh: Angkatan 2020, FMIPA UNNES"
-                    : "Contoh: Gereja Bethel / Instansi Tamu"
-              }
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs font-semibold" htmlFor="walkin-domicile">
+              Alamat Domisili / Tempat Tinggal
+            </label>
+            <input
+              id="walkin-domicile"
+              name="domicile"
+              required
+              placeholder="Contoh: Jl. Melati Blok B No. 12, Kel. Sekaran, Kec. Gunungpati, Kota Semarang, Jawa Tengah"
+              className="min-h-10 w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
             />
           </div>
 

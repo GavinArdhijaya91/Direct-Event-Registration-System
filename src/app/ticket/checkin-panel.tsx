@@ -183,7 +183,16 @@ export default function CheckinPanel({
         }}
         type="button"
       >
-        {busy ? "Memproses presensi…" : scanning ? "Kamera aktif (arahkan ke QR proyektor)…" : "📷 Scan QR Presensi di Layar Proyektor / Banner"}
+        {busy
+          ? "Memproses presensi…"
+          : scanning
+            ? "Kamera aktif — arahkan ke QR proyektor…"
+            : (
+                <>
+                  📷 Scan QR Presensi
+                  <span className="hidden sm:inline"> di Layar Proyektor / Banner</span>
+                </>
+              )}
       </button>
 
       {scanning ? (
@@ -215,7 +224,7 @@ export default function CheckinPanel({
         >
           {showManualCodeInput
             ? "Tutup input kode manual"
-            : "Kamera silau dari proyektor? Masukkan kode presensi secara manual"}
+            : "Kamera silau? Ketik kode presensi manual"}
         </button>
 
         {showManualCodeInput && (
