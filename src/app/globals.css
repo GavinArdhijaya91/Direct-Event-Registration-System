@@ -3652,6 +3652,12 @@ a[href].inline-flex:hover {
   font-size: var(--a-xs);
 }
 
+.admin-overview-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
 .admin-actions-row {
   display: flex;
   flex-wrap: wrap;
@@ -4174,6 +4180,13 @@ a[href].inline-flex:hover {
   .admin-stat { padding: 0.8rem; }
   .admin-stat-value { font-size: 1.5rem; }
   .admin-quick-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+  .admin-overview-actions .admin-btn {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.25;
+    padding: 0.45rem 0.5rem;
+    font-size: var(--a-xs);
+  }
   .admin-field-grid { grid-template-columns: 1fr; }
   .admin-form-grid { gap: 0.7rem; }
   .admin-detail-grid { grid-template-columns: 1fr; }

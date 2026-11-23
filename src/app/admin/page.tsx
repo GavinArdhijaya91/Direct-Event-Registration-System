@@ -76,7 +76,7 @@ export default function AdminOverviewPage() {
         ))}
       </div>
       <div className="admin-card" style={{ marginTop: "1rem" }}>
-        <div className="admin-card-body admin-actions-row">
+        <div className="admin-card-body admin-overview-actions">
           <Link className="admin-btn admin-btn-primary" href="/admin/presensi">
             <AdminIcon name="monitor" /> Buka presensi & QR
           </Link>
