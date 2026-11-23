@@ -315,7 +315,7 @@ export default function RegistrationForm({
         </div>
 
         {!codeSaved ? (
-          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-amber-300 bg-amber-50 p-3.5 text-xs text-amber-900">
+          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-[var(--gold)] bg-[var(--candle)] p-3.5 text-xs text-[var(--ink)]">
             <input
               id="confirm-saved"
               type="checkbox"

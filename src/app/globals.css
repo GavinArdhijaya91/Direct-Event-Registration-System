@@ -32,6 +32,8 @@ html {
   --moss: #dcfce7;            /* Light green background (mint/10) */
   --rose: #fef2f2;            /* Light red background (error bg) */
   --red: #e11d48;             /* Crimson - same as --crimson */
+  --gold: #9a7626;            /* Aksen emas untuk catatan penting */
+  --candle: #fbf3df;          /* Latar hangat untuk kode pemulihan */
   --red-dark: #991b1b;        /* Crimson dark */
   --line: #e5e7eb;            /* Border line (gray-200) */
   --cream: #fdfdfd;           /* Off-white/cream background for cards */

@@ -1,164 +1,235 @@
 # Sistem Registrasi & Presensi Natal PWK UNNES 2026
-> **A High-Reliability, Serverless Event Registration & Verification System**  
-> Diselenggarakan oleh Paguyuban Warga Kristiani Universitas Negeri Semarang (PWK UNNES)
+
+Website untuk membantu panitia Natal PWK UNNES 2026 mencatat pendaftaran dan kehadiran peserta tanpa antrean panjang di pintu masuk.
+
+Acara berlangsung **28 Januari 2027** di **Gedung B6, FBS UNNES**, dengan target awal **200–300 peserta**. Setiap orang mendaftar untuk dirinya sendiri dan mendapat tiketnya sendiri.
+
+Dokumen ini ditulis untuk siapa saja yang terlibat: panitia, peserta, dan orang yang kelak mengelola sistemnya. Bagian teknis ada di bawah, setelah bagian alur.
 
 ---
 
-## Latar Belakang Masalah (Background Story)
+## Daftar isi
 
-Perayaan Natal PWK UNNES merupakan **acara tahunan akbar** yang mempertemukan mahasiswa aktif, alumni lintas angkatan, jemaat gereja, hingga tamu undangan umum di lingkungan Universitas Negeri Semarang. 
-
-Pada tahun-tahun sebelumnya, proses registrasi dan presensi acara mengandalkan **Google Form konvensional dan pencarian manual lembar spreadsheet di meja registrasi**. Kendala nyata yang kerap dihadapi setiap tahun:
-1. **Antrean Mengular di Pintu Masuk:** Pencarian nama ratusan jemaat satu per satu di spreadsheet memakan waktu lama dan menyebabkan penumpukan di pintu aula.
-2. **Data Ganda & Format Tidak Baku:** Peserta sering mendaftar ulang berkali-kali karena lupa apakah sudah terdaftar, serta format penulisan fakultas/instansi yang berantakan.
-3. **Keterbatasan Hubungan Jangka Panjang:** Karena acara setahun sekali, panitia kesulitan memetakan persebaran mahasiswa (fakultas/prodi), jejaring alumni, serta stasi/gereja asal jemaat untuk pembinaan dan relasi persaudaraan pasca-acara.
-4. **Tantangan Biaya Infrastruktur:** Acara berbasis organisasi kemahasiswaan membutuhkan sistem mandiri yang andal, aman, namun **harus efisien secara anggaran (target Rp0 / Free-Tier Friendly)**.
-
-Untuk menjawab persoalan tersebut, sistem ini dibangun secara khusus dari nol (*custom-built*) dengan arsitektur modern yang mengedepankan **integritas data, kecepatan presensi di pintu masuk, dan keamanan informasi**.
-
----
-
-## Arsitektur & Rekayasa Sistem (Key Engineering Highlights)
-
-Aplikasi ini dibangun menggunakan arsitektur **Modern Serverless Web Application** dengan pertimbangan teknis tinggi:
-
-### 1. Concurrency-Safe & Zero Overbooking (Atomic Transactions)
-- Menggunakan **Prisma Transaction (`$transaction`)** pada PostgreSQL untuk menangani perebutan sisa kuota registrasi (*race condition*).
-- Jika puluhan pendaftar menekan tombol *submit* di milidetik yang sama menjelang kuota habis, database menjamin tidak ada tiket lebih yang diterbitkan melebihi kapasitas aula (*pessimistic/atomic reservation*).
-
-### 2. Time-Based Dynamic Rotating QR Code (Anti-Cheat Presence)
-- Presensi venue menggunakan kode QR yang **berotasi otomatis setiap 3 menit** di layar proyektor / laptop panitia.
-- Ditenagai algoritma **HMAC-SHA256 time-slice token**, sehingga foto atau tangkapan layar (*screenshot*) QR yang dikirimkan ke grup chat di luar venue akan segera hangus dan ditolak server.
-
-### 3. Serverless Connection Pooling
-- Dirancang untuk lingkungan hosting *serverless* (Vercel) yang rentan terhadap *connection exhaust*.
-- Menggunakan **PgBouncer Connection Pooling (Port 6543)** via `@prisma/adapter-pg` pada Supabase PostgreSQL, menjaga performa tetap stabil di bawah batas kuota gratis.
-
-### 4. Zero Credential Leakage & Token Recovery
-- Peserta tidak perlu membuat akun/kata sandi baru. Tiket diakses via URL bertoken kriptografis acak (43-char Base64URL).
-- Dilengkapi **High-Entropy Recovery Code** dan tombol integrasi cepat *"Simpan ke WA Saya"*. Nomor WhatsApp tidak pernah dijadikan satu-satunya kredensial pembuka tiket guna mencegah kebocoran data pribadi oleh pihak asing.
-
-### 5. Multi-Layer Fault Tolerance (Hari-H Disaster Recovery)
-Sistem memiliki 3 lapis perlindungan operasional meja registrasi:
-- **Jalur Utama:** Peserta memindai QR dinamis di layar laptop/proyektor panitia secara mandiri.
-- **Jalur Bantuan (Helpdesk):** Fitur *Check-in Manual* instan oleh panitia jika baterai HP peserta habis atau kamera silau.
-- **Jalur Penyelamat (OTS / Walk-In):** Modal pendaftaran darurat untuk tamu terhormat yang datang langsung tanpa tiket saat kuota penuh, lengkap dengan pencatatan alasan wajib pada **Admin Audit Log**.
-
-### 6. Security Hardening & Privacy
-- **Row-Level Security (RLS):** Seluruh tabel PostgreSQL dikunci dengan RLS untuk memblokir akses REST API anonim publik (mencegah scraping Supabase PostgREST).
-- **Anti Formula-Injection:** Proteksi otomatis terhadap karakter manipulasi spreadsheet (`=`, `+`, `-`, `@`) saat panitia mengekspor laporan CSV.
-- **CSRF & Origin Verification:** Verifikasi origin ketat pada seluruh mutasi data sensitif admin.
-- **Timing-Safe Comparison:** Mengamankan autentikasi admin panel dari ancaman *timing attacks*.
+- [Untuk siapa sistem ini](#untuk-siapa-sistem-ini)
+- [Apa yang bisa dilakukan](#apa-yang-bisa-dilakukan)
+- [Alur untuk peserta](#alur-untuk-peserta)
+- [Alur untuk panitia](#alur-untuk-panitia)
+- [Hal yang perlu disiapkan panitia](#hal-yang-perlu-disiapkan-panitia)
+- [Data dan privasi](#data-dan-privasi)
+- [Keterbatasan yang perlu diketahui](#keterbatasan-yang-perlu-diketahui)
+- [Menjalankan di komputer sendiri](#menjalankan-di-komputer-sendiri)
+- [Deploy ke Vercel](#deploy-ke-vercel)
+- [Pemeriksaan sebelum rilis](#pemeriksaan-sebelum-rilis)
+- [Yang belum diputuskan](#yang-belum-diputuskan)
 
 ---
 
-## Struktur & Skema Profil Peserta
+## Untuk siapa sistem ini
 
-Formulir registrasi mengadopsi struktur bercabang dinamis (*Dynamic Categorization*):
-* **Mahasiswa / Alumni:**
-  * Status: Mahasiswa Aktif vs Alumni (khusus alumni wajib input tahun kelulusan).
-  * Asal Kampus:
-    * **UNNES:** Pilihan dropdown fakultas baku (`FK`, `FEB`, `FIPP`, `FMIPA`, `FBS`, `FISIP`, `FH`, `FT`, `FIK`) dan prodi.
-    * **Luar UNNES:** Input bebas nama perguruan tinggi, fakultas, dan prodi.
-* **Umum / Tamu Undangan:** Jalur khusus jemaat dan undangan luar kampus tanpa isian akademik.
-* **Data Relasi Komunitas (Semua Peserta):** Tempat & tanggal lahir, stasi/identitas gereja asal, alamat domisili, dan nomor WhatsApp.
+- **Peserta**: mahasiswa dan alumni UNNES, jemaat dari gereja atau stasi asal, serta tamu undangan. Mereka tidak perlu membuat akun atau kata sandi.
+- **Panitia registrasi**: memantau siapa yang sudah daftar dan siapa yang sudah hadir, membantu peserta yang mengalami kendala, serta mengunduh data dalam bentuk CSV.
+- **Penanggung jawab acara**: mengatur kuota, jadwal check-in, dan informasi acara dari panel admin.
+
+Satu hal yang penting sejak awal: **nomor WhatsApp tidak diverifikasi**. Nomor itu dipakai untuk mencegah pendaftaran ganda dan membantu pemulihan tiket, tetapi bukan bukti identitas.
 
 ---
 
-## Tech Stack
+## Apa yang bisa dilakukan
 
-| Komponen | Teknologi |
+**Halaman utama**
+
+- Mendaftar satu orang per pengiriman formulir.
+- Membuka tiket yang sudah dibuat kembali lewat nomor WhatsApp dan kode pemulihan.
+- Melihat status pendaftaran sedang dibuka atau sudah penuh.
+
+**Halaman tiket**
+
+- Menyimpan atau membagikan tautan tiket ke WhatsApp.
+- Memindai QR presensi yang ditayangkan panitia.
+- Mengetik kode token pendek bila kamera silau atau tidak bisa dipakai.
+- Melihat status hadir dan waktu check-in setelah server mencatatnya.
+
+**Panel admin**
+
+Panel admin dibagi menjadi lima halaman agar mudah dipakai:
+
+| Halaman | Isinya |
 |---|---|
-| **Framework** | Next.js (App Router, Server Actions, Route Handlers) |
-| **Language** | TypeScript (Strict Type Safety) |
-| **Database** | PostgreSQL (Supabase Managed Database) |
-| **ORM** | Prisma ORM dengan `@prisma/adapter-pg` |
-| **Validation** | Zod Schema Validation |
-| **Styling** | Tailwind CSS (Mobile-First, Ergonomic Touch Targets) |
-| **Deployment** | Vercel (Serverless Edge & Node.js Runtime) |
-| **Testing** | Node.js Native Test Runner (`tsx --test`) |
+| Ringkasan | Jumlah peserta, jumlah yang hadir, dan sisa kuota |
+| Presensi & QR | Menayangkan QR untuk proyektor, check-in manual, dan pendaftaran tamu langsung |
+| Daftar peserta | Mencari peserta, melihat detailnya, memfilter yang hadir atau belum hadir, dan mengunduh CSV |
+| Pengaturan | Nama acara, lokasi, kuota, jadwal check-in, dan mode QR |
+| Riwayat | Catatan tindakan admin, beserta alasan untuk perubahan penting |
+
+Panel ini memakai **satu kata sandi bersama**. Setiap tindakan tetap tercatat, tetapi catatannya tidak bisa menunjukkan siapa orang di baliknya. Karena itu, akses hanya dibagikan kepada petugas yang ditunjuk.
 
 ---
 
-## Panduan Menjalankan Secara Lokal
+## Alur untuk peserta
 
-1. **Clone repositori:**
-   ```bash
-   git clone https://github.com/username/Direct-Event-Registration-System.git
-   cd Direct-Event-Registration-System
-   ```
+1. **Daftar.** Isi formulir dengan data diri, asal gereja atau stasi, dan asal kampus atau instansi. Formulir menyesuaikan: alumni diminta tahun kelulusan, mahasiswa UNNES memilih fakultas dan program studi.
+2. **Simpan dua hal.** Setelah berhasil, peserta mendapat tautan tiket dan **kode pemulihan**. Kode pemulihan hanya ditampilkan sekali, jadi harus disimpan sendiri.
+3. **Buka tiket.** Tautan tiket berisi token acak. Siapa pun yang memilikinya bisa membuka tiket itu, jadi jangan dibagikan bebas.
+4. **Scan saat check-in.** Pada jadwal yang sudah ditentukan server, peserta memindai QR yang ditayangkan panitia. Bila kamera bermasalah, panitia bisa membantu lewat check-in manual.
+5. **Lihat status.** Setelah check-in berhasil, halaman tiket menampilkan status hadir dan waktu check-in dari server.
 
-2. **Pasang dependensi:**
-   ```bash
-   npm install
-   ```
+**Kalau tautan tiket hilang:** buka menu "Sudah Daftar / Cek Tiket", lalu masukkan nomor WhatsApp dan kode pemulihan. Sistem akan menerbitkan tautan baru dan mencabut tautan yang lama. Nomor WhatsApp saja tidak cukup.
 
-3. **Konfigurasi Environment (`.env`):**
-   Salin berkas template:
-   ```bash
-   cp .env.example .env
-   ```
-   Isi `DATABASE_URL`, `DIRECT_URL`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET`, dan `QR_SIGNING_SECRET`.
+Kalau kode pemulihan ikut hilang, tidak ada pemulihan otomatis. Peserta perlu dibantu panitia.
 
-4. **Migrasi Database:**
-   ```bash
-   npx prisma migrate deploy
-   ```
+---
 
-5. **Jalankan Pengujian Unit:**
-   ```bash
-   npm test
-   ```
+## Alur untuk panitia
 
-6. **Mulai Server Pengembangan:**
-   ```bash
-   npm run dev
-   ```
-   Buka [http://localhost:3000](http://localhost:3000) pada browser Anda.
+**Sebelum acara**
+
+- Buka pendaftaran dan tentukan kuota di halaman Pengaturan.
+- Isi jadwal buka dan tutup check-in dalam WIB.
+- Pilih mode QR: dinamis untuk proyektor, atau statis untuk poster cetak.
+- Siapkan QR presensi di layar dan uji dengan satu atau dua perangkat.
+
+**Saat acara**
+
+- Tayangkan QR dari halaman Presensi & QR.
+- Pantau jumlah hadir dari halaman Ringkasan atau Daftar peserta.
+- Bila peserta tidak bisa memindai, cari namanya dan gunakan tombol "Absenkan hadir", atau ketik kode tiket `EVT-XXXX` di form check-in manual.
+- Bila tamu datang langsung tanpa tiket, gunakan menu Tamu OTS. Alasan penerimaan wajib diisi dan akan tercatat.
+
+Angka di panel diperbarui berkala, bukan detik demi detik. Ada tombol refresh manual dan pengatur auto-refresh yang bisa dimatikan.
+
+**Setelah acara**
+
+- Unduh data peserta lewat tombol Ekspor CSV di halaman Daftar peserta.
+- Perubahan sensitif, seperti ubah kuota atau hapus data, memerlukan alasan dan masuk ke halaman Riwayat.
+
+---
+
+## Hal yang perlu disiapkan panitia
+
+Beberapa hal belum bisa diputuskan dari kode saja dan perlu ditetapkan oleh panitia:
+
+- **Jam acara dan jam check-in** yang pasti.
+- **Penanggung jawab database.** Paket database yang dipakai saat ini dapat dijeda setelah beberapa hari tanpa aktivitas. Proyek harus diaktifkan kembali sebelum pendaftaran dibuka dan sebelum hari-H.
+- **Prosedur cadangan.** Ekspor CSV bukan cadangan database. Perlu ada prosedur dan penanggung jawab pencadangan manual.
+- **Kontak bantuan** yang bisa dihubungi peserta bila tiket atau kode pemulihan bermasalah.
+- **Pemilik data** dan tata cara permintaan penghapusan data peserta.
+
+---
+
+## Data dan privasi
+
+Data yang dikumpulkan hanya untuk kebutuhan acara: nama, nomor WhatsApp, tempat dan tanggal lahir, stasi atau gereja asal, domisili, asal kampus atau instansi, serta sumber informasi tentang acara.
+
+Beberapa aturan yang dijalankan sistem:
+
+- Satu nomor WhatsApp hanya untuk satu peserta, setelah dinormalisasi.
+- Kata sandi dan kode pemulihan disimpan sebagai sidik (hash), bukan teks asli.
+- Token tiket di URL bersifat rahasia dan acak; kode `EVT-XXXX` hanya untuk tampilan, bukan kredensial.
+- Panel admin dan unduhan CSV hanya bisa diakses setelah login.
+- Nilai yang berpotensi dibaca sebagai rumus spreadsheet diberi tanda khusus saat diekspor ke CSV.
+- Target retensi data peserta adalah **1–2 bulan setelah acara**, lalu dihapus atau dianonimkan. Tanggal pastinya masih perlu ditetapkan.
+
+---
+
+## Keterbatasan yang perlu diketahui
+
+- **QR presensi bukan bukti kehadiran fisik.** QR di proyektor bisa dipotret atau dikirim ke orang di luar venue. Mode dinamis berputar tiap tiga menit dan server memberi sedikit toleransi untuk koneksi yang lambat, tetapi tetap ada batasan ini. Petugas perlu memantau status dari server.
+- **Kamera dan jaringan bisa bermasalah.** Sengaja disediakan check-in manual dan pendaftaran tamu langsung sebagai jalur bantuan.
+- **Kata sandi admin bersama** tidak bisa mengidentifikasi orang per orang. Audit mencatat tindakan dan alasan, bukan nama petugas.
+- **Beberapa percobaan dibatasi.** Login admin dan pemulihan tiket punya batas percobaan agar tidak bisa ditebak terus-menerus. Bila mendapat pesan "terlalu banyak percobaan", tunggu sampai jendela waktu berakhir.
+- **Biaya tidak dijamin nol.** Pilihan hosting dan database saat ini dipilih untuk menekan biaya, tetapi batas dan ketentuan penyedia tetap perlu dicek sebelum pendaftaran publik dibuka.
+
+---
+
+## Menjalankan di komputer sendiri
+
+Bagian ini untuk orang yang akan mengubah atau menguji kode.
+
+Diperlukan **Node.js versi 22.12 ke atas** dan akses ke database PostgreSQL yang sudah disiapkan.
+
+```bash
+git clone https://github.com/GavinArdhijaya91/Direct-Event-Registration-System.git
+cd Direct-Event-Registration-System
+npm install
+cp .env.example .env
+```
+
+Buka `.env` dan isi nilai yang diperlukan. File contoh hanya berisi placeholder.
+
+```bash
+npm run db:prepare   # migrasi + isi pengaturan awal
+npm run dev
+```
+
+Aplikasi bisa dibuka di `http://localhost:3000`.
+
+Perintah yang biasa dipakai saat mengerjakan kode:
+
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Menjalankan aplikasi untuk pengembangan |
+| `npm test` | Menjalankan pengujian otomatis |
+| `npm run typecheck` | Memeriksa kesalahan tipe TypeScript |
+| `npm run lint` | Memeriksa gaya dan aturan kode |
+| `npm run build` | Membuat versi produksi |
 
 ---
 
 ## Deploy ke Vercel
 
-Repo ini sudah menyiapkan hal yang bisa disiapkan di kode: Prisma Client di-generate otomatis saat install (`postinstall`), runtime Node dibatasi ke v22+, dan `supabase-ca.crt` dimasukkan ke bundle function agar koneksi `verify-full` tidak gagal. Yang perlu dilakukan sekali:
+Sebagian kebutuhan deploy sudah disiapkan di repo: Prisma Client dibuat otomatis saat `npm install`, runtime ditetapkan ke Node.js, dan berkas sertifikat database ikut disertakan.
 
-### 1. Isi environment variables di Vercel
+**1. Hubungkan repo ke Vercel.** Import repo GitHub ini dan pastikan branch yang dipakai adalah `main`. Setiap push ke branch tersebut akan memicu build jika proyek Vercelnya memang terhubung.
 
-Buka **Project Settings → Environment Variables**, tambahkan untuk **Production** dan **Preview**:
+**2. Isi environment variables di dashboard Vercel.** File `.env` tidak ikut ter-commit, jadi nilai aslinya harus diisi lewat Project Settings → Environment Variables.
 
-| Variabel | Sumber dan aturan |
+| Variabel | Isi singkat |
 |---|---|
-| `DATABASE_URL` | Supabase **Transaction Pooler** (port 6543), dengan `?pgbouncer=true&sslmode=verify-full&sslrootcert=./supabase-ca.crt` |
-| `DIRECT_URL` | Supabase **Session Pooler** (port 5432), dengan `?sslmode=verify-full&sslrootcert=./supabase-ca.crt`. Juga dibaca oleh `prisma generate` saat build. |
-| `ADMIN_PASSWORD` | Rahasia bersama panitia, minimal 12 karakter |
-| `ADMIN_SESSION_SECRET` | 32 byte acak, misal `openssl rand -base64 32` |
-| `QR_SIGNING_SECRET` | 32 byte acak, misal `openssl rand -base64 32`. Wajib diisi karena mode QR bawaan adalah dinamis. |
+| `DATABASE_URL` | Alamat koneksi Transaction Pooler Supabase, untuk aplikasi saat berjalan |
+| `DIRECT_URL` | Alamat Session Pooler Supabase, untuk perintah migrasi |
+| `ADMIN_PASSWORD` | Kata sandi bersama panitia, minimal 12 karakter |
+| `ADMIN_SESSION_SECRET` | Kunci acak minimal 32 byte untuk sesi login |
+| `QR_SIGNING_SECRET` | Kunci acak minimal 32 byte untuk QR dinamis |
 
-Jangan pernah memasukkan nilai asli ke repo; `.env.example` hanya berisi placeholder. Setelah env terisi, cukup **Import/Deploy** project dari GitHub — build command tidak perlu diubah.
+Keduanya bisa dibuat dengan `openssl rand -base64 32`. Jangan menaruh nilai asli di repo.
 
-### 2. Siapkan database produksi (sekali)
-
-Dari komputer lokal yang `.env`-nya mengarah ke database produksi:
+**3. Siapkan database sekali.** Dari komputer lokal yang `.env`-nya mengarah ke database produksi, jalankan:
 
 ```bash
 npm run db:prepare
 ```
 
-Perintah ini menjalankan `prisma migrate deploy` lalu `prisma db seed`. Tanpa seed, baris pengaturan `id=1` tidak ada dan pendaftaran akan tertutup. Jalankan ulang `npm run db:prepare` setiap kali ada migrasi baru.
+Tanpa langkah ini, baris pengaturan acara belum ada dan pendaftaran tidak akan berjalan. Vercel tidak menjalankan migrasi otomatis, jadi ulangi perintah ini setiap kali ada migrasi baru.
 
-### 3. Verifikasi setelah deploy
+**4. Cek hasil deploy.** Uji dari awal sampai akhir: daftar satu peserta, simpan kode pemulihan, buka tiket, pulihkan tiket, atur jadwal check-in di admin, coba presensi, login admin, lalu unduh CSV.
 
-Uji alur lengkap di URL deployment: daftar satu peserta → simpan kode pemulihan → buka tiket → pulihkan tiket → atur jendela check-in di admin → scan/ketik kode presensi → login admin → unduh CSV.
+### Catatan koneksi database
 
-### Catatan operasional
-
-- Supabase Free dapat dijeda setelah sekitar 7 hari tanpa aktivitas. **Resume** project sebelum pendaftaran dibuka dan sebelum hari-H, dan tentukan penanggung jawabnya.
-- Paket Free tidak menyediakan backup harian. Siapkan prosedur backup manual; ekspor CSV **bukan** backup database.
-- Koneksi database memakai `sslmode=verify-full`. Jangan menonaktifkan verifikasi sertifikat untuk mengatasi error TLS.
-- `supabase-ca.crt` harus berisi **Supabase Root 2021 CA** yang di-download dari **Supabase Dashboard → Project Settings → Database → SSL Configuration → Download Certificate**. Bundle CA Amazon RDS tidak akan terverifikasi oleh pooler Supabase dan membuat halaman menampilkan "Layanan belum tersedia".
-- Vercel tidak menjalankan migrasi secara otomatis; langkah `npm run db:prepare` tetap wajib dilakukan setelah deploy ke database baru.
+Koneksi memakai verifikasi sertifikat penuh (`sslmode=verify-full`). Jangan mematikan verifikasi hanya karena ada error TLS. Berkas `supabase-ca.crt` di repo harus berisi sertifikat **Supabase Root 2021** yang diunduh dari Supabase Dashboard → Project Settings → Database → SSL Configuration. Sertifikat dari penyedia lain tidak akan cocok.
 
 ---
 
-## Lisensi & Kontribusi
-Dikembangkan dengan penuh dedikasi untuk melayani perayaan Natal PWK UNNES 2026. Hak cipta milik tim pengembang sistem Natal PWK UNNES.
+## Pemeriksaan sebelum rilis
+
+- [ ] Proyek database aktif dan tidak dalam jeda.
+- [ ] Environment variables produksi sudah terisi dan sesuai.
+- [ ] `npm run db:prepare` sudah dijalankan terhadap database produksi.
+- [ ] Jadwal check-in dan kuota sudah diatur di panel admin.
+- [ ] QR presensi sudah diuji dengan beberapa perangkat dan ukuran cetak.
+- [ ] Satu perangkat panitia bisa membuka panel admin dan melakukan check-in manual.
+- [ ] Alur daftar → tiket → presensi → CSV sudah dicoba di URL produksi.
+- [ ] Penanggung jawab cadangan data dan penanganan gangguan sudah ditetapkan.
+
+---
+
+## Yang belum diputuskan
+
+Rincian ini masih terbuka dan perlu keputusan panitia sebelum dipakai luas:
+
+- Jam acara dan jendela check-in yang pasti.
+- Pemilik data, kontak helpdesk, dan prosedur permintaan penghapusan data.
+- Tanggal pasti penghapusan data dan berapa lama log aktivitas disimpan.
+- Aturan dan jadwal rotasi kata sandi admin bersama.
+- Domain yang dipakai dan siapa yang bertugas melakukan pencadangan manual.
+
+Keputusan produk yang lengkap ada di `PRD.md`.
