@@ -4152,20 +4152,61 @@ a[href].inline-flex:hover {
 }
 
 @media (max-width: 680px) {
-  .admin-topbar { min-height: 62px; padding: 0.55rem 0.85rem; }
+  /* Jarak tepi mengikuti halaman utama: 0,75rem di mobile */
+  .admin-topbar { min-height: 60px; padding: 0.5rem 0.75rem; }
+  .admin-crumb,
   .admin-topbar-title { display: none; }
-  .admin-content { padding: 1.1rem 0.85rem 2.5rem; }
-  .admin-stat { padding: 0.85rem; }
+  .admin-topbar-actions { gap: 0.35rem; }
+  .admin-topbar-actions .admin-btn { min-height: 40px; padding: 0.35rem 0.6rem; }
+  .admin-topbar .admin-icon-btn { width: 40px; height: 40px; }
+  .admin-topbar-refresh { font-size: 0.7rem; }
+
+  .admin-content { padding: 1rem 0.75rem 2.25rem; }
+  .admin-section { margin-bottom: 1.25rem; }
+  .admin-card-head { padding: 0.8rem 0.9rem; }
+  .admin-card-body { padding: 0.9rem; }
+  .admin-stat-grid { gap: 0.6rem; }
+  .admin-stat { padding: 0.8rem; }
   .admin-stat-value { font-size: 1.5rem; }
-  .admin-quick-grid { grid-template-columns: 1fr; }
+  .admin-quick-grid { grid-template-columns: 1fr; gap: 0.6rem; }
   .admin-field-grid { grid-template-columns: 1fr; }
+  .admin-form-grid { gap: 0.7rem; }
   .admin-detail-grid { grid-template-columns: 1fr; }
+  .admin-dialog-head,
+  .admin-dialog-body { padding-left: 0.9rem; padding-right: 0.9rem; }
+  .admin-dialog-foot { padding-left: 0.9rem; padding-right: 0.9rem; }
+  .admin-table { min-width: 760px; }
   .admin-scroll-hint { display: block; }
+
+  .admin-auth { padding: 0.75rem; }
   .admin-auth-card { grid-template-columns: 1fr; }
-  .admin-auth-art { gap: 0.8rem; padding: 1.3rem; }
-  .admin-modal { padding: 0.6rem; }
-  .admin-dialog { max-height: calc(100vh - 1.2rem); }
-  .admin-topbar-actions .admin-btn { min-height: 36px; padding: 0.35rem 0.6rem; }
+  .admin-auth-art { gap: 0.8rem; padding: 1.15rem; }
+  .admin-auth-panel { padding: 1.15rem; }
+  .admin-modal { padding: 0.75rem; }
+  .admin-dialog { max-height: calc(100vh - 1.5rem); }
+}
+
+@media (max-width: 480px) {
+  .admin-topbar,
+  .admin-content,
+  .admin-auth,
+  .admin-modal {
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .admin-topbar,
+  .admin-content,
+  .admin-auth,
+  .admin-modal {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .admin-stat-grid { gap: 0.5rem; }
+  .admin-stat { padding: 0.7rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
