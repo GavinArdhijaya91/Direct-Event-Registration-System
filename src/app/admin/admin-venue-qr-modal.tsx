@@ -65,9 +65,16 @@ export default function AdminVenueQrModal({
       const response = await fetch("/api/admin/venue-qr", {
         cache: "no-store",
       });
-      const body: unknown = await response.json();
+      const body: unknown = await response.json().catch(() => null);
       if (!response.ok || !isVenueQrData(body)) {
-        setError("QR presensi tidak dapat dimuat.");
+        const errorBody = body as { message?: unknown } | null;
+        setError(
+          errorBody &&
+            typeof errorBody.message === "string" &&
+            errorBody.message.trim()
+            ? errorBody.message
+            : "QR presensi tidak dapat dimuat.",
+        );
         return;
       }
       setQrData(body);
