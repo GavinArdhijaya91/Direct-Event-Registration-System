@@ -32,6 +32,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Supabase CA dibaca dari connection string (sslrootcert), bukan dari kode,
+  // jadi harus dimasukkan eksplisit ke trace function di Vercel.
+  outputFileTracingIncludes: {
+    "/*": ["./supabase-ca.crt"],
+  },
   turbopack: {
     rules: {
       "*.css": {

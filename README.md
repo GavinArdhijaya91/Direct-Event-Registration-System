@@ -98,7 +98,7 @@ Formulir registrasi mengadopsi struktur bercabang dinamis (*Dynamic Categorizati
    ```bash
    cp .env.example .env
    ```
-   Isi `DATABASE_URL`, `DIRECT_URL`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET`.
+   Isi `DATABASE_URL`, `DIRECT_URL`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET`, dan `QR_SIGNING_SECRET`.
 
 4. **Migrasi Database:**
    ```bash
@@ -115,6 +115,47 @@ Formulir registrasi mengadopsi struktur bercabang dinamis (*Dynamic Categorizati
    npm run dev
    ```
    Buka [http://localhost:3000](http://localhost:3000) pada browser Anda.
+
+---
+
+## Deploy ke Vercel
+
+Repo ini sudah menyiapkan hal yang bisa disiapkan di kode: Prisma Client di-generate otomatis saat install (`postinstall`), runtime Node dibatasi ke v22+, dan `supabase-ca.crt` dimasukkan ke bundle function agar koneksi `verify-full` tidak gagal. Yang perlu dilakukan sekali:
+
+### 1. Isi environment variables di Vercel
+
+Buka **Project Settings → Environment Variables**, tambahkan untuk **Production** dan **Preview**:
+
+| Variabel | Sumber dan aturan |
+|---|---|
+| `DATABASE_URL` | Supabase **Transaction Pooler** (port 6543), dengan `?pgbouncer=true&sslmode=verify-full&sslrootcert=./supabase-ca.crt` |
+| `DIRECT_URL` | Supabase **Session Pooler** (port 5432), dengan `?sslmode=verify-full&sslrootcert=./supabase-ca.crt`. Juga dibaca oleh `prisma generate` saat build. |
+| `ADMIN_PASSWORD` | Rahasia bersama panitia, minimal 12 karakter |
+| `ADMIN_SESSION_SECRET` | 32 byte acak, misal `openssl rand -base64 32` |
+| `QR_SIGNING_SECRET` | 32 byte acak, misal `openssl rand -base64 32`. Wajib diisi karena mode QR bawaan adalah dinamis. |
+
+Jangan pernah memasukkan nilai asli ke repo; `.env.example` hanya berisi placeholder. Setelah env terisi, cukup **Import/Deploy** project dari GitHub — build command tidak perlu diubah.
+
+### 2. Siapkan database produksi (sekali)
+
+Dari komputer lokal yang `.env`-nya mengarah ke database produksi:
+
+```bash
+npm run db:prepare
+```
+
+Perintah ini menjalankan `prisma migrate deploy` lalu `prisma db seed`. Tanpa seed, baris pengaturan `id=1` tidak ada dan pendaftaran akan tertutup. Jalankan ulang `npm run db:prepare` setiap kali ada migrasi baru.
+
+### 3. Verifikasi setelah deploy
+
+Uji alur lengkap di URL deployment: daftar satu peserta → simpan kode pemulihan → buka tiket → pulihkan tiket → atur jendela check-in di admin → scan/ketik kode presensi → login admin → unduh CSV.
+
+### Catatan operasional
+
+- Supabase Free dapat dijeda setelah sekitar 7 hari tanpa aktivitas. **Resume** project sebelum pendaftaran dibuka dan sebelum hari-H, dan tentukan penanggung jawabnya.
+- Paket Free tidak menyediakan backup harian. Siapkan prosedur backup manual; ekspor CSV **bukan** backup database.
+- Koneksi database memakai `sslmode=verify-full`. Jangan menonaktifkan verifikasi sertifikat untuk mengatasi error TLS.
+- Vercel tidak menjalankan migrasi secara otomatis; langkah `npm run db:prepare` tetap wajib dilakukan setelah deploy ke database baru.
 
 ---
 
