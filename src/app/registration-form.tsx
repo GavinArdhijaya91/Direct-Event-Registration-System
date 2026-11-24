@@ -216,7 +216,11 @@ export default function RegistrationForm({
 
         <div className="mt-4 rounded-xl border border-[var(--gold)] bg-[var(--candle)] p-4 text-[var(--ink)]">
           <div className="flex items-center gap-1.5 font-semibold text-xs text-[var(--gold)] uppercase tracking-wide">
-            <span>⚠️</span>
+            <svg className="w-4 h-4 text-amber-700 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
             <span>Wajib Disimpan — Kode Pemulihan Rahasia</span>
           </div>
           <p className="mt-1 text-xs text-[var(--muted)]">
@@ -366,8 +370,8 @@ export default function RegistrationForm({
   return (
     <form className="space-y-6" onSubmit={submitRegistration}>
       {/* 1. Kategori Profil Pendaftar */}
-      <div className="rounded-2xl border border-[var(--line)] bg-[var(--moss)]/30 p-4 sm:p-5">
-        <label className="mb-2 block text-sm font-bold text-[var(--ink)]">
+      <div className="rounded-2xl border border-[#ded8cb] bg-emerald-50/25 p-4 sm:p-5">
+        <label className="mb-2.5 block text-sm font-bold text-[var(--ink)]">
           1. Kategori Profil Pendaftar
         </label>
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -375,7 +379,7 @@ export default function RegistrationForm({
             className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition active:scale-[0.99] ${
               participantType === "MAHASISWA_ALUMNI"
                 ? "border-[var(--forest)] bg-white shadow-sm ring-2 ring-[var(--forest)]/20"
-                : "border-[var(--line)] bg-white/70 hover:bg-white"
+                : "border-[#d8d3c8] bg-white/80 hover:bg-white hover:border-[#b8b0a2]"
             }`}
           >
             <input
@@ -390,7 +394,7 @@ export default function RegistrationForm({
               <span className="block text-sm font-bold text-[var(--ink)]">
                 Mahasiswa / Alumni
               </span>
-              <span className="block mt-0.5 text-xs text-[var(--muted)] leading-relaxed">
+              <span className="block mt-0.5 text-xs text-[#526358] leading-relaxed">
                 Untuk mahasiswa aktif atau alumni (baik dari UNNES maupun luar UNNES).
               </span>
             </div>
@@ -400,7 +404,7 @@ export default function RegistrationForm({
             className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition active:scale-[0.99] ${
               participantType === "UMUM"
                 ? "border-[var(--forest)] bg-white shadow-sm ring-2 ring-[var(--forest)]/20"
-                : "border-[var(--line)] bg-white/70 hover:bg-white"
+                : "border-[#d8d3c8] bg-white/80 hover:bg-white hover:border-[#b8b0a2]"
             }`}
           >
             <input
@@ -415,7 +419,7 @@ export default function RegistrationForm({
               <span className="block text-sm font-bold text-[var(--ink)]">
                 Umum / Tamu Undangan
               </span>
-              <span className="block mt-0.5 text-xs text-[var(--muted)] leading-relaxed">
+              <span className="block mt-0.5 text-xs text-[#526358] leading-relaxed">
                 Untuk masyarakat umum, keluarga, jemaat gereja, atau undangan luar kampus.
               </span>
             </div>
@@ -487,13 +491,18 @@ export default function RegistrationForm({
                 maxLength={4}
                 required={academicStatus === "ALUMNI"}
                 placeholder="Contoh: 2022"
-                className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+                className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
               />
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                💡 Masukkan tahun kelulusan Anda (4 digit angka) untuk pendataan jejaring alumni.
+              <p className="mt-1.5 text-xs text-[#526358] flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span>Masukkan tahun kelulusan Anda (4 digit angka) untuk pendataan jejaring alumni.</span>
               </p>
               {fieldErrors?.graduationYear?.[0] ? (
-                <p className="mt-1 text-sm text-[var(--red)]">
+                <p className="mt-1 text-sm text-[var(--red)] font-medium">
                   {fieldErrors.graduationYear[0]}
                 </p>
               ) : null}
@@ -509,8 +518,8 @@ export default function RegistrationForm({
               <label
                 className={`flex cursor-pointer items-center gap-2 rounded-xl border py-2.5 px-3 text-xs sm:text-sm font-semibold transition active:scale-[0.98] ${
                   campusType === "UNNES"
-                    ? "border-[var(--forest)] bg-white text-[var(--forest)] shadow-sm font-bold"
-                    : "border-transparent bg-white/60 text-gray-700 hover:bg-white"
+                    ? "border-[var(--forest)] bg-white text-[var(--forest)] shadow-sm font-bold ring-2 ring-[var(--forest)]/15"
+                    : "border-[#d8d3c8] bg-white/70 text-gray-700 hover:bg-white hover:border-[#b8b0a2]"
                 }`}
               >
                 <input
@@ -519,15 +528,15 @@ export default function RegistrationForm({
                   value="UNNES"
                   checked={campusType === "UNNES"}
                   onChange={() => setCampusType("UNNES")}
-                  className="accent-[var(--forest)]"
+                  className="accent-[var(--forest)] cursor-pointer"
                 />
                 UNNES (Univ. Negeri Semarang)
               </label>
               <label
                 className={`flex cursor-pointer items-center gap-2 rounded-xl border py-2.5 px-3 text-xs sm:text-sm font-semibold transition active:scale-[0.98] ${
                   campusType === "LUAR_UNNES"
-                    ? "border-[var(--forest)] bg-white text-[var(--forest)] shadow-sm font-bold"
-                    : "border-transparent bg-white/60 text-gray-700 hover:bg-white"
+                    ? "border-[var(--forest)] bg-white text-[var(--forest)] shadow-sm font-bold ring-2 ring-[var(--forest)]/15"
+                    : "border-[#d8d3c8] bg-white/70 text-gray-700 hover:bg-white hover:border-[#b8b0a2]"
                 }`}
               >
                 <input
@@ -536,7 +545,7 @@ export default function RegistrationForm({
                   value="LUAR_UNNES"
                   checked={campusType === "LUAR_UNNES"}
                   onChange={() => setCampusType("LUAR_UNNES")}
-                  className="accent-[var(--forest)]"
+                  className="accent-[var(--forest)] cursor-pointer"
                 />
                 Di Luar UNNES
               </label>
@@ -558,7 +567,7 @@ export default function RegistrationForm({
                   name="faculty"
                   required
                   defaultValue=""
-                  className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+                  className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
                 >
                   <option value="" disabled>
                     Pilih Fakultas
@@ -570,7 +579,7 @@ export default function RegistrationForm({
                   ))}
                 </select>
                 {fieldErrors?.faculty?.[0] ? (
-                  <p className="mt-1 text-sm text-[var(--red)]">
+                  <p className="mt-1 text-sm text-[var(--red)] font-medium">
                     {fieldErrors.faculty[0]}
                   </p>
                 ) : null}
@@ -589,10 +598,10 @@ export default function RegistrationForm({
                   required
                   maxLength={100}
                   placeholder="Contoh: Teknik Informatika"
-                  className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+                  className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
                 />
                 {fieldErrors?.studyProgram?.[0] ? (
-                  <p className="mt-1 text-sm text-[var(--red)]">
+                  <p className="mt-1 text-sm text-[var(--red)] font-medium">
                     {fieldErrors.studyProgram[0]}
                   </p>
                 ) : null}
@@ -613,10 +622,10 @@ export default function RegistrationForm({
                   required
                   maxLength={120}
                   placeholder="Contoh: Universitas Diponegoro (UNDIP)"
-                  className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+                  className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
                 />
                 {fieldErrors?.campusName?.[0] ? (
-                  <p className="mt-1 text-sm text-[var(--red)]">
+                  <p className="mt-1 text-sm text-[var(--red)] font-medium">
                     {fieldErrors.campusName[0]}
                   </p>
                 ) : null}
@@ -636,10 +645,10 @@ export default function RegistrationForm({
                     required
                     maxLength={100}
                     placeholder="Contoh: Fakultas Teknik"
-                    className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+                    className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
                   />
                   {fieldErrors?.faculty?.[0] ? (
-                    <p className="mt-1 text-sm text-[var(--red)]">
+                    <p className="mt-1 text-sm text-[var(--red)] font-medium">
                       {fieldErrors.faculty[0]}
                     </p>
                   ) : null}
@@ -658,10 +667,10 @@ export default function RegistrationForm({
                     required
                     maxLength={100}
                     placeholder="Contoh: Teknik Sipil"
-                    className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+                    className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
                   />
                   {fieldErrors?.studyProgram?.[0] ? (
-                    <p className="mt-1 text-sm text-[var(--red)]">
+                    <p className="mt-1 text-sm text-[var(--red)] font-medium">
                       {fieldErrors.studyProgram[0]}
                     </p>
                   ) : null}
@@ -680,7 +689,7 @@ export default function RegistrationForm({
           </label>
           <input
             autoComplete="name"
-            className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+            className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
             id="fullName"
             maxLength={120}
             name="fullName"
@@ -688,7 +697,7 @@ export default function RegistrationForm({
             required
           />
           {fieldErrors?.fullName?.[0] ? (
-            <p className="mt-1 text-sm text-[var(--red)]">
+            <p className="mt-1 text-sm text-[var(--red)] font-medium">
               {fieldErrors.fullName[0]}
             </p>
           ) : null}
@@ -703,7 +712,7 @@ export default function RegistrationForm({
           </label>
           <input
             autoComplete="tel"
-            className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+            className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
             id="whatsappNumber"
             inputMode="tel"
             name="whatsappNumber"
@@ -711,12 +720,12 @@ export default function RegistrationForm({
             required
             type="tel"
           />
-          <p className="mt-1 text-xs text-[var(--muted)]">
+          <p className="mt-1.5 text-xs text-[#526358]">
             Nomor dinormalisasi otomatis ke format Indonesia. Setiap nomor hanya
             untuk satu peserta.
           </p>
           {fieldErrors?.whatsappNumber?.[0] ? (
-            <p className="mt-1 text-sm text-[var(--red)]">
+            <p className="mt-1 text-sm text-[var(--red)] font-medium">
               {fieldErrors.whatsappNumber[0]}
             </p>
           ) : null}
@@ -737,10 +746,10 @@ export default function RegistrationForm({
               required
               maxLength={100}
               placeholder="Contoh: Semarang, Batam, Medan"
-              className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+              className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
             />
             {fieldErrors?.birthPlace?.[0] ? (
-              <p className="mt-1 text-sm text-[var(--red)]">
+              <p className="mt-1 text-sm text-[var(--red)] font-medium">
                 {fieldErrors.birthPlace[0]}
               </p>
             ) : null}
@@ -760,10 +769,10 @@ export default function RegistrationForm({
               required
               max="2026-12-31"
               min="1940-01-01"
-              className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+              className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs appearance-none"
             />
             {fieldErrors?.birthDate?.[0] ? (
-              <p className="mt-1 text-sm text-[var(--red)]">
+              <p className="mt-1 text-sm text-[var(--red)] font-medium">
                 {fieldErrors.birthDate[0]}
               </p>
             ) : null}
@@ -784,13 +793,13 @@ export default function RegistrationForm({
             required
             maxLength={150}
             placeholder="Contoh: Gereja Santo Fransiskus Asisi, Batam / GKJ Semarang"
-            className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+            className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
           />
-          <p className="mt-1 text-xs text-[var(--muted)] leading-relaxed">
+          <p className="mt-1.5 text-xs text-[#526358] leading-relaxed">
             Informasi ini digunakan untuk mempererat tali silaturahmi serta membangun hubungan persaudaraan jangka panjang bagi keluarga besar Kristiani dan Katolik.
           </p>
           {fieldErrors?.churchOrigin?.[0] ? (
-            <p className="mt-1 text-sm text-[var(--red)]">
+            <p className="mt-1 text-sm text-[var(--red)] font-medium">
               {fieldErrors.churchOrigin[0]}
             </p>
           ) : null}
@@ -810,13 +819,13 @@ export default function RegistrationForm({
             required
             maxLength={255}
             placeholder="Contoh: Jl. Melati Blok B No. 12, Kel. Sekaran, Kec. Gunungpati, Kota Semarang, Jawa Tengah"
-            className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+            className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
           />
-          <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+          <p className="mt-1.5 text-xs text-[#526358] leading-relaxed">
             Bagi Bapak/Ibu/Saudara yang tinggal di rumah pribadi, mohon cantumkan alamat lengkap mencakup blok/nomor rumah, kelurahan, kecamatan, kota/kabupaten, dan provinsi. Apabila tinggal di kost atau kontrakan, Anda cukup menuliskan nama kost serta daerah sekitarnya.
           </p>
           {fieldErrors?.domicile?.[0] ? (
-            <p className="mt-1 text-sm text-[var(--red)]">
+            <p className="mt-1 text-sm text-[var(--red)] font-medium">
               {fieldErrors.domicile[0]}
             </p>
           ) : null}
@@ -831,7 +840,7 @@ export default function RegistrationForm({
             Tahu acara ini dari mana? <span className="text-[var(--red)]">*</span>
           </label>
           <select
-            className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base focus:border-[var(--forest)] focus:outline-none focus:ring-2 focus:ring-[var(--forest)]/20"
+            className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
             defaultValue=""
             id="informationSource"
             name="informationSource"
@@ -845,7 +854,7 @@ export default function RegistrationForm({
             <option value="POSTER_KAMPUS">Poster Kampus</option>
           </select>
           {fieldErrors?.informationSource?.[0] ? (
-            <p className="mt-1 text-sm text-[var(--red)]">
+            <p className="mt-1 text-sm text-[var(--red)] font-medium">
               {fieldErrors.informationSource[0]}
             </p>
           ) : null}

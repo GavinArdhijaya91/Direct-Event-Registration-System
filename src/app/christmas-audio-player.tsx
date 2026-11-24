@@ -2,38 +2,47 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const AUDIO_SRC = "/audio/jingle-bells.mp3";
+
 export default function ChristmasAudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio("/audio/jingle-bells.mp3");
-    audio.loop = true;
-    audio.volume = 0.3; // 30% volume (dalam rentang 25% - 50% lembut)
-    audioRef.current = audio;
-
     return () => {
+      const audio = audioRef.current;
+      if (!audio) return;
       audio.pause();
-      audio.src = "";
+      audio.removeAttribute("src");
+      audio.load();
+      audioRef.current = null;
     };
   }, []);
 
   function toggleAudio() {
-    const audio = audioRef.current;
-    if (!audio) return;
-
     setHasInteracted(true);
+
+    // Audio dibuat saat tombol pertama kali ditekan agar MP3 tidak
+    // terunduh otomatis saat halaman dibuka.
+    let audio = audioRef.current;
+    if (!audio) {
+      audio = new Audio(AUDIO_SRC);
+      audio.loop = true;
+      audio.volume = 0.3; // 30% volume (dalam rentang 25% - 50% lembut)
+      audioRef.current = audio;
+    }
 
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
-    } else {
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
+      return;
     }
+
+    audio
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false));
   }
 
   return (

@@ -113,14 +113,14 @@ export default function TicketRecoveryForm() {
         <form className="space-y-4" onSubmit={submit}>
           <div>
             <label
-              className="mb-1.5 block text-sm font-semibold"
+              className="mb-1.5 block text-sm font-semibold text-[var(--ink)]"
               htmlFor="recovery-whatsapp"
             >
               Nomor WhatsApp pendaftaran
             </label>
             <input
               autoComplete="tel"
-              className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-base"
+              className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 text-base text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs"
               id="recovery-whatsapp"
               inputMode="tel"
               name="whatsappNumber"
@@ -131,7 +131,7 @@ export default function TicketRecoveryForm() {
           </div>
           <div>
             <label
-              className="mb-1.5 block text-sm font-semibold"
+              className="mb-1.5 block text-sm font-semibold text-[var(--ink)]"
               htmlFor="recovery-code"
             >
               Kode pemulihan
@@ -139,7 +139,7 @@ export default function TicketRecoveryForm() {
             <input
               autoCapitalize="characters"
               autoComplete="off"
-              className="min-h-12 w-full rounded-xl border border-[var(--line)] bg-white px-4 font-mono text-base uppercase tracking-wider text-center sm:text-left"
+              className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 font-mono text-base uppercase tracking-wider text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs text-center sm:text-left"
               id="recovery-code"
               maxLength={32}
               minLength={32}
@@ -151,7 +151,7 @@ export default function TicketRecoveryForm() {
             />
           </div>
           {message ? (
-            <p aria-live="polite" className="text-sm leading-6 text-[var(--red)]" role="alert">
+            <p aria-live="polite" className="text-sm leading-6 text-[var(--red)] font-medium" role="alert">
               {message}
             </p>
           ) : null}
@@ -161,18 +161,18 @@ export default function TicketRecoveryForm() {
             type="submit"
           >
             {pending ? (
-              <span className="inline-flex items-center justify-center gap-2">
+              <span className="inline-flex items-center justify-center gap-2 !text-white">
                 <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                <span>Memeriksa data…</span>
+                <span className="!text-white">Memeriksa data…</span>
               </span>
             ) : (
-              <span className="inline-flex items-center justify-center gap-2">
-                <span>Pulihkan tiket</span>
-                <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">→</span>
+              <span className="inline-flex items-center justify-center gap-2 !text-white">
+                <span className="!text-white">Pulihkan tiket</span>
+                <span aria-hidden="true" className="!text-white transition-transform duration-150 group-hover:translate-x-1">→</span>
               </span>
             )}
           </button>
-          <p className="text-xs leading-5 text-[var(--muted)]">
+          <p className="text-xs leading-5 text-[#526358]">
             Untuk melindungi data peserta, pesan kegagalan tidak membedakan
             nomor atau kode yang tidak cocok. Pemulihan akan menerbitkan
             tautan dan kode pemulihan baru, lalu mencabut yang sebelumnya.

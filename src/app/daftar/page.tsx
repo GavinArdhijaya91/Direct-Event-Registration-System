@@ -92,16 +92,27 @@ export default async function DaftarPage() {
             <div className="grid md:grid-cols-3 gap-5 items-center">
               <div className="flex items-center gap-3.5 pb-4 border-b border-[var(--line)] md:border-b-0 md:pb-0">
                 {canRegister ? (
-                  <div className="w-11 h-11 bg-emeral/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl text-emeral">✅</span>
+                  <div className="w-11 h-11 bg-emerald-50 rounded-xl flex items-center justify-center flex-shrink-0 text-emerald-700 shadow-xs border border-emerald-200/60">
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
                   </div>
                 ) : isFull ? (
-                  <div className="w-11 h-11 bg-crimson/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl text-crimson">❌</span>
+                  <div className="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0 text-red-700 shadow-xs border border-red-200/60">
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
                   </div>
                 ) : (
-                  <div className="w-11 h-11 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl text-gray-400">⏸️</span>
+                  <div className="w-11 h-11 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0 text-amber-700 shadow-xs border border-amber-200/60">
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="10" y1="15" x2="10" y2="9" />
+                      <line x1="14" y1="15" x2="14" y2="9" />
+                    </svg>
                   </div>
                 )}
                 
@@ -180,8 +191,12 @@ export default async function DaftarPage() {
           {/* Privacy Notice */}
           <div className="max-w-3xl mx-auto mb-8">
             <div className="registration-privacy bg-blush border border-blush-dark rounded-xl p-4">
-              <p className="text-sm font-semibold text-ink mb-2">
-                <span className="text-emeral">🔒</span> Privasi Data
+              <p className="text-sm font-semibold text-ink mb-2 flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-emerald-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                <span>Privasi Data</span>
               </p>
               <p className="text-sm text-gray-600">
                 Nomor WhatsApp dan data identitas yang Anda berikan hanya akan digunakan untuk 
@@ -230,9 +245,25 @@ export default async function DaftarPage() {
       <footer className="site-footer registration-footer" data-reveal>
         <div className="footer-gift-border" aria-hidden="true" />
         <div className="footer-inner registration-footer-inner">
-          <p className="text-sm text-gray-500">
-            © 2026 PWK UNNES · Rayakan kasih, bagikan sukacita.
+          <div className="footer-organizer">
+            <Image
+              src="/images/logos/logo-uk3unnes.png"
+              alt="UK3 UNNES"
+              width={48}
+              height={28}
+              className="footer-uk3-logo"
+            />
+          </div>
+          <p className="footer-note">
+            © 2026 PWK UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span>
           </p>
+          <Image
+            src="/images/logos/logo-unnes.png"
+            alt="Universitas Negeri Semarang"
+            width={30}
+            height={40}
+            className="footer-unnes-logo"
+          />
         </div>
       </footer>
     </main>

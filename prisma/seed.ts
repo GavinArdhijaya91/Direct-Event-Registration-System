@@ -1,16 +1,34 @@
+import "dotenv/config";
+import fs from "node:fs";
+import path from "node:path";
+import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
-const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+const rawUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
-if (!connectionString) {
+if (!rawUrl) {
   throw new Error("DIRECT_URL atau DATABASE_URL harus diatur sebelum menjalankan seed.");
 }
 
+const caPath = path.resolve(process.cwd(), "supabase-ca.crt");
+const ca = fs.existsSync(caPath) ? fs.readFileSync(caPath, "utf-8") : undefined;
+
+let poolConfig: ConstructorParameters<typeof Pool>[0];
+try {
+  const url = new URL(rawUrl);
+  url.searchParams.delete("sslmode");
+  poolConfig = {
+    connectionString: url.toString(),
+    ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: false },
+  };
+} catch {
+  poolConfig = { connectionString: rawUrl };
+}
+
+const pool = new Pool(poolConfig);
 const prisma = new PrismaClient({
-  adapter: new PrismaPg({
-    connectionString: connectionString,
-  }),
+  adapter: new PrismaPg(pool),
 });
 
 async function main() {
@@ -37,6 +55,7 @@ async function main() {
     });
   } finally {
     await prisma.$disconnect();
+    await pool.end();
   }
 }
 
