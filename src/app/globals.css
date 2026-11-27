@@ -1542,7 +1542,7 @@ a.btn-light:focus {
   content: "";
   position: absolute;
   top: 0.72em;
-  left: 0;
+  left: -0.9rem;
   width: 4px;
   height: 4px;
   border-radius: 999px;
@@ -4303,7 +4303,7 @@ a[href].inline-flex:hover {
   content: counter(admin-guide) ".";
   position: absolute;
   top: 0;
-  left: 0;
+  left: -1.25rem;
   color: #a5483d;
   font-weight: 700;
 }
