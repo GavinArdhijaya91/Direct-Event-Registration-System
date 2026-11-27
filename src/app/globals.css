@@ -715,8 +715,10 @@ a.btn-light:focus {
   }
 
   .venue-poster-footer img {
-    width: auto;
-    max-height: 16mm;
+    display: block;
+    width: 16mm;
+    height: 16mm;
+    object-fit: contain;
   }
 
   .venue-poster-theme {
