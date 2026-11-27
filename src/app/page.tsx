@@ -13,7 +13,7 @@ const activities = [
   { image: "/images/christmas/svg/candle.svg", title: "Ibadah & Pemberkatan", description: "Merayakan kelahiran Yesus dalam firman dan doa" },
   { image: "/images/christmas/svg/christmas-tree.svg", title: "Pohon Natal", description: "Pohon Natal, pengingat terang dan harapan bersama" },
   { image: "/images/christmas/svg/bell.svg", title: "Puji-Pujian Natal", description: "Nyanyian sukacita memuliakan kelahiran Yesus" },
-  { image: "/images/christmas/svg/christmas-lights.svg", title: "Makan Bersama", description: "Berbagi hidangan dalam kebersamaan komunitas" },
+  { image: "/images/christmas/illustrations/gingerbread-house.png", title: "Makan Bersama", description: "Hidangan Natal mempererat kebersamaan komunitas" },
   { image: "/images/christmas/svg/reindeer.svg", title: "Penampilan & Permainan", description: "Pertunjukan dan permainan Natal yang seru" },
 ];
 
