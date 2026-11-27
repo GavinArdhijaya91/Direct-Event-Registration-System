@@ -3034,8 +3034,7 @@ a[href].inline-flex:hover {
     font-size: 0.75rem;
   }
 
-  .holiday-photo figcaption span,
-  .footer-note span {
+  .holiday-photo figcaption span {
     font-size: 0.6875rem;
   }
 
@@ -3043,10 +3042,19 @@ a[href].inline-flex:hover {
   .info-card li,
   .info-card p,
   .privacy-card p,
-  .footer-note,
   .registration-footer-inner p,
   .footer-organizer strong {
     font-size: 0.8125rem;
+  }
+
+  /* Teks tengah footer diperkecil di HP, berlaku di semua halaman peserta. */
+  .site-footer .footer-note {
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .site-footer .footer-note span {
+    font-size: 0.62rem;
   }
 
   /* Pemutar musik ikut mengecil, tapi tetap berbentuk pil dengan label. */
@@ -3072,11 +3080,27 @@ a[href].inline-flex:hover {
   .brand-name {
     font-size: 0.72rem;
   }
+
+  .site-footer .footer-note {
+    font-size: 0.66rem;
+  }
+
+  .site-footer .footer-note span {
+    font-size: 0.58rem;
+  }
 }
 
 @media (max-width: 390px) {
   .brand-name {
     font-size: 0.66rem;
+  }
+
+  .site-footer .footer-note {
+    font-size: 0.62rem;
+  }
+
+  .site-footer .footer-note span {
+    font-size: 0.54rem;
   }
 }
 
