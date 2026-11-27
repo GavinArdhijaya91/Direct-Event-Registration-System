@@ -1527,7 +1527,7 @@ a.btn-light:focus {
 
 .info-card ul {
   margin: 0;
-  padding-left: 0;
+  padding-left: 0.9rem;
   list-style: none;
   color: #495d4e;
   font-size: 0.86rem;
@@ -1542,7 +1542,7 @@ a.btn-light:focus {
   content: "";
   position: absolute;
   top: 0.72em;
-  left: -0.85rem;
+  left: 0;
   width: 4px;
   height: 4px;
   border-radius: 999px;
@@ -4286,7 +4286,7 @@ a[href].inline-flex:hover {
 
 .admin-guide {
   margin: 0.35rem 0 0;
-  padding-left: 0;
+  padding-left: 1.25rem;
   list-style: none;
   counter-reset: admin-guide;
   color: var(--a-muted);
@@ -4303,7 +4303,7 @@ a[href].inline-flex:hover {
   content: counter(admin-guide) ".";
   position: absolute;
   top: 0;
-  left: -0.9rem;
+  left: 0;
   color: #a5483d;
   font-weight: 700;
 }
