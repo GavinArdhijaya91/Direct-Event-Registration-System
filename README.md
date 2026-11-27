@@ -116,6 +116,42 @@ Beberapa hal belum bisa diputuskan dari kode saja dan perlu ditetapkan oleh pani
 
 ---
 
+## SOP hari-H dan uji coba lapangan
+
+Bagian ini dipakai untuk praktik lapangan. SOP ini tidak menggantikan keputusan panitia yang masih tercantum di bagian sebelumnya.
+
+**Uji coba 30 menit sebelum acara**
+
+Lakukan dengan 5 sampai 10 ponsel panitia, campuran WiFi dan paket data:
+
+1. Daftar dengan nomor WhatsApp uji. Jangan pakai nomor peserta asli untuk uji coba.
+2. Simpan kode pemulihan, lalu buka halaman tiket dari ponsel tersebut.
+3. Coba scan QR dinamis. Jika kamera silau, coba ketik kode 6 karakter.
+4. Buka panel admin, cari peserta uji, lalu lakukan check-in manual.
+5. Unduh XLSX atau CSV, pastikan kolom sumber informasi dan waktu check-in terbaca.
+6. Hapus peserta uji lewat panel admin, lalu cek Riwayat aktivitas.
+
+**Sebelum hari-H**
+
+- Pastikan proyek Supabase aktif dan tidak dijeda. Tentukan satu orang yang bertugas mengaktifkan kembali bila perlu.
+- Isi jendela check-in di pengaturan admin sesuai keputusan panitia.
+- Siapkan QR dinamis di proyektor dan kode 6 karakternya sebagai cadangan.
+- Siapkan satu atau dua ponsel helpdesk yang sudah bisa login admin.
+- Pastikan panitia tahu jalur check-in manual lewat kode `EVT-XXXX`.
+
+**Saat acara**
+
+- Peserta datang bertahap, jadi tidak perlu menyuruh semua orang scan bersamaan.
+- Pantau jumlah hadir dari panel admin, bukan dari jam atau animasi di ponsel peserta.
+- Bila scan gagal karena kamera, sinyal, atau browser, minta peserta membuka tautan di Chrome atau Safari, lalu gunakan kode manual jika perlu.
+- Bila layanan atau database terganggu, catat kehadiran di kertas, lalu rekonsiliasi lewat check-in manual setelah layanan pulih.
+
+**Catatan kapasitas**
+
+Untuk 250 peserta yang datang bertahap, beban check-in diperkirakan ringan. Campuran WiFi dan paket data tidak menambah beban database secara berarti. Batas percobaan per IP dan per token tetap berlaku. Ini masih estimasi dari desain, bukan hasil uji beban, jadi pantau penggunaan di dashboard Supabase bila memungkinkan.
+
+---
+
 ## Data dan privasi
 
 Data yang dikumpulkan hanya untuk kebutuhan acara: nama, nomor WhatsApp, tempat dan tanggal lahir, stasi atau gereja asal, domisili, asal kampus atau instansi, serta sumber informasi tentang acara.
