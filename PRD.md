@@ -5,6 +5,7 @@
 |---|---|
 | Nama produk | Sistem Registrasi Event Natal PWK 2026 |
 | Tema acara | "Terang Natal menuntun Civitas Akademika di tengah kegelapan" (Yohanes 1:5) |
+| Identitas visual | Nama header publik tetap `Natal PWK UNNES 2026` (tidak mengikuti `eventName` yang dapat diubah di panel admin). Logo kaki halaman memakai logo PWK dan UNNES; logo UK3/PKKMK tidak dipakai lagi. |
 | Versi/status | 5.9 — Draft revisi; beberapa keputusan masih terbuka |
 | Kapasitas awal | 250 peserta |
 | Tanggal acara | 28 Januari 2027 |

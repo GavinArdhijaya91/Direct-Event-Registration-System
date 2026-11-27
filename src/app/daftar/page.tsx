@@ -50,7 +50,7 @@ export default async function DaftarPage() {
           <Link
             href="/"
             className="brand-lockup"
-            aria-label="Natal PWK UNNES, kembali ke beranda"
+            aria-label="Natal PWK UNNES 2026, kembali ke beranda"
           >
             <Image
               src="/images/logos/logo-natal-pwk-2026.png"
@@ -61,7 +61,7 @@ export default async function DaftarPage() {
               priority
             />
             <span className="brand-copy">
-              <span className="brand-name">{settings?.eventName ?? "Natal PWK UNNES 2026"}</span>
+              <span className="brand-name">Natal PWK UNNES 2026</span>
               <span className="brand-tagline">Terang Natal menuntun Civitas Akademika</span>
             </span>
           </Link>

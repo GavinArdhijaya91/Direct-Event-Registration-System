@@ -56,7 +56,7 @@ export default async function Home() {
       <ChristmasAudioPlayer />
       <header className="site-header" data-reveal>
         <div className="site-header-inner">
-          <Link href="/" className="brand-lockup" aria-label="Natal PWK UNNES, beranda">
+          <Link href="/" className="brand-lockup" aria-label="Natal PWK UNNES 2026, beranda">
             <Image
               src="/images/logos/logo-natal-pwk-2026.png"
               alt=""
@@ -66,7 +66,7 @@ export default async function Home() {
               priority
             />
             <span className="brand-copy">
-              <span className="brand-name">{settings?.eventName ?? "Natal PWK UNNES 2026"}</span>
+              <span className="brand-name">Natal PWK UNNES 2026</span>
               <span className="brand-tagline">Terang Natal menuntun Civitas Akademika</span>
             </span>
           </Link>
