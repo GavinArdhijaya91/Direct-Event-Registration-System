@@ -2889,7 +2889,7 @@ a[href].inline-flex:hover {
   align-items: center;
   gap: 0.65rem;
   min-height: 76px;
-  padding: 1rem 1.1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
 }
 
@@ -2923,14 +2923,14 @@ a[href].inline-flex:hover {
 
 .admin-nav {
   flex: 1 1 auto;
-  padding: 1rem 0.65rem;
+  padding: 1rem 0.9rem;
   transition: padding 260ms ease;
 }
 
 .admin-nav-label {
   max-height: 40px;
   margin: 0 0 0.35rem;
-  padding: 0.25rem 0.65rem;
+  padding: 0.25rem 0.9rem;
   color: #8ba795;
   font-size: var(--a-xs);
   font-weight: 600;
@@ -2948,7 +2948,7 @@ a[href].inline-flex:hover {
   min-height: 42px;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.5rem 0.65rem;
+  padding: 0.5rem 0.9rem;
   border: 0;
   border-radius: 0.6rem;
   background: transparent;
@@ -2999,7 +2999,7 @@ a[href].inline-flex:hover {
 
 .admin-sidebar-foot {
   max-height: 180px;
-  padding: 1rem 1.1rem 1.25rem;
+  padding: 1rem 1.25rem 1.25rem;
   border-top: 1px solid rgb(255 255 255 / 8%);
   transition: opacity 160ms ease, max-height 260ms ease, padding 260ms ease;
 }
@@ -4253,9 +4253,9 @@ a[href].inline-flex:hover {
   .admin-section-head,
   .admin-info,
   .admin-footnote { margin-inline: 0; }
-  .admin-info { padding: 0.85rem 1.15rem; }
-  .admin-card-head { padding: 0.85rem 1.15rem; }
-  .admin-card-body { padding: 1.15rem; }
+  .admin-info { padding: 0.85rem 1.25rem; }
+  .admin-card-head { padding: 0.85rem 1.25rem; }
+  .admin-card-body { padding: 1.25rem; }
   .admin-stat-grid { gap: 0.65rem; }
   .admin-stat { padding: 0.85rem; }
   .admin-stat-value { font-size: 1.5rem; }
@@ -4271,8 +4271,8 @@ a[href].inline-flex:hover {
   .admin-form-grid { gap: 0.7rem; }
   .admin-detail-grid { grid-template-columns: 1fr; }
   .admin-dialog-head,
-  .admin-dialog-body { padding-left: 1.15rem; padding-right: 1.15rem; }
-  .admin-dialog-foot { padding-left: 1.15rem; padding-right: 1.15rem; }
+  .admin-dialog-body { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .admin-dialog-foot { padding-left: 1.25rem; padding-right: 1.25rem; }
   .admin-table { min-width: 760px; }
   .admin-scroll-hint { display: block; }
 
@@ -4289,8 +4289,8 @@ a[href].inline-flex:hover {
   .admin-content,
   .admin-auth,
   .admin-modal {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
 
@@ -4299,8 +4299,8 @@ a[href].inline-flex:hover {
   .admin-content,
   .admin-auth,
   .admin-modal {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .admin-stat-grid,
