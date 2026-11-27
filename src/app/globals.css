@@ -889,9 +889,12 @@ a.btn-light:focus {
   top: 0;
   bottom: 0;
   width: clamp(56px, 8vw, 110px);
-  background: url("/images/natal-edge-foliage.svg") top center / 100% 100% no-repeat;
-  opacity: 0.78;
+  background: url("/images/natal-edge-foliage.svg") center / contain no-repeat;
+  opacity: 0.72;
   pointer-events: none;
+  /* Ujung ranting di SVG memang terpotong viewBox; pudarkan tepinya agar tidak terlihat terpangkas. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
 }
 
 .hero-foliage-left {
@@ -1504,8 +1507,9 @@ a.btn-light:focus {
 }
 
 .activities-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   width: min(100%, 1120px);
   margin: 0 auto;
@@ -1514,6 +1518,8 @@ a.btn-light:focus {
 .activity-card {
   position: relative;
   display: flex;
+  flex: 1 1 260px;
+  max-width: 360px;
   min-height: 190px;
   align-items: center;
   gap: 1.1rem;
@@ -1561,8 +1567,7 @@ a.btn-light:focus {
   background: #f6e8d4;
 }
 
-.activity-card-3 .activity-art,
-.activity-card-6 .activity-art {
+.activity-card-3 .activity-art {
   background: #f7e4df;
 }
 
@@ -1891,10 +1896,6 @@ a.btn-light:focus {
     padding-right: 0.45rem;
     padding-left: 0.45rem;
   }
-
-  .activities-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (min-width: 681px) and (max-width: 1100px) {
@@ -2133,11 +2134,12 @@ a.btn-light:focus {
   }
 
   .activities-grid {
-    grid-template-columns: 1fr;
     gap: 0.65rem;
   }
 
   .activity-card {
+    flex: 1 1 100%;
+    max-width: none;
     min-height: 110px;
     padding: 0.75rem;
     border-radius: 0.9rem;
