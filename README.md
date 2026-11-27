@@ -4,6 +4,8 @@ Website untuk membantu panitia Natal PWK UNNES 2026 mencatat pendaftaran dan keh
 
 Acara berlangsung **28 Januari 2027** di **L4, FEB UNNES**, dengan kuota awal **250 peserta**. Setiap orang mendaftar untuk dirinya sendiri dan mendapat tiketnya sendiri.
 
+Tema acara adalah **Terang Natal menuntun Civitas Akademika di tengah kegelapan** (Yohanes 1:5). Teks di website dan poster memakai tema yang sama.
+
 Dokumen ini ditulis untuk siapa saja yang terlibat: panitia, peserta, dan orang yang kelak mengelola sistemnya. Bagian teknis ada di bawah, setelah bagian alur.
 
 ---

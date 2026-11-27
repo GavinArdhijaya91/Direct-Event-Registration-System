@@ -62,7 +62,7 @@ export default async function DaftarPage() {
             />
             <span className="brand-copy">
               <span className="brand-name">{settings?.eventName ?? "Natal PWK UNNES 2026"}</span>
-              <span className="brand-tagline">Merayakan Natal, Membagikan Cinta</span>
+              <span className="brand-tagline">Terang Natal menuntun Civitas Akademika</span>
             </span>
           </Link>
           
@@ -255,7 +255,7 @@ export default async function DaftarPage() {
             />
           </div>
           <p className="footer-note">
-            © 2026 PWK UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span>
+            © 2026 PWK UNNES<br /><span>Bawa terang, bagikan sukacita.</span>
           </p>
           <Image
             src="/images/logos/logo-unnes.png"

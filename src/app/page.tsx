@@ -67,7 +67,7 @@ export default async function Home() {
             />
             <span className="brand-copy">
               <span className="brand-name">{settings?.eventName ?? "Natal PWK UNNES 2026"}</span>
-              <span className="brand-tagline">Merayakan Natal, Membagikan Cinta</span>
+              <span className="brand-tagline">Terang Natal menuntun Civitas Akademika</span>
             </span>
           </Link>
 
@@ -84,18 +84,19 @@ export default async function Home() {
           <div className="hero-copy" data-reveal>
             <p className="hero-eyebrow"><span aria-hidden="true">✦</span> Perayaan Natal PWK UNNES 2026</p>
             <h1 className="hero-title">
-              Rayakan Natal,
+              Terang Natal,
               <br />
-              <span>tebarkan kasih.</span>
+              <span>menuntun langkah kita.</span>
             </h1>
             <p className="hero-description">
-              Mari berkumpul dalam perayaan iman, kehangatan, dan sukacita.
-              Rayakan kelahiran Yesus Kristus bersama keluarga besar PWK UNNES.
+              Sebagai Civitas Akademika PWK UNNES, mari berkumpul dalam terang
+              Natal untuk merayakan kelahiran Yesus Kristus dan membawa sukacita
+              di tengah kegelapan.
             </p>
             <HeroActions />
             <p className="hero-note">
               <span className="hero-note-star" aria-hidden="true">✧</span>
-              Satu perayaan, banyak cerita penuh kasih
+              Satu terang, banyak cerita perjalanan iman
             </p>
           </div>
           <div className="hero-artwork" data-reveal>
@@ -107,7 +108,7 @@ export default async function Home() {
               priority
               className="hero-illustration"
             />
-            <span className="artwork-caption">Damai dan Sukacita <span aria-hidden="true">✦</span></span>
+            <span className="artwork-caption">Terang di tengah kegelapan <span aria-hidden="true">✦</span></span>
           </div>
         </div>
         <div className="hero-bottom-line" aria-hidden="true" />
@@ -151,10 +152,10 @@ export default async function Home() {
         <div className="holiday-gallery-heading">
           <div>
             <p className="section-kicker">Suasana Natal</p>
-            <h2 id="holiday-gallery-title">Merayakan damai, berbagi sukacita.</h2>
+            <h2 id="holiday-gallery-title">Terang di tengah kebersamaan.</h2>
           </div>
           <p className="holiday-gallery-desc">
-            Ibadah, kebersamaan, dan berbagi menjadi inti perayaan Natal.
+            Ibadah, kebersamaan, dan berbagi menjadi inti perayaan Natal PWK UNNES.
           </p>
         </div>
         <div className="holiday-gallery-grid">
@@ -189,7 +190,7 @@ export default async function Home() {
               sizes="(max-width: 680px) 50vw, (max-width: 900px) 50vw, 33vw"
               className="holiday-photo-image"
             />
-            <figcaption><span>03</span> Berbagi dengan kasih</figcaption>
+            <figcaption><span>03</span> Terang yang dibagikan</figcaption>
           </figure>
         </div>
       </section>
@@ -263,18 +264,18 @@ export default async function Home() {
           />
         </div>
         <div className="verse-ornament" aria-hidden="true">✧</div>
-        <p className="section-kicker">Pesan Natal</p>
+        <p className="section-kicker">Tema Natal PWK 2026</p>
         <blockquote>
-          “Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal.”
+          “Terang Natal menuntun Civitas Akademika di tengah kegelapan”
         </blockquote>
-        <p className="verse-reference">Yohanes 3:16</p>
+        <p className="verse-reference">Terinspirasi dari Yohanes 1:5</p>
       </section>
 
       <section id="kegiatan" className="activities-section" data-reveal>
         <div className="section-heading">
-          <p className="section-kicker">Hangatnya kebersamaan</p>
-          <h2>Manisnya momen Natal</h2>
-          <p>Luangkan waktu untuk beribadah, berbagi, dan merayakan bersama.</p>
+          <p className="section-kicker">Terangnya kebersamaan</p>
+          <h2>Momen Natal yang penuh terang</h2>
+          <p>Luangkan waktu untuk beribadah, berbagi, dan merayakan bersama dalam terang Natal.</p>
         </div>
         <div className="activities-grid">
           {activities.map((activity, index) => (
@@ -365,7 +366,7 @@ export default async function Home() {
               className="footer-uk3-logo"
             />
           </div>
-          <p className="footer-note">© 2026 PWK UNNES<br /><span>Rayakan kasih, bagikan sukacita.</span></p>
+          <p className="footer-note">© 2026 PWK UNNES<br /><span>Bawa terang, bagikan sukacita.</span></p>
           <Image
             src="/images/logos/logo-unnes.png"
             alt="Universitas Negeri Semarang"

@@ -15,7 +15,7 @@ const appUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   title: "Natal PWK UNNES 2026 - Pendaftaran",
-  description: "Rayakan Natal PWK UNNES 2026 bersama kami. Perayaan iman, kebersamaan, dan kegembiraan. Daftar sekarang untuk mendapatkan tiket Anda.",
+  description: "Natal PWK UNNES 2026 dengan tema Terang Natal menuntun Civitas Akademika di tengah kegelapan. Daftar sekarang untuk mendapatkan tiket Anda.",
   referrer: "no-referrer",
   icons: {
     icon: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Natal PWK UNNES 2026 - Pendaftaran & Tiket",
-    description: "Rayakan Natal PWK UNNES 2026 bersama kami. Perayaan iman, kebersamaan, dan sukacita. Daftar sekarang untuk mendapatkan tiket resmi.",
+    description: "Natal PWK UNNES 2026 dengan tema Terang Natal menuntun Civitas Akademika di tengah kegelapan. Daftar sekarang untuk mendapatkan tiket resmi.",
     siteName: "Natal PWK UNNES 2026",
     images: [
       {
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: "Natal PWK UNNES 2026",
-    description: "Rayakan Natal PWK UNNES 2026 bersama kami. Daftar sekarang untuk mendapatkan tiket resmi.",
+    description: "Natal PWK UNNES 2026: Terang Natal menuntun Civitas Akademika di tengah kegelapan. Daftar sekarang untuk mendapatkan tiket resmi.",
     images: ["/images/logos/logo-natal-pwk-2026.png"],
   },
 };
