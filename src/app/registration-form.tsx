@@ -265,12 +265,12 @@ export default function RegistrationForm({
               Gunakan nomor WhatsApp & kode rahasia ini jika link tiket hilang atau ingin membuka tiket dari perangkat lain.
             </p>
 
-            <div className="mt-3.5 flex flex-wrap items-center gap-2">
-              <code className="rounded-xl bg-white px-3.5 py-2 font-mono text-sm font-bold tracking-wide select-all border border-[#dcd6c8] text-stone-900 shadow-2xs">
+            <div className="mt-3.5 flex min-w-0 flex-wrap items-center gap-2">
+              <code className="max-w-full break-all rounded-xl bg-white px-3.5 py-2 font-mono text-sm font-bold tracking-wide select-all border border-[#dcd6c8] text-stone-900 shadow-2xs">
                 {response.recoveryCode}
               </code>
               <button
-                className="min-h-11 rounded-xl bg-[var(--forest)] px-4 py-2 text-xs font-semibold text-white hover:bg-[var(--forest-deep)] active:scale-95 transition inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                className="inline-flex w-full min-h-11 items-center justify-center gap-1.5 rounded-xl bg-[var(--forest)] px-4 py-2 text-xs font-semibold text-white hover:bg-[var(--forest-deep)] active:scale-95 transition shadow-2xs cursor-pointer sm:w-auto"
                 onClick={() => copyRecoveryCode(response.recoveryCode)}
                 type="button"
               >
@@ -292,7 +292,7 @@ export default function RegistrationForm({
                 )}
               </button>
               <button
-                className="min-h-11 rounded-xl border border-[#dcd6c8] bg-white px-4 py-2 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--cream)] active:scale-95 transition inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                className="inline-flex w-full min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[#dcd6c8] bg-white px-4 py-2 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--cream)] active:scale-95 transition shadow-2xs cursor-pointer sm:w-auto"
                 onClick={() => sendRecoveryToWA(response.ticketPath, response.recoveryCode)}
                 type="button"
                 title="Kirim kode dan link tiket ke nomor WA pribadi sebagai backup"

@@ -204,7 +204,7 @@ export default function CheckinPanel({
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
               <circle cx="12" cy="13" r="4" />
             </svg>
-            <span>Scan QR Presensi di Layar Proyektor / Banner</span>
+            <span>Scan QR Presensi</span>
           </>
         )}
       </button>
@@ -238,7 +238,7 @@ export default function CheckinPanel({
         >
           {showManualCodeInput
             ? "Tutup input kode manual"
-            : "Kamera silau? Ketik kode presensi manual"}
+            : "Kamera bermasalah? Ketik kode manual"}
         </button>
 
         {showManualCodeInput && (
@@ -255,7 +255,7 @@ export default function CheckinPanel({
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder="Ketik 6 karakter kode di layar proyektor"
+              placeholder="Kode 6 karakter di layar"
               className="min-h-11 flex-1 rounded-xl border border-[#d2ccc0] bg-white px-3.5 text-sm font-mono uppercase text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 shadow-2xs transition-all"
               disabled={!canCheckIn || busy}
             />

@@ -84,51 +84,62 @@ export default async function TicketPage({ params }: TicketPageProps) {
         </Link>
       </div>
       <article className="ticket-card" data-reveal>
-        <p className="ticket-event-name">
-          {settings?.eventName ?? "Natal PWK 2026"}
-        </p>
-        <h1 className="ticket-title">
-          Tiket peserta
-        </h1>
-        <div className="ticket-details mt-8 border-y border-[var(--line)] py-6">
+        <div className="border-b border-[var(--line)] pb-5">
+          <p className="ticket-event-name">
+            {settings?.eventName ?? "Natal PWK 2026"}
+          </p>
+          <h1 className="ticket-title mt-2">Tiket Peserta</h1>
+        </div>
+        <div className="ticket-details mt-6 border-y border-[var(--line)] py-6">
           {settings ? (
             <div className="mb-6 grid gap-3 border-b border-[var(--line)] pb-5 text-sm sm:grid-cols-2">
-              <p>
-                <span className="block text-[var(--muted)]">Tanggal acara</span>
-                <span className="mt-1 block font-medium">
+              <div>
+                <p className="ticket-label">Tanggal acara</p>
+                <p className="ticket-value">
                   {new Intl.DateTimeFormat("id-ID", {
                     dateStyle: "long",
                     timeZone: "Asia/Jakarta",
                   }).format(settings.eventDate)}
-                </span>
-              </p>
-              <p>
-                <span className="block text-[var(--muted)]">Lokasi</span>
-                <span className="mt-1 block font-medium">{settings.eventLocation}</span>
-              </p>
+                </p>
+              </div>
+              <div>
+                <p className="ticket-label">Lokasi</p>
+                <p className="ticket-value">{settings.eventLocation}</p>
+              </div>
             </div>
           ) : null}
-          <p className="text-sm text-[var(--muted)]">Nama peserta</p>
-          <p className="mt-1 text-xl font-semibold">{attendee.fullName}</p>
-          <p className="mt-5 text-sm text-[var(--muted)]">Kode tiket</p>
-          <p className="ticket-code mt-2 font-mono text-2xl sm:text-3xl font-bold tracking-[0.12em] break-all">
-            {attendee.ticketCode}
-          </p>
+          <div>
+            <p className="ticket-label">Nama peserta</p>
+            <p className="ticket-value mt-1 text-xl">{attendee.fullName}</p>
+          </div>
+          <div className="mt-5">
+            <p className="ticket-label">Kode tiket</p>
+            <p className="ticket-code mt-2 font-mono text-2xl sm:text-3xl font-bold tracking-[0.12em] break-all">
+              {attendee.ticketCode}
+            </p>
+          </div>
           <TicketQrCode ticketCode={attendee.ticketCode} />
-          <p className="mt-5 text-sm text-[var(--muted)]">Kategori</p>
-          <p className="mt-1">{categoryLabels[attendee.category]}</p>
+          <div>
+            <p className="ticket-label">Kategori</p>
+            <p className="ticket-value">{categoryLabels[attendee.category]}</p>
+          </div>
         </div>
-        <p
-          className={`ticket-status mt-6 rounded-xl px-4 py-3 font-semibold ${
+        <div
+          className={`ticket-status mt-6 rounded-xl border border-[var(--line)] px-4 py-3.5 ${
             attendee.status === "HADIR"
-              ? "bg-gradient-to-r from-[var(--forest)] to-[var(--mint)] text-white"
+              ? "bg-[var(--moss)] text-[var(--forest-deep)]"
               : "bg-[var(--rose)] text-[var(--red)]"
           }`}
         >
-          {attendee.status === "HADIR"
-            ? `Sudah check-in${attendee.checkedInAt ? ` pada ${new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(attendee.checkedInAt)} WIB.` : "."}`
-            : "Status: terdaftar (belum check-in). Gunakan pemindai di bawah saat tiba di lokasi."}
-        </p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-80">
+            Status kehadiran
+          </p>
+          <p className="mt-1 font-semibold leading-6">
+            {attendee.status === "HADIR"
+              ? `Sudah check-in${attendee.checkedInAt ? ` pada ${new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(attendee.checkedInAt)} WIB.` : "."}`
+              : "Belum check-in. Gunakan tombol presensi di bawah saat tiba di lokasi."}
+          </p>
+        </div>
         {attendee.status === "HADIR" ? (
           <div className="mt-4 rounded-xl bg-[var(--moss)] px-4 py-4 text-[var(--forest-deep)]">
             <p className="font-bold tracking-wide">SUDAH HADIR</p>

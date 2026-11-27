@@ -2611,6 +2611,25 @@ a.btn-light:focus {
 
 .ticket-code {
   color: #a74338;
+  overflow-wrap: anywhere;
+}
+
+/* Label/nilai tiket memakai satu pola agar hierarki tetap sama di semua layar. */
+.ticket-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ticket-value {
+  margin: 0.35rem 0 0;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 900px) {
@@ -4220,8 +4239,8 @@ a[href].inline-flex:hover {
 }
 
 @media (max-width: 680px) {
-  /* Jarak tepi lega & nyaman di mobile: 1.25rem (20px) */
-  .admin-topbar { min-height: 60px; padding: 0.65rem 1.25rem; }
+  /* Jarak tepi lega & nyaman di mobile: minimal 1.25rem (20px) */
+  .admin-topbar { min-height: 60px; padding: 0.65rem 1.5rem; }
   .admin-crumb,
   .admin-topbar-title { display: none; }
   .admin-topbar-actions { gap: 0.35rem; }
@@ -4229,14 +4248,14 @@ a[href].inline-flex:hover {
   .admin-topbar .admin-icon-btn { width: 40px; height: 40px; }
   .admin-topbar-refresh { font-size: 0.7rem; }
 
-  .admin-content { padding: 1.25rem 1.25rem 3rem; }
+  .admin-content { padding: 1.25rem 1.5rem 3rem; }
   .admin-section { margin-bottom: 1.25rem; }
   .admin-section-head,
   .admin-info,
   .admin-footnote { margin-inline: 0; }
-  .admin-info { padding: 0.85rem 1rem; }
-  .admin-card-head { padding: 0.85rem 1rem; }
-  .admin-card-body { padding: 1rem; }
+  .admin-info { padding: 0.85rem 1.15rem; }
+  .admin-card-head { padding: 0.85rem 1.15rem; }
+  .admin-card-body { padding: 1.15rem; }
   .admin-stat-grid { gap: 0.65rem; }
   .admin-stat { padding: 0.85rem; }
   .admin-stat-value { font-size: 1.5rem; }
@@ -4252,8 +4271,8 @@ a[href].inline-flex:hover {
   .admin-form-grid { gap: 0.7rem; }
   .admin-detail-grid { grid-template-columns: 1fr; }
   .admin-dialog-head,
-  .admin-dialog-body { padding-left: 1rem; padding-right: 1rem; }
-  .admin-dialog-foot { padding-left: 1rem; padding-right: 1rem; }
+  .admin-dialog-body { padding-left: 1.15rem; padding-right: 1.15rem; }
+  .admin-dialog-foot { padding-left: 1.15rem; padding-right: 1.15rem; }
   .admin-table { min-width: 760px; }
   .admin-scroll-hint { display: block; }
 
@@ -4270,8 +4289,8 @@ a[href].inline-flex:hover {
   .admin-content,
   .admin-auth,
   .admin-modal {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 }
 
@@ -4280,8 +4299,8 @@ a[href].inline-flex:hover {
   .admin-content,
   .admin-auth,
   .admin-modal {
-    padding-left: 0.875rem;
-    padding-right: 0.875rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .admin-stat-grid,
