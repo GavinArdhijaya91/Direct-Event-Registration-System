@@ -218,7 +218,7 @@ export default function AdminVenueQrModal({
         role="dialog"
       >
         {!isFullscreen && (
-          <div className="admin-dialog-head" style={{ width: "100%" }}>
+          <div className="admin-dialog-head no-print" style={{ width: "100%" }}>
             <div>
               <h2 className="admin-dialog-title" id="venue-qr-title">
                 <AdminIcon name="monitor" /> QR presensi untuk proyektor
@@ -239,7 +239,7 @@ export default function AdminVenueQrModal({
           </div>
         )}
 
-        <div className="admin-dialog-body" style={{ width: "100%" }}>
+        <div className="admin-dialog-body venue-qr-print" style={{ width: "100%" }}>
           <div>
             <p className="admin-kicker" style={{ justifyContent: "center" }}>
               Presensi kehadiran terpusat
@@ -254,7 +254,7 @@ export default function AdminVenueQrModal({
               <AdminIcon name="pin" style={{ width: 13, height: 13, verticalAlign: -2 }} />{" "}
               {eventLocation || "L4, FEB UNNES"}
             </p>
-            <p className="admin-section-note" style={{ marginTop: "0.6rem" }}>
+            <p className="admin-section-note no-print" style={{ marginTop: "0.6rem" }}>
               Mode QR:{" "}
               <strong style={{ color: "#064e3b" }}>
                 {qrData
@@ -269,7 +269,7 @@ export default function AdminVenueQrModal({
           <div className="flex flex-col items-center" style={{ marginTop: "1.1rem" }}>
             {secondsRemaining !== null ? (
               <div
-                className="admin-event-chip"
+                className="admin-event-chip no-print"
                 style={{ marginBottom: "0.8rem" }}
               >
                 <span
@@ -300,9 +300,13 @@ export default function AdminVenueQrModal({
               )}
             </div>
 
+            <p className="venue-qr-print-hint">
+              Pindai QR ini saat tiba di lokasi acara.
+            </p>
+
             {error ? (
               <div
-                className="admin-notice admin-notice--error"
+                className="admin-notice admin-notice--error no-print"
                 role="alert"
                 style={{ marginTop: "0.9rem", marginBottom: 0 }}
               >
@@ -311,7 +315,7 @@ export default function AdminVenueQrModal({
             ) : null}
 
             <div
-              className="admin-card"
+              className="admin-card no-print"
               style={{ marginTop: "1.1rem", maxWidth: "30rem", textAlign: "left" }}
             >
               <div className="admin-card-body">
@@ -319,20 +323,35 @@ export default function AdminVenueQrModal({
                 <ol className="admin-guide" style={{ marginTop: "0.4rem" }}>
                   <li>Buka halaman tiket di HP masing-masing.</li>
                   <li>Ketuk tombol hijau &ldquo;Scan QR Lokasi&rdquo;.</li>
-                  <li>Arahkan kamera ke QR di layar proyektor ini.</li>
+                  <li>
+                    Arahkan kamera ke QR di{" "}
+                    {qrData?.mode === "STATIC"
+                      ? "poster/banner yang dipasang di lokasi"
+                      : "layar proyektor ini"}
+                    .
+                  </li>
                 </ol>
-                <p className="admin-help" style={{ marginTop: "0.6rem" }}>
-                  Kamera silau? Ketik 6 karakter token berikut di halaman tiket:
-                </p>
-                <code className="admin-mono" style={{ fontSize: "1rem", fontWeight: 800 }}>
-                  {qrData?.token ?? "(Belum diatur)"}
-                </code>
+                {qrData?.mode === "STATIC" ? (
+                  <p className="admin-help" style={{ marginTop: "0.6rem" }}>
+                    Kamera bermasalah? Tunjukkan kode tiket EVT-XXXX peserta ke
+                    panitia untuk dibantu check-in manual.
+                  </p>
+                ) : (
+                  <>
+                    <p className="admin-help" style={{ marginTop: "0.6rem" }}>
+                      Kamera silau? Ketik 6 karakter token berikut di halaman tiket:
+                    </p>
+                    <code className="admin-mono" style={{ fontSize: "1rem", fontWeight: 800 }}>
+                      {qrData?.token ?? "(Belum diatur)"}
+                    </code>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="admin-dialog-foot" style={{ justifyContent: "center" }}>
+        <div className="admin-dialog-foot no-print" style={{ justifyContent: "center" }}>
           <button
             className="admin-btn admin-btn-primary"
             onClick={() => void toggleFullscreen()}
