@@ -9,12 +9,14 @@ export default function AdminPengaturanPage() {
   const [bulkReason, setBulkReason] = useState("");
   const [bulkConfirmation, setBulkConfirmation] = useState("");
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
   const overrideNeeded = Number(draft.maxCapacity) !== dashboard.settings.maxCapacity;
 
   async function saveSettings(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPageError(null);
     setNotice(null);
+    setSavingSettings(true);
     try {
       const response = await fetch("/api/admin/settings", {
         method: "PATCH",
@@ -43,6 +45,8 @@ export default function AdminPengaturanPage() {
       setPageError(
         caught instanceof Error ? caught.message : "Koneksi gagal saat menyimpan pengaturan.",
       );
+    } finally {
+      setSavingSettings(false);
     }
   }
 
@@ -183,8 +187,11 @@ export default function AdminPengaturanPage() {
                 <option value="STATIC">Statis (cetak/banner)</option>
               </select>
               <p className="admin-help">
-                QR dinamis memerlukan QR_SIGNING_SECRET di server. Mode statis
-                hanya untuk poster cetak dan lebih mudah disalahgunakan.
+                QR dinamis berputar otomatis tiap 3 menit dan cocok untuk
+                proyektor di aula. Mode statis tetap tersedia untuk poster atau
+                banner cetak bila layar tidak bisa dipakai. Karena isinya tidak
+                berubah, pasang poster hanya di lokasi acara dan pantau
+                kehadiran dari panel admin.
               </p>
             </div>
             <div className="admin-field">
@@ -220,8 +227,17 @@ export default function AdminPengaturanPage() {
                 />
               </div>
             </div>
-            <button className="admin-btn admin-btn-primary" type="submit">
-              <AdminIcon name="check" /> Simpan pengaturan
+            <button className="admin-btn admin-btn-primary" disabled={savingSettings} type="submit">
+              {savingSettings ? (
+                <>
+                  <span className="admin-btn-spinner" aria-hidden="true" />
+                  Menyimpan…
+                </>
+              ) : (
+                <>
+                  <AdminIcon name="check" /> Simpan pengaturan
+                </>
+              )}
             </button>
           </form>
 
