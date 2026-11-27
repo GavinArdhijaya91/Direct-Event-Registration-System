@@ -359,11 +359,11 @@ export default async function Home() {
         <div className="footer-inner">
           <div className="footer-organizer">
             <Image
-              src="/images/logos/logo-uk3unnes.png"
-              alt="UK3 UNNES"
-              width={48}
-              height={28}
-              className="footer-uk3-logo"
+              src="/images/logos/logo-pwk.png"
+              alt="PWK UNNES"
+              width={41}
+              height={40}
+              className="footer-pwk-logo"
             />
           </div>
           <p className="footer-note">© 2026 PWK UNNES<br /><span>Bawa terang, bagikan sukacita.</span></p>
