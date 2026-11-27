@@ -305,7 +305,7 @@ export default function AdminVenueQrModal({
             </p>
           </div>
 
-          <div className="flex flex-col items-center" style={{ marginTop: "1.1rem" }}>
+          <div className="venue-qr-main flex flex-col items-center" style={{ marginTop: "1.1rem" }}>
             {secondsRemaining !== null ? (
               <div
                 className="admin-event-chip no-print"
@@ -364,7 +364,7 @@ export default function AdminVenueQrModal({
             ) : null}
 
             <div
-              className="admin-card no-print"
+              className="venue-qr-guide admin-card no-print"
               style={{ marginTop: "1.1rem", maxWidth: "30rem", textAlign: "left" }}
             >
               <div className="admin-card-body">
@@ -403,7 +403,7 @@ export default function AdminVenueQrModal({
             </div>
 
             <p
-              className="admin-help no-print"
+              className="venue-qr-tip admin-help no-print"
               style={{ marginTop: "1rem", maxWidth: "30rem", textAlign: "center" }}
             >
               Sebelum mencetak: pada dialog cetak, buka{" "}

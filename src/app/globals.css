@@ -4670,27 +4670,45 @@ a[href].inline-flex:hover {
   .admin-auth-card { grid-template-columns: 1fr; }
   .admin-auth-art { gap: 0.8rem; padding: 1.15rem; }
   .admin-auth-panel { padding: 1.15rem; }
-  .admin-modal { padding: 1.25rem; }
-  .admin-dialog { max-height: calc(100vh - 1.5rem); }
+  .admin-modal { padding: 0.6rem; }
+  .admin-dialog { max-height: calc(100dvh - 3rem); }
+
+  /* Modal QR presensi lebih pendek agar tidak tertutup bilah browser di HP. */
+  .venue-qr-main { margin-top: 0.55rem !important; }
+  .venue-qr-guide { margin-top: 0.6rem !important; }
+  .venue-qr-guide .admin-card-body { padding: 0.7rem; }
+  .venue-qr-guide .admin-guide { font-size: 0.7rem; }
+  .venue-qr-tip { display: none !important; }
+  .venue-qr-code { width: 150px; height: 150px; }
+  .admin-dialog-foot { padding: 0.5rem 0.75rem 0.75rem; }
+  .admin-dialog-foot .admin-btn { min-height: 38px; font-size: 0.72rem; }
 }
 
 @media (max-width: 480px) {
   .admin-topbar,
   .admin-content,
-  .admin-auth,
-  .admin-modal {
+  .admin-auth {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+
+  .admin-modal {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
   }
 }
 
 @media (max-width: 390px) {
   .admin-topbar,
   .admin-content,
-  .admin-auth,
-  .admin-modal {
+  .admin-auth {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+
+  .admin-modal {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
   }
 
   .admin-stat-grid,
