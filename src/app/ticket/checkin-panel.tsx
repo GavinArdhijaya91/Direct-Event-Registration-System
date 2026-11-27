@@ -180,7 +180,7 @@ export default function CheckinPanel({
           </p>
         </div>
         <p className="mt-1.5 text-[var(--muted)] leading-relaxed">
-          Tekan tombol di bawah untuk membuka pemindai kamera HP, kemudian arahkan kamera ke <strong>QR Code Presensi</strong> yang ditampilkan panitia di layar proyektor panggung atau banner pintu masuk aula.
+          Tekan tombol di bawah untuk membuka pemindai kamera HP, kemudian arahkan kamera ke <strong>QR Code Presensi</strong> yang ditampilkan panitia di layar proyektor panggung atau poster di pintu masuk aula.
         </p>
       </div>
 
@@ -217,7 +217,7 @@ export default function CheckinPanel({
             id={regionId}
           />
           <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-            Arahkan kamera ke QR Code di layar proyektor atau banner depan ruangan. Jika dibuka dari browser bawaan WhatsApp, ketuk titik tiga lalu pilih &ldquo;Buka di Chrome/Safari&rdquo;.
+            Arahkan kamera ke QR Code di layar proyektor atau poster di depan ruangan. Jika dibuka dari browser bawaan WhatsApp, ketuk titik tiga lalu pilih &ldquo;Buka di Chrome/Safari&rdquo;.
           </p>
           <button
             className="mt-3 min-h-11 w-full rounded-full border border-[var(--line)] bg-white px-4 text-sm font-semibold text-[var(--ink)] shadow-sm hover:bg-[var(--cream)] transition"

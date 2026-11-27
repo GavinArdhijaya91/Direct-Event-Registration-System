@@ -188,8 +188,8 @@ export default function AdminPengaturanPage() {
               </select>
               <p className="admin-help">
                 QR dinamis berputar otomatis tiap 3 menit dan cocok untuk
-                proyektor di aula. Mode statis tetap tersedia untuk poster atau
-                banner cetak bila layar tidak bisa dipakai. Karena isinya tidak
+                proyektor di aula. Mode statis tetap tersedia untuk poster cetak
+                bila layar tidak bisa dipakai. Karena isinya tidak
                 berubah, pasang poster hanya di lokasi acara dan pantau
                 kehadiran dari panel admin.
               </p>

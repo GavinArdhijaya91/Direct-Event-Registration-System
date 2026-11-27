@@ -326,7 +326,7 @@ export default function AdminVenueQrModal({
                   <li>
                     Arahkan kamera ke QR di{" "}
                     {qrData?.mode === "STATIC"
-                      ? "poster/banner yang dipasang di lokasi"
+                      ? "poster yang dipasang di lokasi"
                       : "layar proyektor ini"}
                     .
                   </li>

@@ -113,7 +113,7 @@ Pemilik produk menerima penggunaan QR statis dengan pemantauan petugas, dengan p
 - Jika risiko check-in jarak jauh tidak dapat diterima, pemilik produk perlu memilih QR dinamis atau pemindaian tiket oleh petugas. Sistem kini mendukung **QR Proyektor Dinamis Berbasis Waktu (Rotasi Tiap 3 Menit)**:
   - Menggunakan HMAC-SHA256 stateless berbasis interval 180 detik.
   - Server memvalidasi window saat ini serta memberi toleransi 1 window sebelumnya/sesudahnya (grace period) untuk mengakomodasi latensi sinyal HP di aula.
-  - Panel admin menyediakan saklar toggle antara Mode Dinamis (proyektor aula) dan Mode Statis (poster/banner cetak).
+  - Panel admin menyediakan saklar toggle antara Mode Dinamis (proyektor aula) dan Mode Statis (poster cetak).
   - Peserta dapat memindai QR dinamis atau mengetik token 6-karakter jika kamera silau dari proyektor.
 
 Check-in manual harus melakukan transisi status yang sama, hanya tersedia pada jendela check-in, mempertahankan timestamp check-in pertama, dan merekam metode `MANUAL_ADMIN`.
