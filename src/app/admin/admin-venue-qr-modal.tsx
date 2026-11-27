@@ -260,7 +260,7 @@ export default function AdminVenueQrModal({
                 {qrData
                   ? qrData.mode === "DYNAMIC"
                     ? "Dinamis — berganti tiap 3 menit"
-                    : "Statis — untuk banner/cetak"
+                    : "Statis — untuk cetak poster"
                   : "Memuat…"}
               </strong>
             </p>

@@ -184,7 +184,7 @@ export default function AdminPengaturanPage() {
                 value={draft.qrMode}
               >
                 <option value="DYNAMIC">Dinamis (berputar tiap 3 menit)</option>
-                <option value="STATIC">Statis (cetak/banner)</option>
+                <option value="STATIC">Statis (cetak)</option>
               </select>
               <p className="admin-help">
                 QR dinamis berputar otomatis tiap 3 menit dan cocok untuk
