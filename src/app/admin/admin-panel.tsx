@@ -58,6 +58,7 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
   );
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [loggingIn, setLoggingIn] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -67,6 +68,18 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showWalkinModal, setShowWalkinModal] = useState(false);
   const [showVenueQrModal, setShowVenueQrModal] = useState(false);
+
+  // Notifikasi sukses/gagal ditutup otomatis agar tidak menghalangi pekerjaan berikutnya.
+  useEffect(() => {
+    if (!notice && !pageError) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setNotice(null);
+      setPageError(null);
+    }, 8000);
+    return () => window.clearTimeout(timer);
+  }, [notice, pageError, setNotice, setPageError]);
 
   const refresh = useCallback(async (updateDraft = false) => {
     try {
@@ -151,6 +164,7 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoginError(null);
+    setLoggingIn(true);
     try {
       const response = await fetch("/api/admin/login", {
         method: "POST",
@@ -168,6 +182,8 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
       await refresh(true);
     } catch {
       setLoginError("Koneksi gagal. Coba login kembali.");
+    } finally {
+      setLoggingIn(false);
     }
   }
 
@@ -286,8 +302,15 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
                   </p>
                 ) : null}
               </div>
-              <button className="admin-btn admin-btn-primary" type="submit">
-                Masuk ke panel
+              <button className="admin-btn admin-btn-primary" disabled={loggingIn} type="submit">
+                {loggingIn ? (
+                  <>
+                    <span className="admin-btn-spinner" aria-hidden="true" />
+                    Memasuki panel…
+                  </>
+                ) : (
+                  "Masuk ke panel"
+                )}
               </button>
             </form>
           </div>
@@ -348,7 +371,7 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
 
   return (
     <AdminProvider value={contextValue}>
-      <main className={`admin-shell${sidebarCollapsed ? " is-collapsed" : ""}`}>
+      <main className={`admin-shell${sidebarCollapsed ? " is-collapsed" : ""}${showVenueQrModal ? " is-printing-qr" : ""}`}>
         <aside aria-label="Navigasi panel admin" className={`admin-sidebar${sidebarOpen ? " is-open" : ""}`}>
           <div className="admin-brand">
             <Image alt="" height={42} src="/images/logos/logo-natal-pwk-2026.png" width={42} />
@@ -452,7 +475,9 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
                 title="Muat ulang data dashboard"
                 type="button"
               >
-                <AdminIcon name="refresh" />
+                <span className={loading ? "admin-refresh-spinning" : undefined}>
+                  <AdminIcon name="refresh" />
+                </span>
               </button>
               <button
                 className="admin-btn admin-btn-ghost admin-btn-sm"
@@ -465,17 +490,6 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
           </header>
 
           <div className="admin-content">
-            {pageError || notice ? (
-              <div
-                aria-live="polite"
-                className={`admin-notice ${pageError ? "admin-notice--error" : "admin-notice--success"}`}
-                role={pageError ? "alert" : "status"}
-              >
-                <AdminIcon name={pageError ? "alert" : "checkCircle"} />
-                <span>{pageError ?? notice}</span>
-              </div>
-            ) : null}
-
             {children}
 
             <p className="admin-footnote">
@@ -503,6 +517,28 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
             isOpen={showVenueQrModal}
             onClose={() => setShowVenueQrModal(false)}
           />
+        ) : null}
+
+        {pageError || notice ? (
+          <div
+            aria-live="polite"
+            className={`admin-toast no-print ${pageError ? "admin-notice--error" : "admin-notice--success"}`}
+            role={pageError ? "alert" : "status"}
+          >
+            <AdminIcon name={pageError ? "alert" : "checkCircle"} />
+            <span>{pageError ?? notice}</span>
+            <button
+              aria-label="Tutup notifikasi"
+              className="admin-toast-close"
+              onClick={() => {
+                setNotice(null);
+                setPageError(null);
+              }}
+              type="button"
+            >
+              <AdminIcon name="close" />
+            </button>
+          </div>
         ) : null}
       </main>
     </AdminProvider>
