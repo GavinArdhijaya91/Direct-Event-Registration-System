@@ -226,8 +226,9 @@ Sebagian kebutuhan deploy sudah disiapkan di repo: Prisma Client dibuat otomatis
 | `ADMIN_PASSWORD` | Kata sandi bersama panitia, minimal 12 karakter |
 | `ADMIN_SESSION_SECRET` | Kunci acak minimal 32 byte untuk sesi login |
 | `QR_SIGNING_SECRET` | Kunci acak minimal 32 byte untuk QR dinamis |
+| `NEXT_PUBLIC_APP_URL` | `https://natal-pwk-unnes-2026.vercel.app` (tanpa garis miring akhir) |
 
-Keduanya bisa dibuat dengan `openssl rand -base64 32`. Jangan menaruh nilai asli di repo.
+Tiga rahasia di atas bisa dibuat dengan `openssl rand -base64 32`. Jangan menaruh nilai asli di repo. `NEXT_PUBLIC_APP_URL` bukan rahasia; nilai itu dipakai untuk menghasilkan tautan gambar pratinjau (Open Graph/Twitter) yang benar. Bila nanti memakai domain sendiri, cukup ubah nilai variabel ini — kode tidak perlu diubah.
 
 **3. Siapkan database sekali.** Dari komputer lokal yang `.env`-nya mengarah ke database produksi, jalankan:
 
@@ -266,7 +267,7 @@ Rincian ini masih terbuka dan perlu keputusan panitia sebelum dipakai luas:
 - Pemilik data dan prosedur permintaan penghapusan data.
 - Tanggal pasti penghapusan data dan berapa lama log aktivitas disimpan.
 - Aturan dan jadwal rotasi kata sandi admin bersama.
-- Domain yang dipakai dan siapa yang bertugas melakukan pencadangan manual.
+- Domain rilis awal sudah ditetapkan: `https://natal-pwk-unnes-2026.vercel.app` (bisa diganti lewat `NEXT_PUBLIC_APP_URL`). Penanggung jawab pencadangan manual masih perlu ditetapkan.
 
 Kontak dan pengumuman untuk peserta disampaikan lewat media sosial/chat panitia. Nama narahubung per individu tidak dicantumkan di website; keputusan diambil oleh divisi acara secara kolektif.
 

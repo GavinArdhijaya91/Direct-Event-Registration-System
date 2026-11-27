@@ -9,7 +9,11 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://natal-pwk-unnes-2026.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl),
   title: "Natal PWK UNNES 2026 - Pendaftaran",
   description: "Rayakan Natal PWK UNNES 2026 bersama kami. Perayaan iman, kebersamaan, dan kegembiraan. Daftar sekarang untuk mendapatkan tiket Anda.",
   referrer: "no-referrer",
