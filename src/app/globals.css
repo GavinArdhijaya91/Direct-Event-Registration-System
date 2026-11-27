@@ -525,10 +525,30 @@ a.btn-light:focus {
   display: none;
 }
 
+/* QR vektor: ikut skala tanpa kehilangan ketajaman. */
+.venue-qr-code {
+  display: block;
+  object-fit: contain;
+}
+
+/* Hiasan poster hanya tampil pada hasil cetak. */
+.venue-poster-decor,
+.venue-poster-footer,
+.venue-poster-theme,
+.venue-decor-star {
+  display: none;
+}
+
 @media print {
   @page {
     size: A3 portrait;
     margin: 14mm;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
   }
 
   .no-print {
@@ -536,15 +556,32 @@ a.btn-light:focus {
   }
 
   /* Saat modal QR dibuka, cetak hanya poster QR tanpa panel admin. */
+  .admin-shell.is-printing-qr {
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    background: #fff;
+  }
+
   .admin-shell.is-printing-qr > .admin-sidebar,
   .admin-shell.is-printing-qr > .admin-workspace {
+    display: none !important;
+  }
+
+  /* Ikon dekoratif antarmuka tidak ikut tercetak. */
+  .admin-shell.is-printing-qr svg {
     display: none !important;
   }
 
   .admin-shell.is-printing-qr > .admin-modal {
     position: static;
     inset: auto;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
     overflow: visible;
     padding: 0;
     background: #fff;
@@ -562,32 +599,134 @@ a.btn-light:focus {
     background: #fff;
   }
 
+  /* Poster: bingkai hijau mengisi halaman, isi dipusatkan vertikal. */
   .venue-qr-print {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
+    padding: 18mm 16mm;
+    border: 3mm solid #14532d;
+    background: #fff;
     text-align: center;
+  }
+
+  /* Garis emas tipis di dalam bingkai. */
+  .venue-qr-print::before {
+    position: absolute;
+    inset: 5mm;
+    border: 0.5mm solid #c9a45c;
+    border-radius: 2mm;
+    content: "";
+    pointer-events: none;
+  }
+
+  .venue-poster-decor {
+    display: block;
+  }
+
+  .venue-decor-corner {
+    position: absolute;
+    width: 26mm;
+    height: auto;
+    opacity: 0.92;
+  }
+
+  .venue-decor-corner--tl {
+    top: 8mm;
+    left: 8mm;
+  }
+
+  .venue-decor-corner--tr {
+    top: 8mm;
+    right: 8mm;
+    transform: scaleX(-1);
+  }
+
+  .venue-decor-corner--bl {
+    bottom: 8mm;
+    left: 8mm;
+    transform: scaleY(-1);
+  }
+
+  .venue-decor-corner--br {
+    right: 8mm;
+    bottom: 8mm;
+    transform: scale(-1, -1);
+  }
+
+  .venue-decor-star {
+    display: block;
+    width: 12mm;
+    height: 12mm;
+    margin: 0 auto 3mm;
+  }
+
+  .venue-qr-print .venue-qr-frame {
+    margin-top: 7mm;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .venue-qr-print .venue-qr-code {
+    width: 190mm;
+    height: 190mm;
+  }
+
+  .venue-qr-print .admin-kicker {
+    margin: 0;
+    font-size: 15pt;
+    letter-spacing: 0.08em;
+  }
+
+  .venue-qr-print .admin-section-title {
+    font-size: 54pt;
+    line-height: 1.05;
+  }
+
+  .venue-qr-print .admin-section-note {
+    max-width: none;
+    margin-top: 4mm;
+    font-size: 22pt;
   }
 
   .venue-qr-print-hint {
     display: block;
-    margin-top: 12mm;
-    font-size: 12pt;
+    margin-top: 7mm;
+    font-size: 20pt;
+    font-weight: 600;
     color: #173b2f;
   }
 
-  .venue-qr-print .admin-section-title {
-    font-size: 28pt;
+  .venue-poster-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9mm;
+    margin-top: 10mm;
   }
 
-  .venue-qr-print .admin-section-note {
-    font-size: 14pt;
+  .venue-poster-footer img {
+    width: auto;
+    max-height: 16mm;
   }
 
-  .venue-qr-print img {
-    width: 140mm;
-    height: 140mm;
-    max-width: none;
+  .venue-poster-theme {
+    display: block;
+    margin: 5mm 0 0;
+    max-width: 190mm;
+    color: #3f5b4c;
+    font-size: 13pt;
+    font-style: italic;
+    line-height: 1.45;
   }
 }
 

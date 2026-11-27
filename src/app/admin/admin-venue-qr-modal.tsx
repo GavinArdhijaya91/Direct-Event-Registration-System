@@ -52,7 +52,7 @@ export default function AdminVenueQrModal({
 }: VenueQrModalProps) {
   const [qrImage, setQrImage] = useState<{
     payload: string;
-    url: string;
+    src: string;
   } | null>(null);
   const [qrData, setQrData] = useState<VenueQrData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -123,8 +123,10 @@ export default function AdminVenueQrModal({
       return;
     }
 
-    QRCode.toDataURL(qrData.payload, {
-      width: 480,
+    // SVG dipilih agar QR tetap tajam saat diperbesar untuk cetak poster.
+    // Hasilnya dipakai sebagai data URL gambar, bukan HTML mentah.
+    QRCode.toString(qrData.payload, {
+      type: "svg",
       margin: 2,
       color: {
         dark: "#064e3b",
@@ -132,9 +134,12 @@ export default function AdminVenueQrModal({
       },
       errorCorrectionLevel: "H",
     })
-      .then((url) => {
+      .then((svg) => {
         if (active && qrData.payload) {
-          setQrImage({ payload: qrData.payload, url });
+          setQrImage({
+            payload: qrData.payload,
+            src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+          });
         }
       })
       .catch((caught) => console.error("Gagal membuat QR Code Lokasi:", caught));
@@ -163,8 +168,8 @@ export default function AdminVenueQrModal({
 
   if (!isOpen) return null;
 
-  const currentQrUrl =
-    qrData && qrImage?.payload === qrData.payload ? qrImage.url : null;
+  const currentQrSrc =
+    qrData && qrImage?.payload === qrData.payload ? qrImage.src : null;
 
   const toggleFullscreen = async () => {
     try {
@@ -184,12 +189,26 @@ export default function AdminVenueQrModal({
     window.print();
   };
 
-  const downloadQr = () => {
-    if (!currentQrUrl || !qrData) return;
-    const a = document.createElement("a");
-    a.href = currentQrUrl;
-    a.download = `QR-Presensi-${qrData.mode === "DYNAMIC" ? "Dinamis" : "Statis"}.png`;
-    a.click();
+  const downloadQr = async () => {
+    if (!qrData) return;
+    try {
+      // PNG dibuat hanya saat diunduh, dengan resolusi cetak yang cukup.
+      const url = await QRCode.toDataURL(qrData.payload, {
+        width: 2000,
+        margin: 2,
+        color: {
+          dark: "#064e3b",
+          light: "#ffffff",
+        },
+        errorCorrectionLevel: "H",
+      });
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `QR-Presensi-${qrData.mode === "DYNAMIC" ? "Dinamis" : "Statis"}.png`;
+      a.click();
+    } catch (caught) {
+      console.warn("Gagal mengunduh QR:", caught);
+    }
   };
 
   const secondsRemaining =
@@ -240,7 +259,25 @@ export default function AdminVenueQrModal({
         )}
 
         <div className="admin-dialog-body venue-qr-print" style={{ width: "100%" }}>
+          {/* Hiasan poster: hanya terlihat pada hasil cetak. */}
+          {/* eslint-disable @next/next/no-img-element */}
+          <div aria-hidden="true" className="venue-poster-decor">
+            <img alt="" className="venue-decor-corner venue-decor-corner--tl" loading="eager" src="/images/natal-holly-sprig.svg" />
+            <img alt="" className="venue-decor-corner venue-decor-corner--tr" loading="eager" src="/images/natal-holly-sprig.svg" />
+            <img alt="" className="venue-decor-corner venue-decor-corner--bl" loading="eager" src="/images/natal-holly-sprig.svg" />
+            <img alt="" className="venue-decor-corner venue-decor-corner--br" loading="eager" src="/images/natal-holly-sprig.svg" />
+          </div>
+          {/* eslint-enable @next/next/no-img-element */}
+
           <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt=""
+              aria-hidden="true"
+              className="venue-decor-star"
+              loading="eager"
+              src="/images/christmas/svg/star.svg"
+            />
             <p className="admin-kicker" style={{ justifyContent: "center" }}>
               Presensi kehadiran terpusat
             </p>
@@ -281,17 +318,15 @@ export default function AdminVenueQrModal({
               </div>
             ) : null}
 
-            <div
-              className="rounded-lg border border-[var(--a-line)] bg-white p-3"
-            >
-              {currentQrUrl ? (
+            <div className="venue-qr-frame rounded-lg border border-[var(--a-line)] bg-white p-3">
+              {currentQrSrc ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   alt={`QR Presensi ${qrData?.payload ?? ""}`}
-                  className="h-56 w-56 object-contain sm:h-72 sm:w-72"
-                  height={384}
-                  src={currentQrUrl}
-                  width={384}
+                  className="venue-qr-code h-56 w-56 sm:h-72 sm:w-72"
+                  height={210}
+                  src={currentQrSrc}
+                  width={210}
                 />
               ) : (
                 <div className="flex h-56 w-56 items-center justify-center sm:h-72 sm:w-72">
@@ -302,6 +337,18 @@ export default function AdminVenueQrModal({
 
             <p className="venue-qr-print-hint">
               Pindai QR ini saat tiba di lokasi acara.
+            </p>
+
+            {/* Kaki poster: logo penyelenggara dan tema acara. */}
+            {/* eslint-disable @next/next/no-img-element */}
+            <div aria-hidden="true" className="venue-poster-footer">
+              <img alt="" height={72} loading="eager" src="/images/logos/logo-natal-pwk-2026.png" width={72} />
+              <img alt="" height={72} loading="eager" src="/images/logos/logo-unnes.png" width={54} />
+              <img alt="" height={72} loading="eager" src="/images/logos/logo-uk3unnes.png" width={125} />
+            </div>
+            {/* eslint-enable @next/next/no-img-element */}
+            <p className="venue-poster-theme">
+              Terang Natal menuntun Civitas Akademika di tengah kegelapan
             </p>
 
             {error ? (
@@ -348,6 +395,16 @@ export default function AdminVenueQrModal({
                 )}
               </div>
             </div>
+
+            <p
+              className="admin-help no-print"
+              style={{ marginTop: "1rem", maxWidth: "30rem", textAlign: "center" }}
+            >
+              Sebelum mencetak: pada dialog cetak, buka{" "}
+              <strong>Setelan lanjutan</strong> lalu hapus centang{" "}
+              <strong>Header dan footer</strong> supaya URL dan nomor halaman
+              tidak ikut tercetak.
+            </p>
           </div>
         </div>
 
@@ -362,8 +419,8 @@ export default function AdminVenueQrModal({
           </button>
           <button
             className="admin-btn admin-btn-ghost"
-            disabled={!currentQrUrl}
-            onClick={downloadQr}
+            disabled={!currentQrSrc}
+            onClick={() => void downloadQr()}
             type="button"
           >
             <AdminIcon name="download" /> Unduh QR
