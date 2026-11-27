@@ -121,7 +121,7 @@ export default function AdminPresensiPage() {
           <div className="admin-stat-icon">
             <AdminIcon name="checkCircle" />
           </div>
-          <p className="admin-stat-label">Hadir Hari-H</p>
+          <p className="admin-stat-label">Hadir</p>
           <p className="admin-stat-value">{hadirCount}</p>
           <p className="admin-stat-foot">{persentaseHadir}% dari total terdaftar</p>
         </div>
