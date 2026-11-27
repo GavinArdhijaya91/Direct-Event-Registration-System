@@ -342,7 +342,7 @@ export default function AdminPesertaPage() {
                       <div className="admin-empty">
                         <AdminIcon name="users" />
                         <strong>
-                          {search ? "Tidak ada peserta yang cocok." : "Belum ada peserta terdaftar."}
+                          {search ? "Tidak ada peserta yang cocok." : "Belum ada peserta terdaftar"}
                         </strong>
                         <p>
                           {search || filter !== "ALL"
