@@ -53,7 +53,7 @@ export default function ChristmasAudioPlayer() {
         title={isPlaying ? "Matikan musik natal" : "Putar musik natal"}
         aria-label={isPlaying ? "Matikan musik natal" : "Putar musik natal"}
         aria-pressed={isPlaying}
-        className={`audio-toggle group flex items-center gap-2 rounded-full border px-3.5 py-2.5 text-xs font-semibold shadow-lg backdrop-blur-md transition-all duration-300 active:scale-95 ${
+        className={`audio-toggle group flex items-center gap-2 rounded-full border px-3.5 py-2.5 text-xs font-semibold shadow-lg backdrop-blur-sm transition-all duration-300 active:scale-95 md:backdrop-blur-md ${
           isPlaying
             ? "border-[var(--forest)] bg-emerald-900/90 text-white shadow-emerald-900/30"
             : "border-[var(--line)] bg-white/90 text-[var(--ink)] hover:bg-white hover:text-[var(--forest)]"
@@ -116,7 +116,7 @@ export default function ChristmasAudioPlayer() {
 
       {/* Helper tooltip sekali tampil untuk memikat pengunjung */}
       {!hasInteracted && (
-        <div className="hover-hint absolute bottom-full right-0 mb-2 pointer-events-none whitespace-nowrap rounded-lg bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white shadow-md animate-bounce">
+        <div className="hover-hint absolute bottom-full right-0 mb-2 pointer-events-none whitespace-nowrap rounded-lg bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white shadow-md animate-pulse md:animate-bounce">
           Dengarkan suasana Natal! 🎄
         </div>
       )}

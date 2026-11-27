@@ -1168,7 +1168,7 @@ a.btn-light:focus {
     transform: translateY(-50%) rotate(-8deg);
   }
   50% {
-    transform: translateY(calc(-50% - 7px)) rotate(-4deg);
+    transform: translateY(calc(-50% - 3px)) rotate(-6deg);
   }
 }
 
@@ -1177,7 +1177,7 @@ a.btn-light:focus {
     transform: translateY(-50%) scaleX(-1) rotate(-8deg);
   }
   50% {
-    transform: translateY(calc(-50% - 7px)) scaleX(-1) rotate(-4deg);
+    transform: translateY(calc(-50% - 3px)) scaleX(-1) rotate(-6deg);
   }
 }
 
@@ -2692,6 +2692,18 @@ a.btn-light:focus {
 
   .ticket-title {
     font-size: 1.65rem !important;
+  }
+
+  /* Animasi tetap berjalan, tapi layer-nya lebih kecil dan gerakannya lebih pendek di HP. */
+  .verse-section::before,
+  .verse-section::after {
+    width: 84px;
+    height: 72px;
+    animation-duration: 10s;
+  }
+
+  .artwork-caption {
+    backdrop-filter: blur(4px);
   }
 
   /* Optimalisasi interaksi form pada perangkat mobile / iOS */

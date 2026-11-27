@@ -160,7 +160,7 @@ export default async function Home() {
         <div className="holiday-gallery-grid">
           <figure className="holiday-photo">
             <Image
-              src="/images/christmas/photos/01-christmas-church-tree.png"
+              src="/images/christmas/photos/01-christmas-church-tree.webp"
               alt="Pohon Natal bercahaya di sisi sebuah gereja pada malam hari"
               width={702}
               height={341}
@@ -171,7 +171,7 @@ export default async function Home() {
           </figure>
           <figure className="holiday-photo">
             <Image
-              src="/images/christmas/photos/03-nativity-scene.png"
+              src="/images/christmas/photos/03-nativity-scene.webp"
               alt="Adegan palungan dengan bintang terang di langit malam"
               width={610}
               height={263}
@@ -182,7 +182,7 @@ export default async function Home() {
           </figure>
           <figure className="holiday-photo">
             <Image
-              src="/images/christmas/photos/04-gifts-and-lantern.png"
+              src="/images/christmas/photos/04-gifts-and-lantern.webp"
               alt="Hadiah Natal dan lentera menyala di dekat pohon cemara"
               width={497}
               height={263}
