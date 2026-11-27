@@ -1799,7 +1799,7 @@ a.btn-light:focus {
   position: relative;
   z-index: 1;
   height: 96px;
-  background: url("/images/natal-footer-gifts.svg") center / 360px 96px repeat-x;
+  background: url("/images/natal-footer-gifts.svg") center / 400px 96px repeat-x;
 }
 
 .footer-inner {
