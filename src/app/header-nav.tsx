@@ -46,7 +46,7 @@ export default function HeaderNav() {
       <Link
         href="/daftar#pemulihan"
         onClick={(e) => handleNavigate(e, "/daftar#pemulihan")}
-        className={`btn btn-outline header-recovery transition active:scale-95 hidden sm:inline-flex ${
+        className={`btn btn-outline header-recovery transition active:scale-95 hidden md:inline-flex ${
           isRecoveryLoading
             ? "!bg-[var(--forest)] !text-white !border-[var(--forest)] shadow-sm"
             : ""

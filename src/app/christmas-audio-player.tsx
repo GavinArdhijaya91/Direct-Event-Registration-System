@@ -100,8 +100,8 @@ export default function ChristmasAudioPlayer() {
           )}
         </span>
 
-        <span className="hidden sm:inline-block">
-          {isPlaying ? "Musik Natal: Nyala (30%)" : "Putar Musik Natal 🎵"}
+        <span className="whitespace-nowrap">
+          {isPlaying ? "Matikan musik" : "Hidupkan musik"}
         </span>
 
         {/* Pulse wave indicator when active */}
