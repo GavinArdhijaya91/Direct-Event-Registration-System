@@ -343,8 +343,8 @@ export default function AdminVenueQrModal({
             {/* eslint-disable @next/next/no-img-element */}
             <div aria-hidden="true" className="venue-poster-footer">
               <img alt="" height={72} loading="eager" src="/images/logos/logo-unnes.png" width={54} />
-              <img alt="" height={72} loading="eager" src="/images/logos/logo-natal-pwk-2026.png" width={72} />
               <img alt="" height={72} loading="eager" src="/images/logos/logo-pwk.png" width={72} />
+              <img alt="" height={72} loading="eager" src="/images/logos/logo-natal-pwk-2026.png" width={72} />
             </div>
             {/* eslint-enable @next/next/no-img-element */}
             <p className="venue-poster-theme">
