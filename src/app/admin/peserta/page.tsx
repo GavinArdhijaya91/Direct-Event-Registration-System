@@ -64,7 +64,7 @@ export default function AdminPesertaPage() {
 
   return (
     <section aria-labelledby="peserta-heading" className="admin-section">
-      <div className="admin-card">
+      <div className="admin-card admin-card--export">
         <div className="admin-card-head">
           <div>
             <h1 className="admin-card-title" id="peserta-heading">
@@ -78,17 +78,17 @@ export default function AdminPesertaPage() {
           </div>
           <div className="relative inline-block text-left">
             <button
-              className="admin-btn admin-btn-ghost admin-btn-sm"
+              className="admin-btn admin-btn-ghost admin-btn-sm admin-export-btn"
               onClick={() => setShowExportMenu(!showExportMenu)}
               type="button"
               aria-expanded={showExportMenu}
             >
-              <AdminIcon name="download" /> Ekspor Data ▾
+              <AdminIcon name="download" /> Ekspor Data{" "}
+              <span aria-hidden="true" className="admin-export-caret">▾</span>
             </button>
             {showExportMenu ? (
               <div
-                className="absolute right-0 mt-2 w-72 rounded-xl border border-[var(--line)] bg-white p-3 shadow-xl z-20"
-                style={{ minWidth: "18rem" }}
+                className="admin-export-menu absolute right-0 mt-2 w-72 rounded-xl border border-[var(--line)] bg-white p-3 shadow-xl z-20"
               >
                 <div className="mb-2 pb-2 border-b border-[var(--line)]">
                   <p className="text-xs font-bold text-[var(--forest)] uppercase tracking-wider">

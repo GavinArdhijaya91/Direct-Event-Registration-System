@@ -3789,6 +3789,26 @@ a[href].inline-flex:hover {
   background: #fffdf8;
 }
 
+/* Menu ekspor harus keluar dari kartu, bukan terpotong oleh border kartu. */
+.admin-card--export {
+  overflow: visible;
+}
+
+.admin-export-btn {
+  padding-right: 0.95rem;
+}
+
+.admin-export-caret {
+  margin-left: 0.4rem;
+  font-size: 0.9em;
+}
+
+@media (max-width: 480px) {
+  .admin-export-menu {
+    width: calc(100vw - 3rem);
+  }
+}
+
 .admin-card-head {
   display: flex;
   flex-wrap: wrap;
