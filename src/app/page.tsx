@@ -53,7 +53,11 @@ export default async function Home() {
       </div>
       <RevealObserver />
       <ChristmasAudioPlayer />
-      <header className="site-header" data-reveal>
+      <div className="hero-stage">
+        <div className="hero-foliage hero-foliage-left" aria-hidden="true" />
+        <div className="hero-foliage hero-foliage-right" aria-hidden="true" />
+
+        <header className="site-header" data-reveal>
         <div className="site-header-inner">
           <Link href="/" className="brand-lockup" aria-label="Natal PWK UNNES 2026, beranda">
             <Image
@@ -77,8 +81,6 @@ export default async function Home() {
       <section className="christmas-hero">
         <div className="hero-snow hero-snow-one" aria-hidden="true" />
         <div className="hero-snow hero-snow-two" aria-hidden="true" />
-        <div className="hero-foliage hero-foliage-left" aria-hidden="true" />
-        <div className="hero-foliage hero-foliage-right" aria-hidden="true" />
         <div className="hero-layout">
           <div className="hero-copy" data-reveal>
             <p className="hero-eyebrow"><span aria-hidden="true">✦</span> Perayaan Natal PWK UNNES 2026</p>
@@ -112,6 +114,7 @@ export default async function Home() {
         </div>
         <div className="hero-bottom-line" aria-hidden="true" />
       </section>
+      </div>
 
       <section className="event-details" aria-label="Informasi acara" data-reveal>
         <div className="event-detail">
