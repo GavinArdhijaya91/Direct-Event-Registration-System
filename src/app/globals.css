@@ -998,14 +998,14 @@ a.btn-light:focus {
   display: inline-block;
 }
 
+.hero-ticket-link:hover {
+  color: #fffaf0;
+}
+
+/* Hover hanya mengubah warna garis bawah teks, bukan menambah kotak/cahaya. */
 .hero-ticket-link:hover span {
-  color: #ffffff !important;
-  text-shadow: 
-    0 0 8px rgba(255, 255, 255, 0.9),
-    0 0 16px rgba(255, 240, 200, 0.7),
-    0 0 24px rgba(254, 215, 170, 0.5) !important;
-  letter-spacing: 0.015em;
-  text-decoration-color: #f87171 !important;
+  color: #ffffff;
+  text-decoration-color: #fca5a5;
 }
 
 .hero-ticket-link span {
@@ -3001,16 +3001,21 @@ a[href].inline-flex:hover {
 @media (max-width: 680px) {
   /* Header: target sentuh nyaman tanpa mengorbankan identitas acara */
   .site-header .header-nav .btn {
-    min-height: 44px;
-    font-size: 0.8125rem;
+    min-height: 36px;
+    font-size: 0.72rem;
+  }
+
+  /* Cek tiket hanya dipakai di desktop; di HP ruangnya untuk judul acara. */
+  .site-header .header-nav .header-recovery {
+    display: none !important;
   }
 
   .brand-name {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .brand-tagline {
-    font-size: 0.6875rem;
+    font-size: 0.58rem;
   }
 
   /* Tautan berupa teks di hero juga merupakan aksi: beri area ketuk jelas */
@@ -3044,12 +3049,11 @@ a[href].inline-flex:hover {
     font-size: 0.8125rem;
   }
 
-  /* Tombol musik mengambang cukup 44x44 agar tidak menutupi tombol aksi */
+  /* Pemutar musik ikut mengecil, tapi tetap berbentuk pil dengan label. */
   .audio-toggle {
-    width: 44px;
-    height: 44px;
-    justify-content: center;
-    padding: 0;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.68rem;
   }
 
   .audio-toggle .audio-wave {
@@ -3066,7 +3070,13 @@ a[href].inline-flex:hover {
 
 @media (max-width: 480px) {
   .brand-name {
-    font-size: 0.8125rem;
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .brand-name {
+    font-size: 0.66rem;
   }
 }
 
