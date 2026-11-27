@@ -421,7 +421,7 @@ export default function AdminVenueQrModal({
             type="button"
           >
             <AdminIcon name="monitor" />
-            {isFullscreen ? "Keluar fullscreen" : "Mode proyektor"}
+            {isFullscreen ? "Keluar layar penuh" : "Mode proyektor"}
           </button>
           <button
             className="admin-btn admin-btn-ghost"

@@ -166,7 +166,7 @@ export default function AdminPresensiPage() {
               <span>
                 <span className="admin-quick-label">Tampilkan QR presensi</span>
                 <span className="admin-quick-hint">
-                  Buka layar penuh untuk proyektor aula
+                  Buka QR di laptop/HP panitia, lalu klik Mode proyektor
                 </span>
               </span>
             </button>
