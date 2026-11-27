@@ -889,7 +889,7 @@ a.btn-light:focus {
   top: 0;
   bottom: 0;
   width: clamp(56px, 8vw, 110px);
-  background: url("/images/natal-edge-foliage.svg") center / contain no-repeat;
+  background: url("/images/natal-edge-foliage-full.svg") center / contain no-repeat;
   opacity: 0.72;
   pointer-events: none;
   /* Ujung ranting di SVG memang terpotong viewBox; pudarkan tepinya agar tidak terlihat terpangkas. */
