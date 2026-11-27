@@ -125,7 +125,7 @@ export default async function Home() {
           <span className="detail-icon" aria-hidden="true">⌖</span>
           <div>
             <p className="detail-label">Lokasi</p>
-            <p className="detail-value">{settings?.eventLocation ?? "Gedung B6, FBS UNNES"}</p>
+            <p className="detail-value">{settings?.eventLocation ?? "L4, FEB UNNES"}</p>
           </div>
         </div>
         <div className="event-detail event-status">
@@ -133,7 +133,7 @@ export default async function Home() {
           <div>
             <p className="detail-label">Pendaftaran</p>
             {canRegister ? (
-              <p className="detail-value"><span className="status-dot" /> Dibuka · {remaining} tempat tersisa</p>
+              <p className="detail-value"><span className="status-dot" /> Dibuka · {remaining} kuota peserta tersisa</p>
             ) : isFull ? (
               <p className="detail-value status-closed">Kuota penuh</p>
             ) : (
@@ -322,9 +322,9 @@ export default async function Home() {
         <div className="info-card capacity-card">
           <span className="info-icon" aria-hidden="true">♡</span>
           <h3>Kapasitas acara</h3>
-          <p className="capacity-number">{settings?.maxCapacity ?? 300}</p>
-          <p className="capacity-caption">tempat untuk merayakan bersama</p>
-          <p className="capacity-remaining">Tersedia: {remaining}</p>
+          <p className="capacity-number">{settings?.maxCapacity ?? 250}</p>
+          <p className="capacity-caption">peserta dapat merayakan bersama</p>
+          <p className="capacity-remaining">Sisa kuota: {remaining}</p>
         </div>
       </section>
 

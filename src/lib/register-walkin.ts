@@ -1,4 +1,5 @@
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma, type PrismaClient } from "@/generated/prisma/client";
+import { getCheckinWindowStatus } from "@/lib/checkin-window";
 import { DEFAULT_INFORMATION_SOURCE } from "@/lib/information-source";
 import { getPrismaClient } from "@/lib/prisma";
 import {
@@ -47,7 +48,29 @@ export type WalkinOutcome =
     }
   | { status: "already-present"; message: string }
   | { status: "checked-in-existing"; message: string }
+  | {
+      status: "not-configured" | "not-open" | "outside-window";
+      message: string;
+    }
   | { status: "unavailable"; message: string };
+
+function windowRejection(
+  status: Exclude<ReturnType<typeof getCheckinWindowStatus>, "open">,
+): Extract<WalkinOutcome, { status: "not-configured" | "not-open" | "outside-window" }> {
+  if (status === "not-configured") {
+    return {
+      status: "not-configured",
+      message: "Jadwal check-in belum dikonfigurasi.",
+    };
+  }
+  if (status === "not-open") {
+    return { status: "not-open", message: "Check-in belum dibuka." };
+  }
+  return {
+    status: "outside-window",
+    message: "Waktu check-in sudah berakhir.",
+  };
+}
 
 type ExistingAttendee = {
   id: string;
@@ -59,6 +82,8 @@ type ExistingAttendee = {
 async function checkInExistingAttendee(
   existing: ExistingAttendee,
   reason: string,
+  now: Date,
+  prisma: PrismaClient,
 ): Promise<WalkinOutcome> {
   if (existing.status === "HADIR") {
     return {
@@ -67,8 +92,6 @@ async function checkInExistingAttendee(
     };
   }
 
-  const prisma = getPrismaClient();
-  const now = new Date();
   const checkedIn = await prisma.$transaction(async (transaction) => {
     const updated = await transaction.attendee.updateMany({
       where: { id: existing.id, status: "TERDAFTAR" },
@@ -109,8 +132,23 @@ async function checkInExistingAttendee(
 
 export async function registerWalkinAttendee(
   input: WalkinInput,
+  prisma: PrismaClient = getPrismaClient(),
+  now = new Date(),
 ): Promise<WalkinOutcome> {
-  const prisma = getPrismaClient();
+  // OTS setara check-in: jendela tetap diverifikasi server agar tamu tidak
+  // ditandai HADIR di luar jadwal yang disetujui.
+  const windowSettings = await prisma.eventSettings.findUnique({
+    where: { id: 1 },
+    select: { checkinOpensAt: true, checkinClosesAt: true },
+  });
+  const windowStatus = getCheckinWindowStatus(
+    now,
+    windowSettings?.checkinOpensAt ?? null,
+    windowSettings?.checkinClosesAt ?? null,
+  );
+  if (windowStatus !== "open") {
+    return windowRejection(windowStatus);
+  }
 
   const existing = await prisma.attendee.findUnique({
     where: { whatsappNumber: input.whatsappNumber },
@@ -123,20 +161,25 @@ export async function registerWalkinAttendee(
   });
 
   if (existing) {
-    return checkInExistingAttendee(existing, input.reason);
+    return checkInExistingAttendee(existing, input.reason, now, prisma);
   }
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const ticketToken = createTicketToken();
     const recoveryCode = createRecoveryCode();
     const ticketCode = createTicketCode();
-    const now = new Date();
 
     try {
       return await prisma.$transaction(async (transaction) => {
         const settings = await transaction.eventSettings.findUnique({
           where: { id: 1 },
-          select: { id: true, registeredCount: true, maxCapacity: true },
+          select: {
+            id: true,
+            registeredCount: true,
+            maxCapacity: true,
+            checkinOpensAt: true,
+            checkinClosesAt: true,
+          },
         });
 
         if (!settings) {
@@ -144,6 +187,15 @@ export async function registerWalkinAttendee(
             status: "unavailable",
             message: "Konfigurasi acara belum tersedia.",
           };
+        }
+
+        const txWindowStatus = getCheckinWindowStatus(
+          now,
+          settings.checkinOpensAt,
+          settings.checkinClosesAt,
+        );
+        if (txWindowStatus !== "open") {
+          return windowRejection(txWindowStatus);
         }
 
         const updatedSettings = await transaction.eventSettings.update({
@@ -185,10 +237,6 @@ export async function registerWalkinAttendee(
             reason: input.reason,
             details: {
               ticketCode,
-              fullName: input.fullName,
-              whatsappNumber: input.whatsappNumber,
-              category: input.category,
-              institution: input.institution,
               registeredCountBefore: settings.registeredCount,
               registeredCountAfter: updatedSettings.registeredCount,
               maxCapacity: settings.maxCapacity,
@@ -230,7 +278,7 @@ export async function registerWalkinAttendee(
             },
           });
           if (rechecked) {
-            return checkInExistingAttendee(rechecked, input.reason);
+            return checkInExistingAttendee(rechecked, input.reason, now, prisma);
           }
         }
 

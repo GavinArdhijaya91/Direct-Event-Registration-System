@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma, type PrismaClient } from "@/generated/prisma/client";
 import { getPrismaClient } from "@/lib/prisma";
 import {
   createRecoveryCode,
@@ -18,9 +18,8 @@ function credentialsMatch(expectedHash: string, recoveryCode: string) {
 export async function recoverTicket(
   whatsappNumber: string,
   recoveryCode: string,
+  prisma: PrismaClient = getPrismaClient(),
 ) {
-  const prisma = getPrismaClient();
-
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const ticketToken = createTicketToken();
     const newRecoveryCode = createRecoveryCode();
@@ -32,6 +31,7 @@ export async function recoverTicket(
             where: { whatsappNumber },
             select: {
               id: true,
+              ticketCode: true,
               ticketTokenHash: true,
               recoveryCodeHash: true,
             },
@@ -55,7 +55,19 @@ export async function recoverTicket(
             },
           });
 
-          return updated.count === 1;
+          if (updated.count !== 1) {
+            return false;
+          }
+
+          await transaction.adminAuditLog.create({
+            data: {
+              actor: "peserta",
+              action: "ticket-recovered",
+              details: { ticketCode: attendee.ticketCode },
+            },
+          });
+
+          return true;
         },
         { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
       );

@@ -2,7 +2,7 @@
 
 Website untuk membantu panitia Natal PWK UNNES 2026 mencatat pendaftaran dan kehadiran peserta tanpa antrean panjang di pintu masuk.
 
-Acara berlangsung **28 Januari 2027** di **Gedung B6, FBS UNNES**, dengan target awal **200–300 peserta**. Setiap orang mendaftar untuk dirinya sendiri dan mendapat tiketnya sendiri.
+Acara berlangsung **28 Januari 2027** di **L4, FEB UNNES**, dengan kuota awal **250 peserta**. Setiap orang mendaftar untuk dirinya sendiri dan mendapat tiketnya sendiri.
 
 Dokumen ini ditulis untuk siapa saja yang terlibat: panitia, peserta, dan orang yang kelak mengelola sistemnya. Bagian teknis ada di bawah, setelah bagian alur.
 
@@ -93,14 +93,14 @@ Kalau kode pemulihan ikut hilang, tidak ada pemulihan otomatis. Peserta perlu di
 - Tayangkan QR dari halaman Presensi & QR.
 - Pantau jumlah hadir dari halaman Ringkasan atau Daftar peserta.
 - Bila peserta tidak bisa memindai, cari namanya dan gunakan tombol "Absenkan hadir", atau ketik kode tiket `EVT-XXXX` di form check-in manual.
-- Bila tamu datang langsung tanpa tiket, gunakan menu Tamu OTS. Alasan penerimaan wajib diisi dan akan tercatat.
+- Bila tamu datang langsung tanpa tiket, gunakan menu Tamu OTS saat jendela check-in terbuka. Alasan wajib diisi; kuota boleh dilampaui sebagai override dan semuanya tercatat di riwayat.
 
 Angka di panel diperbarui berkala, bukan detik demi detik. Ada tombol refresh manual dan pengatur auto-refresh yang bisa dimatikan.
 
 **Setelah acara**
 
 - Unduh data peserta lewat tombol Ekspor CSV di halaman Daftar peserta.
-- Perubahan sensitif, seperti ubah kuota atau hapus data, memerlukan alasan dan masuk ke halaman Riwayat.
+- Perubahan sensitif, seperti ubah kuota atau hapus data, memerlukan alasan dan masuk ke halaman Riwayat. Login gagal, logout, dan pemulihan tiket juga tercatat di sana tanpa menyimpan nomor WA atau token.
 
 ---
 
@@ -226,10 +226,12 @@ Koneksi memakai verifikasi sertifikat penuh (`sslmode=verify-full`). Jangan mema
 
 Rincian ini masih terbuka dan perlu keputusan panitia sebelum dipakai luas:
 
-- Jam acara dan jendela check-in yang pasti.
-- Pemilik data, kontak helpdesk, dan prosedur permintaan penghapusan data.
+- Jadwal pasti check-in (direncanakan diisi pada 22 Januari).
+- Pemilik data dan prosedur permintaan penghapusan data.
 - Tanggal pasti penghapusan data dan berapa lama log aktivitas disimpan.
 - Aturan dan jadwal rotasi kata sandi admin bersama.
 - Domain yang dipakai dan siapa yang bertugas melakukan pencadangan manual.
+
+Kontak dan pengumuman untuk peserta disampaikan lewat media sosial/chat panitia. Nama narahubung per individu tidak dicantumkan di website; keputusan diambil oleh divisi acara secara kolektif.
 
 Keputusan produk yang lengkap ada di `PRD.md`.

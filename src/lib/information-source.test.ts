@@ -9,17 +9,22 @@ import {
 const validLabels = Object.values(InformationSource);
 
 test("sumber informasi publik dipetakan ke label enum yang ada di database", () => {
-  assert.equal(
-    toDbInformationSource("TEMAN_GRUP_GEREJA"),
-    InformationSource.GRUP_WA,
-  );
+  const sources = [
+    "INSTAGRAM",
+    "WHATSAPP",
+    "FACEBOOK",
+    "TEMAN_KOMUNITAS_GEREJA",
+  ] as const;
+
   assert.equal(toDbInformationSource("INSTAGRAM"), InformationSource.INSTAGRAM);
+  assert.equal(toDbInformationSource("WHATSAPP"), InformationSource.GRUP_WA);
+  assert.equal(toDbInformationSource("FACEBOOK"), InformationSource.FACEBOOK);
   assert.equal(
-    toDbInformationSource("POSTER_KAMPUS"),
-    InformationSource.POSTER_KAMPUS,
+    toDbInformationSource("TEMAN_KOMUNITAS_GEREJA"),
+    InformationSource.TEMAN_KOMUNITAS_GEREJA,
   );
 
-  for (const source of ["INSTAGRAM", "TEMAN_GRUP_GEREJA", "POSTER_KAMPUS"] as const) {
+  for (const source of sources) {
     assert.ok(
       validLabels.includes(toDbInformationSource(source)),
       `label hasil pemetaan ${source} tidak dikenal database`,

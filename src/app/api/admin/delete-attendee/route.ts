@@ -13,7 +13,7 @@ const deleteAttendeeSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  if (!hasAdminSession(request)) {
+  if (!(await hasAdminSession(request))) {
     return NextResponse.json(
       { status: "unauthorized", message: "Silakan masuk sebagai admin." },
       { status: 401, headers: { "Cache-Control": "no-store" } },

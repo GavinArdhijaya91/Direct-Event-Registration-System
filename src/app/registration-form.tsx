@@ -861,8 +861,9 @@ export default function RegistrationForm({
               Pilih sumber informasi
             </option>
             <option value="INSTAGRAM">Instagram</option>
-            <option value="TEMAN_GRUP_GEREJA">Teman / Grup WA / Komunitas Gereja</option>
-            <option value="POSTER_KAMPUS">Poster Kampus</option>
+            <option value="WHATSAPP">WhatsApp</option>
+            <option value="FACEBOOK">Facebook</option>
+            <option value="TEMAN_KOMUNITAS_GEREJA">Teman / Komunitas Gereja</option>
           </select>
           {fieldErrors?.informationSource?.[0] ? (
             <p className="mt-1 text-sm text-[var(--red)] font-medium">

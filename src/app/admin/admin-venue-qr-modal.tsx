@@ -252,7 +252,7 @@ export default function AdminVenueQrModal({
             </h3>
             <p className="admin-section-note">
               <AdminIcon name="pin" style={{ width: 13, height: 13, verticalAlign: -2 }} />{" "}
-              {eventLocation || "Gedung B6 FBS UNNES"}
+              {eventLocation || "L4, FEB UNNES"}
             </p>
             <p className="admin-section-note" style={{ marginTop: "0.6rem" }}>
               Mode QR:{" "}
@@ -322,7 +322,7 @@ export default function AdminVenueQrModal({
                   <li>Arahkan kamera ke QR di layar proyektor ini.</li>
                 </ol>
                 <p className="admin-help" style={{ marginTop: "0.6rem" }}>
-                  Kamera silau? Ketik kode token berikut di halaman tiket:
+                  Kamera silau? Ketik 6 karakter token berikut di halaman tiket:
                 </p>
                 <code className="admin-mono" style={{ fontSize: "1rem", fontWeight: 800 }}>
                   {qrData?.token ?? "(Belum diatur)"}

@@ -133,7 +133,7 @@ export default async function DaftarPage() {
                   <div className="rounded-xl bg-gray-50/80 p-3 sm:p-0 sm:bg-transparent">
                     <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider mb-0.5">LOKASI</p>
                     <p className="text-sm font-semibold text-ink leading-snug">
-                      {settings?.eventLocation ?? "Gedung B6, FBS UNNES"}
+                      {settings?.eventLocation ?? "L4, FEB UNNES"}
                     </p>
                   </div>
                   <div className="rounded-xl bg-gray-50/80 p-3 sm:p-0 sm:bg-transparent">

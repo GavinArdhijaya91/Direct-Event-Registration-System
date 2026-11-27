@@ -1,3 +1,4 @@
+import type { PrismaClient } from "@/generated/prisma/client";
 import { getPrismaClient } from "@/lib/prisma";
 import { getCheckinWindowStatus } from "@/lib/checkin-window";
 import { hashCredential } from "@/lib/ticket-credentials";
@@ -13,9 +14,8 @@ export async function checkInWithTicketToken(
   ticketToken: string,
   locationCode: string,
   now = new Date(),
+  prisma: PrismaClient = getPrismaClient(),
 ): Promise<CheckinResult> {
-  const prisma = getPrismaClient();
-
   return prisma.$transaction(
     async (transaction) => {
       const settings = await transaction.eventSettings.findUnique({

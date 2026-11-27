@@ -32,14 +32,16 @@ function autoFitColumns(rows: (string | number)[][]): { wch: number }[] {
 
 const infoSourceLabels: Record<string, string> = {
   INSTAGRAM: "Instagram",
-  GRUP_WA: "Grup WhatsApp",
+  GRUP_WA: "WhatsApp",
   TEMAN_KATING: "Teman / Kating",
   POSTER_KAMPUS: "Poster Kampus",
   GEREJA_PMK: "Gereja / PMK",
+  FACEBOOK: "Facebook",
+  TEMAN_KOMUNITAS_GEREJA: "Teman / Komunitas Gereja",
 };
 
 export async function GET(request: Request) {
-  if (!hasAdminSession(request)) {
+  if (!(await hasAdminSession(request))) {
     return NextResponse.json(
       { status: "unauthorized", message: "Silakan masuk sebagai admin." },
       { status: 401, headers: { "Cache-Control": "no-store" } },

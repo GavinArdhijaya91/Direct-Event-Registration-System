@@ -773,7 +773,6 @@ a.btn-light:focus {
   display: inline-block;
 }
 
-.hero-ticket-link:hover,
 .hero-ticket-link:hover span {
   color: #ffffff !important;
   text-shadow: 
@@ -3806,13 +3805,7 @@ a[href].inline-flex:hover {
 }
 
 .admin-pill--hadir { background: #dcf5e5; color: #065f46; }
-.admin-pill--belum { background: #f7eed8; color: #8a6d20; }
-
-.admin-status-cell {
-  display: grid;
-  justify-items: start;
-  gap: 0.35rem;
-}
+.admin-pill--belum { background: #fbe8e2; color: #8c2f22; }
 
 .admin-empty {
   display: grid;

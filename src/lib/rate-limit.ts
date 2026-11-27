@@ -8,9 +8,14 @@ type RateLimitConfig = {
 };
 
 function requestAddress(request: Request) {
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  if (realIp) {
-    return realIp;
+  // Vercel menimpa header ini dan tidak meneruskan IP dari klien (dokumentasi Request Headers,
+  // diperiksa 27 November 2026), jadi lebih dipercaya daripada x-real-ip dari klien.
+  const vercelForwarded = request.headers
+    .get("x-vercel-forwarded-for")
+    ?.split(",")[0]
+    ?.trim();
+  if (vercelForwarded) {
+    return vercelForwarded;
   }
 
   const forwardedFor = request.headers.get("x-forwarded-for");

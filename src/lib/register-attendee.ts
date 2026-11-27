@@ -1,4 +1,4 @@
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma, type PrismaClient } from "@/generated/prisma/client";
 import { toDbInformationSource } from "@/lib/information-source";
 import { getPrismaClient } from "@/lib/prisma";
 import {
@@ -32,8 +32,8 @@ function uniqueConstraintTarget(error: Prisma.PrismaClientKnownRequestError) {
 
 export async function registerAttendee(
   input: RegistrationInput,
+  prisma: PrismaClient = getPrismaClient(),
 ): Promise<RegistrationOutcome> {
-  const prisma = getPrismaClient();
   const existing = await prisma.attendee.findUnique({
     where: { whatsappNumber: input.whatsappNumber },
     select: { id: true },

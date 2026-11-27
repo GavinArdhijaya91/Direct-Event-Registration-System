@@ -7,9 +7,13 @@ export function toDbInformationSource(
   source: RegistrationInput["informationSource"],
 ): InformationSource {
   switch (source) {
-    case "TEMAN_GRUP_GEREJA":
+    case "WHATSAPP":
       return InformationSource.GRUP_WA;
-    default:
-      return source;
+    case "INSTAGRAM":
+      return InformationSource.INSTAGRAM;
+    case "FACEBOOK":
+      return InformationSource.FACEBOOK;
+    case "TEMAN_KOMUNITAS_GEREJA":
+      return InformationSource.TEMAN_KOMUNITAS_GEREJA;
   }
 }

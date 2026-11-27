@@ -499,7 +499,7 @@ export default function AdminPanel({ children }: { children: ReactNode }) {
         {showVenueQrModal ? (
           <AdminVenueQrModal
             eventName={draft.eventName || dashboard.settings.eventName || "Natal PWK 2026"}
-            eventLocation={draft.eventLocation || dashboard.settings.eventLocation || "Gedung B6 FBS UNNES"}
+            eventLocation={draft.eventLocation || dashboard.settings.eventLocation || "L4, FEB UNNES"}
             isOpen={showVenueQrModal}
             onClose={() => setShowVenueQrModal(false)}
           />

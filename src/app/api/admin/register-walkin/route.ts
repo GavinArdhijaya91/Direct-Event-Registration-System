@@ -163,7 +163,7 @@ const walkinSchema = z
   });
 
 export async function POST(request: Request) {
-  if (!hasAdminSession(request)) {
+  if (!(await hasAdminSession(request))) {
     return NextResponse.json(
       { status: "unauthorized", message: "Silakan masuk sebagai admin." },
       { status: 401, headers: { "Cache-Control": "no-store" } },
@@ -226,6 +226,20 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { status: "already-present", message: outcome.message },
         { status: 409 },
+      );
+    }
+
+    if (
+      outcome.status === "not-configured" ||
+      outcome.status === "not-open" ||
+      outcome.status === "outside-window"
+    ) {
+      return NextResponse.json(
+        { status: outcome.status, message: outcome.message },
+        {
+          status: outcome.status === "not-configured" ? 503 : 409,
+          headers: { "Cache-Control": "no-store" },
+        },
       );
     }
 

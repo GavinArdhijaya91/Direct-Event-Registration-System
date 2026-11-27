@@ -13,10 +13,12 @@ const labels: Record<string, string> = {
   UNNES: "UNNES",
   LUAR_UNNES: "Luar UNNES",
   INSTAGRAM: "Instagram",
-  GRUP_WA: "Grup WhatsApp",
+  GRUP_WA: "WhatsApp",
   TEMAN_KATING: "Teman / kating",
   POSTER_KAMPUS: "Poster kampus",
   GEREJA_PMK: "Gereja / PMK",
+  FACEBOOK: "Facebook",
+  TEMAN_KOMUNITAS_GEREJA: "Teman / Komunitas Gereja",
   SCAN_MANDIRI: "Scan QR mandiri",
   MANUAL_ADMIN: "Manual oleh admin",
 };

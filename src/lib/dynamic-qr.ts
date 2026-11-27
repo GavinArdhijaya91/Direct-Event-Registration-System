@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 
 export const QR_ROTATION_INTERVAL_SECONDS = 180;
-export const QR_TOKEN_LENGTH = 10;
+export const QR_TOKEN_LENGTH = 6;
 export const QR_MESSAGE_PREFIX = "PWK2026";
 
 const crockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
@@ -25,7 +25,8 @@ function encodeToken(buffer: Buffer) {
     const bitInByte = bitOffset % 8;
     const pair =
       (buffer[byteIndex] << 8) | (buffer[byteIndex + 1] ?? 0);
-    const shift = 11 - bitInByte - 5;
+    // Ambil 5 bit dari pasangan dua byte big-endian: bit paling kiri ada di posisi 11 - bitInByte.
+    const shift = 11 - bitInByte;
     token += crockfordAlphabet[(pair >> shift) & 31];
   }
   return token;
@@ -103,7 +104,8 @@ export function verifyDynamicQrCode(
 
   const intervalMs = QR_ROTATION_INTERVAL_SECONDS * 1000;
   const currentStep = Math.floor(timestampMs / intervalMs);
-  const candidateSteps = [currentStep, currentStep - 1];
+  // PRD memberi toleransi satu window sebelum dan sesudah untuk latensi HP di aula.
+  const candidateSteps = [currentStep - 1, currentStep, currentStep + 1];
 
   for (const step of candidateSteps) {
     const token = createToken(signingSecret, base, step);

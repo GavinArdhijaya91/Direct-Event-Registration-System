@@ -67,6 +67,9 @@ export async function POST(request: Request) {
   }
 
   if (!passwordMatches) {
+    await getPrismaClient().adminAuditLog.create({
+      data: { action: "admin-login-failed" },
+    });
     return NextResponse.json(
       { status: "unauthorized", message: "Kata sandi tidak cocok." },
       { status: 401, headers: { "Cache-Control": "no-store" } },

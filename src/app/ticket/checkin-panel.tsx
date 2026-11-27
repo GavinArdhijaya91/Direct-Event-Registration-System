@@ -255,7 +255,7 @@ export default function CheckinPanel({
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder="Ketik kode di layar proyektor"
+              placeholder="Ketik 6 karakter kode di layar proyektor"
               className="min-h-11 flex-1 rounded-xl border border-[#d2ccc0] bg-white px-3.5 text-sm font-mono uppercase text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 shadow-2xs transition-all"
               disabled={!canCheckIn || busy}
             />

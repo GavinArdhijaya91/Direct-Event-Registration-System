@@ -1,8 +1,12 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
+import type { PrismaClient } from "@/generated/prisma/client";
+import { getPrismaClient } from "@/lib/prisma";
+import { hashCredential } from "@/lib/ticket-credentials";
 
 export const ADMIN_SESSION_COOKIE = "pwk_admin_session";
 const sessionLifetimeSeconds = 8 * 60 * 60;
+const logoutAuditAction = "admin-logout";
 
 function sessionSecret() {
   const secret = process.env.ADMIN_SESSION_SECRET;
@@ -42,33 +46,84 @@ export function createAdminSession() {
   return `${payload}.${sign(payload)}`;
 }
 
-export function hasAdminSession(request: Request) {
+function readSessionCookie(request: Request) {
   const cookieHeader = request.headers.get("cookie") ?? "";
-  const cookieValue = cookieHeader
+  return cookieHeader
     .split(";")
     .map((cookie) => cookie.trim())
     .find((cookie) => cookie.startsWith(`${ADMIN_SESSION_COOKIE}=`))
     ?.slice(ADMIN_SESSION_COOKIE.length + 1);
+}
 
-  if (!cookieValue) {
-    return false;
-  }
-
-  const [expiresAtText, nonce, signature, ...rest] = cookieValue.split(".");
+/** Pemeriksaan tanpa database: format, masa berlaku, dan tanda tangan token. */
+export function parseAdminSession(token: string) {
+  const [expiresAtText, nonce, signature, ...rest] = token.split(".");
   if (!expiresAtText || !nonce || !signature || rest.length > 0) {
-    return false;
+    return null;
   }
 
   const expiresAt = Number(expiresAtText);
   if (!Number.isSafeInteger(expiresAt) || expiresAt <= Date.now() / 1000) {
-    return false;
+    return null;
   }
 
   try {
-    return safeCompare(signature, sign(`${expiresAtText}.${nonce}`));
+    if (!safeCompare(signature, sign(`${expiresAtText}.${nonce}`))) {
+      return null;
+    }
   } catch {
+    return null;
+  }
+
+  return { expiresAt, nonce };
+}
+
+export async function hasAdminSession(
+  request: Request,
+  prisma: PrismaClient = getPrismaClient(),
+) {
+  const token = readSessionCookie(request);
+  if (!token) {
     return false;
   }
+
+  const session = parseAdminSession(token);
+  if (!session) {
+    return false;
+  }
+
+  // Logout menulis hash nonce ke audit log; token yang sudah dicabut tidak diterima lagi.
+  const revoked = await prisma.adminAuditLog.findFirst({
+    where: {
+      action: logoutAuditAction,
+      details: { path: ["nonceHash"], equals: hashCredential(session.nonce) },
+    },
+    select: { id: true },
+  });
+
+  return !revoked;
+}
+
+export async function revokeAdminSession(
+  request: Request,
+  prisma: PrismaClient = getPrismaClient(),
+) {
+  const token = readSessionCookie(request);
+  if (!token) {
+    return;
+  }
+
+  const session = parseAdminSession(token);
+  if (!session) {
+    return;
+  }
+
+  await prisma.adminAuditLog.create({
+    data: {
+      action: logoutAuditAction,
+      details: { nonceHash: hashCredential(session.nonce) },
+    },
+  });
 }
 
 export function setAdminSessionCookie(response: NextResponse) {

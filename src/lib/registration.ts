@@ -116,7 +116,7 @@ export const registrationSchema = z
     studyProgram: z.string().trim().optional(),
     institution: z.string().trim().optional(),
     informationSource: z.enum(
-      ["INSTAGRAM", "TEMAN_GRUP_GEREJA", "POSTER_KAMPUS"],
+      ["INSTAGRAM", "WHATSAPP", "FACEBOOK", "TEMAN_KOMUNITAS_GEREJA"],
       { error: "Pilih sumber informasi." },
     ),
   })

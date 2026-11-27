@@ -67,11 +67,11 @@ test("summarizes walk-in OTS registration override", () => {
       reason: "Tamu kehormatan datang langsung",
       details: {
         ticketCode: "EVT-WALK",
-        capacityBefore: 300,
-        capacityAfter: 301,
+        registeredCountBefore: 300,
+        registeredCountAfter: 301,
       },
       createdAt: "2026-12-10T10:00:00.000Z",
     }),
-    "Pendaftaran OTS: EVT-WALK · kuota 301",
+    "Pendaftaran OTS: EVT-WALK · terdaftar 301",
   );
 });

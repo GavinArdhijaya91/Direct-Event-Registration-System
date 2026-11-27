@@ -239,17 +239,25 @@ export default function AdminPesertaPage() {
                       </div>
                     </td>
                     <td>
-                      {attendee.category.replaceAll("_", " ")}
+                      {attendee.category.charAt(0) + attendee.category.slice(1).toLowerCase().replaceAll("_", " ")}
                       <p className="admin-subtext">{attendee.institution}</p>
                     </td>
                     <td>{formatWib(attendee.registeredAt)}</td>
                     <td>
-                      <div className="admin-status-cell">
-                        {attendee.status === "HADIR" ? (
-                          <span className="admin-pill admin-pill--hadir">Hadir</span>
-                        ) : (
-                          <span className="admin-pill admin-pill--belum">Belum hadir</span>
-                        )}
+                      {attendee.status === "HADIR" ? (
+                        <span className="admin-pill admin-pill--hadir">Hadir</span>
+                      ) : (
+                        <span className="admin-pill admin-pill--belum">Belum hadir</span>
+                      )}
+                    </td>
+                    <td>
+                      {formatWib(attendee.checkedInAt)}
+                      {attendee.checkinMethod ? (
+                        <p className="admin-subtext">{attendee.checkinMethod}</p>
+                      ) : null}
+                    </td>
+                    <td>
+                      <div className="admin-actions-row">
                         {attendee.status !== "HADIR" ? (
                           <button
                             className="admin-btn admin-btn-ghost admin-btn-sm"
@@ -262,16 +270,6 @@ export default function AdminPesertaPage() {
                             {checkingInTicketCode === attendee.ticketCode ? "Memproses…" : "Absenkan hadir"}
                           </button>
                         ) : null}
-                      </div>
-                    </td>
-                    <td>
-                      {formatWib(attendee.checkedInAt)}
-                      {attendee.checkinMethod ? (
-                        <p className="admin-subtext">{attendee.checkinMethod}</p>
-                      ) : null}
-                    </td>
-                    <td>
-                      <div className="admin-actions-row">
                         <button
                           aria-label={`Lihat detail ${attendee.fullName}`}
                           className="admin-btn admin-btn-ghost admin-btn-sm"

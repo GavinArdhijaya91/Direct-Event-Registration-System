@@ -4,10 +4,10 @@
 | Atribut | Spesifikasi |
 |---|---|
 | Nama produk | Sistem Registrasi Event Natal PWK 2026 |
-| Versi/status | 5.8 — Draft revisi; beberapa keputusan masih terbuka |
-| Kapasitas awal | 200–300 peserta |
+| Versi/status | 5.9 — Draft revisi; beberapa keputusan masih terbuka |
+| Kapasitas awal | 250 peserta |
 | Tanggal acara | 28 Januari 2027 |
-| Lokasi acara | Gedung B6, FBS UNNES |
+| Lokasi acara | L4, FEB UNNES |
 | Target biaya | Mengutamakan paket gratis; biaya Rp0 tidak dijamin |
 | Platform rencana | Next.js App Router, TypeScript, PostgreSQL terkelola, Prisma |
 | Pemilik produk/data | TBD |
@@ -77,7 +77,7 @@ Setiap pengiriman formulir adalah untuk satu orang. Field registrasi yang disetu
 | `nama_kampus` | Wajib jika kampus `LUAR_UNNES`; teks nama universitas |
 | `kategori` | Diturunkan otomatis di server: `MAHASISWA`, `ALUMNI`, atau `TAMU_UNDANGAN` |
 | `asal_instansi` | Diturunkan otomatis atau input instansi; maksimal 120 karakter |
-| `sumber_informasi` | Wajib; `INSTAGRAM`, `TEMAN_GRUP_GEREJA`, atau `POSTER_KAMPUS` |
+| `sumber_informasi` | Wajib; `INSTAGRAM`, `WHATSAPP`, `FACEBOOK`, atau `TEMAN_KOMUNITAS_GEREJA`. WhatsApp tetap disimpan sebagai `GRUP_WA` agar data lama terbaca; `POSTER_KAMPUS` sudah tidak ditawarkan, label lama di database dipertahankan hanya untuk data historis. |
 
 Mode pendaftaran satu orang atau kelompok tidak digunakan. Afiliasi kelompok/PMK dicatat sebagai asal/instansi. Satu nomor WA hanya boleh digunakan untuk satu peserta setelah dinormalisasi.
 
@@ -117,9 +117,11 @@ Pemilik produk menerima penggunaan QR statis dengan pemantauan petugas, dengan p
 
 Check-in manual harus melakukan transisi status yang sama, hanya tersedia pada jendela check-in, mempertahankan timestamp check-in pertama, dan merekam metode `MANUAL_ADMIN`.
 
+Pendaftaran langsung (OTS / tamu yang datang tanpa tiket) adalah jalur bantuan admin bagi tamu yang tidak dapat atau tidak nyaman mengisi formulir sendiri. Admin mendaftarkan satu orang dan langsung mencatat `HADIR` dalam transaksi yang sama. Karena tindakan ini setara check-in, server tetap memeriksa jendela check-in; di luar jendela, OTS ditolak dengan pesan yang jelas dan tidak mengubah data. OTS boleh menerima peserta saat pendaftaran ditutup atau kuota penuh; ini adalah override kuota yang wajib menyertakan alasan dan dicatat di audit seperti perubahan kuota lainnya.
+
 ### 3.4 Kuota dan duplikasi
 
-- Kapasitas awal 200–300; nilai aktual dikonfigurasi admin.
+- Kuota awal 250 peserta; nilai aktual dikonfigurasi admin.
 - Jika kuota penuh, pendaftaran baru ditolak/ditandai penuh. Admin boleh melakukan override; alasan wajib diisi dan perubahan dicatat.
 - Pengecekan kuota dan pembuatan peserta harus aman terhadap permintaan bersamaan agar batas tidak terlampaui tanpa sengaja.
 - Pengecekan nomor duplikat harus memakai nilai nomor WA yang sudah dinormalisasi dan ditopang constraint database.
@@ -171,7 +173,7 @@ Supabase Free dipilih untuk implementasi dan rencana deployment awal guna meneka
 
 | Entitas | Field utama |
 |---|---|
-| `pengaturan_acara` | `id`, `nama_acara`, `tanggal_acara` (28 Januari 2027), `lokasi_acara` (Gedung B6, FBS UNNES), `kode_lokasi_aktif`, `kuota_maksimal`, `waktu_buka_checkin`, `waktu_tutup_checkin`, `pendaftaran_dibuka`, `diperbarui_pada` |
+| `pengaturan_acara` | `id`, `nama_acara`, `tanggal_acara` (28 Januari 2027), `lokasi_acara` (L4, FEB UNNES), `kode_lokasi_aktif`, `kuota_maksimal`, `waktu_buka_checkin`, `waktu_tutup_checkin`, `pendaftaran_dibuka`, `diperbarui_pada` |
 | `peserta` | `id` internal, `kode_tiket` unik, `token_tiket_hash` unik, `kode_pemulihan_hash`, `nama_lengkap`, `nomor_wa` ternormalisasi dan unik, `kategori`, `asal_instansi`, `sumber_informasi`, `status`, `dibuat_pada`, `waktu_checkin`, `metode_checkin` |
 | Log admin | Waktu, aktor `shared-admin`, tindakan, alasan override kuota/penghapusan, ringkasan perubahan sebelum/sesudah; kata sandi bersama tidak dapat mengidentifikasi admin individual |
 
@@ -188,15 +190,16 @@ Endpoint berikut merupakan kontrak awal, bukan keputusan framework final:
 | `POST /api/tickets/recover` | Memvalidasi nomor WA dan kode pemulihan dengan pesan kegagalan generik serta rate limit; bila cocok, mengganti hash token dan mengembalikan tautan tiket baru sehingga tautan lama tidak lagi berlaku. |
 | `POST /api/checkin` | Menerima token tiket dan kode lokasi; memvalidasi waktu/status/kode lokasi; melakukan update status secara atomik. |
 | `POST /api/admin/login` | Memvalidasi rahasia admin dari environment dan membuat sesi aman. Jangan pernah mengirim rahasia ke client atau menyimpan contoh rahasia nyata di repo. |
-| `POST /api/admin/logout` | Mengakhiri sesi admin. |
+| `POST /api/admin/logout` | Mengakhiri sesi admin dengan mencabut token di server sehingga token lama tidak dapat dipakai lagi. |
 | `GET /api/admin/dashboard` | Mengambil statistik dan data yang diperlukan untuk panel setelah autentikasi/otorisasi. |
 | `PATCH /api/admin/settings` | Mengubah konfigurasi setelah autentikasi dan validasi server. Override kuota wajib menyertakan alasan dan dicatat. |
 | `POST /api/admin/manual-checkin` | Mencatat check-in manual setelah autentikasi; tidak menimpa check-in pertama. |
+| `POST /api/admin/register-walkin` | Mendaftarkan tamu OTS dan langsung mencatat `HADIR` setelah autentikasi, Same-Origin, dan validasi jendela check-in; alasan wajib, override kuota dicatat. |
 | `POST /api/admin/delete-attendee` | Menghapus satu peserta setelah autentikasi, validasi same-origin, dan alasan wajib; memperbarui penghitung pendaftaran serta mencatat kode tiket dan alasan. |
 | `POST /api/admin/delete-attendees` | Menghapus semua peserta hanya pada 20 Februari–15 Maret 2027 WIB; server memeriksa jendela, meminta alasan/konfirmasi, memperbarui penghitung, dan mencatat jumlah yang dihapus. |
 | `GET /api/admin/export` | Menghasilkan CSV setelah autentikasi dan perlindungan terhadap formula injection. |
 
-Untuk login kata sandi bersama, implementasi minimum perlu session cookie `HttpOnly`, `Secure` pada HTTPS, `SameSite=Strict`, masa berlaku, rate limit, dan perlindungan request lintas situs yang sesuai. Implementasi awal memakai sesi 8 jam serta membatasi login dan pemulihan; batas ini perlu ditinjau sebelum rilis. Rahasia disimpan di environment deployment dan tidak dikomit. Rotasi dipicu ketika admin melaporkan keluhan atau kekhawatiran terkait akses dan menjadi tanggung jawab developer; batas waktu dan langkah pelaksanaan masih perlu ditetapkan. Kata sandi bersama adalah kompromi operasional: audit mencatat tindakan, waktu, alasan, dan perubahan sebelum/sesudah, tetapi tidak dapat mengatribusikan tindakan kepada orang tertentu. Setiap perubahan kuota wajib menyertakan alasan; batas maksimum override tidak ditetapkan, dan perubahan konfigurasi serta check-in manual dicatat.
+Untuk login kata sandi bersama, implementasi minimum perlu session cookie `HttpOnly`, `Secure` pada HTTPS, `SameSite=Strict`, masa berlaku, rate limit, dan perlindungan request lintas situs yang sesuai. Implementasi awal memakai sesi 8 jam serta membatasi login dan pemulihan; batas ini perlu ditinjau sebelum rilis. Rahasia disimpan di environment deployment dan tidak dikomit. Rotasi dipicu ketika admin melaporkan keluhan atau kekhawatiran terkait akses dan menjadi tanggung jawab developer; batas waktu dan langkah pelaksanaan masih perlu ditetapkan. Kata sandi bersama adalah kompromi operasional: audit mencatat tindakan, waktu, alasan, dan perubahan sebelum/sesudah, tetapi tidak dapat mengatribusikan tindakan kepada orang tertentu. Setiap perubahan kuota wajib menyertakan alasan; batas maksimum override tidak ditetapkan, dan perubahan konfigurasi serta check-in manual dicatat. Percobaan login gagal, logout, dan pemulihan tiket juga dicatat di audit tanpa menyimpan nomor WA atau token tiket.
 
 Check-in sukses harus mempertahankan waktu pertama. Jika sudah hadir, berikan status yang konsisten tanpa memproses check-in kedua. Kegagalan database, validasi, atau autentikasi tidak boleh berubah menjadi respons sukses.
 
@@ -232,7 +235,7 @@ Nomor WA dan data identitas harus digunakan hanya untuk kebutuhan acara yang dij
 - Supabase Free dipilih untuk implementasi dan rencana deployment awal; biaya Rp0 hanya selama penggunaan sesuai batas dan ketentuan provider, bukan jaminan.
 - Verifikasi ketentuan Vercel, batas function invocation/compute, koneksi database, storage, bandwidth, backup, serta kebutuhan kapasitas sebelum pendaftaran publik dibuka.
 - Supabase Free dapat dijeda setelah aktivitas database rendah selama 7 hari; pemulihan dilakukan manual dari dashboard. Tidak ada backup harian otomatis pada paket ini. Tetapkan pemantauan, backup manual, dan penanggung jawab sebelum rilis.
-- Uji beban untuk 200–300 pendaftar dan lonjakan check-in yang realistis; siapkan pemantauan dan prosedur jika limit terlampaui.
+- Uji beban untuk 250 pendaftar dan lonjakan check-in yang realistis; siapkan pemantauan dan prosedur jika limit terlampaui.
 - Polling dashboard rencana 20 detik, dijeda saat tab tersembunyi, dan dapat dimatikan. Hindari query penuh yang berulang bila statistik agregat cukup.
 - Tetapkan environment variables hanya di lingkungan lokal/deployment yang tepat, misalnya `DATABASE_URL`, `DIRECT_URL` jika diperlukan provider, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET` acak minimal 32 byte. File contoh hanya memakai placeholder yang jelas dan tidak dapat dipakai sebagai kredensial.
 - Terapkan koneksi database/pooler sesuai dokumentasi provider dan runtime yang dipilih. Jangan mencantumkan port/provider tertentu sebagai ketentuan universal.
@@ -251,8 +254,9 @@ Nomor WA dan data identitas harus digunakan hanya untuk kebutuhan acara yang dij
 
 ## 10. Keputusan Terbuka Sebelum Implementasi
 
-1. Tanggal acara 28 Januari 2027 dan venue Gedung B6, FBS UNNES sudah ditetapkan. Jam acara/check-in, pemilik data, dan kontak helpdesk masih TBD. Secara operasional, developer mengelola web; divisi acara atau sekretaris biasanya menjalankan administrasi.
+1. Tanggal acara 28 Januari 2027 dan venue L4, FEB UNNES sudah ditetapkan. Jam check-in direncanakan diisi pada 22 Januari; pemilik data masih TBD. Keputusan produk berasal dari divisi acara secara kolektif, bukan atas nama perorangan. Kontak dan pengumuman untuk peserta disampaikan lewat media sosial/chat panitia; nama narahubung per individu tidak dicantumkan di website. Secara operasional, developer mengelola web; divisi acara atau sekretaris biasanya menjalankan administrasi.
 2. Penghapusan massal tersedia 20 Februari–15 Maret 2027 WIB dan dipicu manual oleh admin; penghapusan satu peserta boleh kapan saja. Log lama yang memuat kode tiket tetap disimpan, tetapi masa retensi log dan cakupan backup masih TBD.
 3. Rotasi kata sandi admin bersama dipicu oleh keluhan/kekhawatiran akses dan menjadi tanggung jawab developer; batas waktu/prosedur rotasi masih TBD. Audit tetap menggunakan identitas `shared-admin` dan tidak dapat mengidentifikasi admin individual.
 4. Override kuota tidak memiliki batas maksimum; perubahan nilai kuota tetap wajib menyertakan alasan dan tercatat beserta nilai sebelum/sesudah.
 5. Supabase Free dipilih untuk implementasi dan rencana deployment awal. Koneksi runtime memakai Transaction Pooler dan migrasi memakai Session Pooler. Domain dan backup manual masih perlu ditetapkan. Dashboard diperbarui berkala dan ekspor peserta tersedia dalam CSV; ini bukan backup database otomatis. Tinjau kembali risiko jeda serta batas provider sebelum pendaftaran publik dibuka.
+6. OTS diputuskan sebagai jalur administratif untuk tamu yang datang langsung, termasuk tamu yang tidak nyaman memakai formulir mandiri. Pendaftaran dan pencatatan `HADIR` terjadi sekaligus, tetapi tetap hanya di dalam jendela check-in yang diperiksa server. Kuota atau status tutup pendaftaran boleh di-override dengan alasan wajib dan tercatat di audit.

@@ -24,6 +24,21 @@ test("generates deterministic dynamic tokens within the same 3-minute window", (
   assert.equal(payload, `${baseCode}.${token1}`);
 });
 
+test("uses all 32 values in every token position", () => {
+  const seen = Array.from({ length: QR_TOKEN_LENGTH }, () => new Set<string>());
+
+  for (let index = 0; index < 512; index += 1) {
+    const token = getDynamicQrToken(`entropy-secret-${index}`, baseCode, now).token;
+    for (let position = 0; position < QR_TOKEN_LENGTH; position += 1) {
+      seen[position].add(token[position]);
+    }
+  }
+
+  for (const values of seen) {
+    assert.equal(values.size, 32, "setiap posisi token harus memakai 32 nilai Crockford base32");
+  }
+});
+
 test("changes token when the 3-minute window expires", () => {
   const { token: tokenCurrent } = getDynamicQrToken(secret, baseCode, now);
   const nextWindow = now + (QR_ROTATION_INTERVAL_SECONDS + 5) * 1000;
@@ -81,7 +96,7 @@ test("rejects dynamic tokens in static mode", () => {
   );
 });
 
-test("allows the previous window but rejects future and stale tokens", () => {
+test("allows one window before and after, but rejects stale tokens", () => {
   const { token: oldToken } = getDynamicQrToken(secret, baseCode, now);
   const requestArrivedTime = now + (QR_ROTATION_INTERVAL_SECONDS + 10) * 1000;
 
@@ -107,14 +122,30 @@ test("allows the previous window but rejects future and stale tokens", () => {
     false,
   );
 
-  const futureToken = getDynamicQrToken(
+  const nextWindowToken = getDynamicQrToken(
     secret,
     baseCode,
     now + (QR_ROTATION_INTERVAL_SECONDS + 10) * 1000,
   ).token;
   assert.equal(
     verifyLocationCodeForMode(
-      `${baseCode}.${futureToken}`,
+      `${baseCode}.${nextWindowToken}`,
+      baseCode,
+      "DYNAMIC",
+      secret,
+      now,
+    ),
+    true,
+  );
+
+  const tooFarToken = getDynamicQrToken(
+    secret,
+    baseCode,
+    now + 2 * QR_ROTATION_INTERVAL_SECONDS * 1000 + 10_000,
+  ).token;
+  assert.equal(
+    verifyLocationCodeForMode(
+      `${baseCode}.${tooFarToken}`,
       baseCode,
       "DYNAMIC",
       secret,

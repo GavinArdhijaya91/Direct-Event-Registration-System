@@ -67,7 +67,7 @@ test("validates alumni with graduation year", () => {
     campusType: "UNNES",
     faculty: "FT",
     studyProgram: "Teknik Sipil",
-    informationSource: "TEMAN_GRUP_GEREJA",
+    informationSource: "WHATSAPP",
   });
 
   assert.equal(result.success, true);
@@ -89,7 +89,7 @@ test("validates alumni with graduation year", () => {
     campusType: "UNNES",
     faculty: "FT",
     studyProgram: "Teknik Sipil",
-    informationSource: "TEMAN_GRUP_GEREJA",
+    informationSource: "WHATSAPP",
   });
   assert.equal(invalidAlumni.success, false);
 });
@@ -108,7 +108,7 @@ test("validates outside campus participant", () => {
     campusName: "Universitas Diponegoro",
     faculty: "Fakultas Hukum",
     studyProgram: "Ilmu Hukum",
-    informationSource: "TEMAN_GRUP_GEREJA",
+    informationSource: "WHATSAPP",
   });
 
   assert.equal(result.success, true);
@@ -126,13 +126,30 @@ test("validates umum / tamu undangan", () => {
     churchOrigin: "Gereja Katedral Semarang",
     domicile: "Kota Semarang",
     participantType: "UMUM",
-    informationSource: "POSTER_KAMPUS",
+    informationSource: "FACEBOOK",
   });
 
   assert.equal(result.success, true);
   if (result.success) {
     assert.equal(result.data.category, "TAMU_UNDANGAN");
     assert.equal(result.data.institution, "Gereja Katedral Semarang");
+  }
+});
+
+test("menolak sumber informasi yang sudah tidak ditawarkan", () => {
+  const base = {
+    fullName: "Peserta Uji",
+    whatsappNumber: "081234567894",
+    birthPlace: "Semarang",
+    birthDate: "2000-01-01",
+    churchOrigin: "Gereja Uji",
+    domicile: "Semarang",
+    participantType: "UMUM",
+  } as const;
+
+  for (const source of ["POSTER_KAMPUS", "TEMAN_GRUP_GEREJA"]) {
+    const result = registrationSchema.safeParse({ ...base, informationSource: source });
+    assert.equal(result.success, false, `sumber ${source} masih diterima`);
   }
 });
 

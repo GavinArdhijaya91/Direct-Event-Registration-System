@@ -38,6 +38,12 @@ function formatAuditValue(key: string, value: unknown) {
 }
 
 export function describeAuditLog(log: AdminAuditEntry) {
+  if (log.action === "admin-login-failed") {
+    return "Login admin gagal";
+  }
+  if (log.action === "admin-logout") {
+    return "Logout admin — sesi dicabut";
+  }
   if (typeof log.details !== "object" || log.details === null) {
     return log.action;
   }
@@ -87,8 +93,8 @@ export function describeAuditLog(log: AdminAuditEntry) {
     typeof details.ticketCode === "string"
   ) {
     const capacity =
-      typeof details.capacityAfter === "number"
-        ? ` · kuota ${details.capacityAfter}`
+      typeof details.registeredCountAfter === "number"
+        ? ` · terdaftar ${details.registeredCountAfter}`
         : "";
     return `Pendaftaran OTS: ${details.ticketCode}${capacity}`;
   }
@@ -109,6 +115,12 @@ export function describeAuditLog(log: AdminAuditEntry) {
     typeof details.deletedCount !== "number"
   ) {
     return "Penghapusan massal peserta";
+  }
+  if (
+    log.action === "ticket-recovered" &&
+    typeof details.ticketCode === "string"
+  ) {
+    return `Tiket ${details.ticketCode} dipulihkan`;
   }
   return log.action;
 }

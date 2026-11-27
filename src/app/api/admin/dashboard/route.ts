@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  if (!hasAdminSession(request)) {
+  if (!(await hasAdminSession(request))) {
     return NextResponse.json(
       { status: "unauthorized", message: "Silakan masuk sebagai admin." },
       { status: 401, headers: { "Cache-Control": "no-store" } },

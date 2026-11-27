@@ -39,6 +39,8 @@ enum InformationSource {
   TEMAN_KATING
   POSTER_KAMPUS
   GEREJA_PMK
+  FACEBOOK
+  TEMAN_KOMUNITAS_GEREJA
 }
 
 enum CheckinMethod {
@@ -55,10 +57,10 @@ model EventSettings {
   id               Int       @id @default(1)
   eventName        String    @default("Natal PWK 2026") @map("nama_acara") @db.VarChar(120)
   eventDate        DateTime  @default("2027-01-28T00:00:00.000Z") @map("tanggal_acara") @db.Date
-  eventLocation    String    @default("Gedung B6, FBS UNNES") @map("lokasi_acara") @db.VarChar(120)
+  eventLocation    String    @default("L4, FEB UNNES") @map("lokasi_acara") @db.VarChar(120)
   locationCode     String?   @map("kode_lokasi_aktif") @db.VarChar(100)
   qrMode           QrMode    @default(DYNAMIC) @map("mode_qr")
-  maxCapacity      Int       @default(300) @map("kuota_maksimal")
+  maxCapacity      Int       @default(250) @map("kuota_maksimal")
   registeredCount  Int       @default(0) @map("jumlah_terdaftar")
   registrationOpen Boolean   @default(false) @map("pendaftaran_dibuka")
   checkinOpensAt   DateTime? @map("waktu_buka_checkin") @db.Timestamptz(3)
