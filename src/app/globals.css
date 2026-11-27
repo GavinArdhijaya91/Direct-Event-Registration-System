@@ -4157,10 +4157,26 @@ a[href].inline-flex:hover {
 
 .admin-guide {
   margin: 0.35rem 0 0;
-  padding-left: 1.1rem;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: admin-guide;
   color: var(--a-muted);
   font-size: var(--a-xs);
   line-height: 1.6;
+}
+
+.admin-guide li {
+  position: relative;
+  counter-increment: admin-guide;
+}
+
+.admin-guide li::before {
+  content: counter(admin-guide) ".";
+  position: absolute;
+  top: 0;
+  left: -0.9rem;
+  color: #a5483d;
+  font-weight: 700;
 }
 
 .admin-guide li + li {
