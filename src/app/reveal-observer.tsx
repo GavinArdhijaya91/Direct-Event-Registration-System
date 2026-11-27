@@ -20,37 +20,32 @@ export default function RevealObserver() {
       return;
     }
 
+    // Tandai target awal sebagai pending
     targets.forEach((target) => {
-      const bounds = target.getBoundingClientRect();
-      const isInitiallyVisible =
-        bounds.top < window.innerHeight && bounds.bottom > 0;
-
-      if (isInitiallyVisible) {
-        target.dataset.revealState = "visible";
-      } else {
-        target.dataset.revealState = "pending";
-      }
+      target.dataset.revealState = "pending";
     });
 
-    const revealVisibleTargets = () => {
-      const viewportBottom = window.innerHeight - 40;
-      for (const target of targets) {
-        if (target.dataset.revealState !== "pending") continue;
-
-        const bounds = target.getBoundingClientRect();
-        if (bounds.top < viewportBottom && bounds.bottom > 40) {
-          target.dataset.revealState = "visible";
+    // Gunakan native IntersectionObserver agar scroll 100% mulus tanpa layout thrashing
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            el.dataset.revealState = "visible";
+            observer.unobserve(el);
+          }
         }
-      }
-    };
+      },
+      {
+        rootMargin: "0px 0px -20px 0px",
+        threshold: 0.05,
+      },
+    );
 
-    window.addEventListener("scroll", revealVisibleTargets, { passive: true });
-    window.addEventListener("resize", revealVisibleTargets);
-    revealVisibleTargets();
+    targets.forEach((target) => observer.observe(target));
 
     return () => {
-      window.removeEventListener("scroll", revealVisibleTargets);
-      window.removeEventListener("resize", revealVisibleTargets);
+      observer.disconnect();
     };
   }, []);
 

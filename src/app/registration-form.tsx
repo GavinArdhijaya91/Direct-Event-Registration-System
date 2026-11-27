@@ -77,6 +77,7 @@ export default function RegistrationForm({
   const [requestError, setRequestError] = useState<string | null>(null);
   const [copyError, setCopyError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [waShared, setWaShared] = useState(false);
   const [codeSaved, setCodeSaved] = useState(false);
 
   // Form states untuk percabangan input dinamis
@@ -90,6 +91,7 @@ export default function RegistrationForm({
     setRequestError(null);
     setCopyError(false);
     setCopied(false);
+    setWaShared(false);
     setCodeSaved(false);
 
     const form = event.currentTarget;
@@ -167,6 +169,8 @@ export default function RegistrationForm({
       `Tiket Natal PWK 2026 saya: ${ticketUrl}`,
     );
     window.open(shareUrl.toString(), "_blank", "noopener,noreferrer");
+    setWaShared(true);
+    setCodeSaved(true);
   }
 
   function sendRecoveryToWA(ticketPath: string, recoveryCode: string) {
@@ -174,9 +178,11 @@ export default function RegistrationForm({
     const shareUrl = new URL("https://wa.me/");
     shareUrl.searchParams.set(
       "text",
-      `🎄 Tiket Natal PWK 2026\n\nLink tiket: ${ticketUrl}\nKode pemulihan: ${recoveryCode}\n\nSimpan pesan ini. Jika link tiket hilang, gunakan nomor WA dan kode pemulihan ini di halaman pendaftaran.`,
+      `Tiket Natal PWK 2026\n\nLink tiket: ${ticketUrl}\nKode pemulihan: ${recoveryCode}\n\nSimpan pesan ini. Jika link tiket hilang, gunakan nomor WA dan kode pemulihan ini di halaman pendaftaran.`,
     );
     window.open(shareUrl.toString(), "_blank", "noopener,noreferrer");
+    setWaShared(true);
+    setCodeSaved(true);
   }
 
   const fieldErrors =
@@ -201,131 +207,130 @@ export default function RegistrationForm({
     return (
       <section
         aria-live="polite"
-        className="rounded-2xl border border-[var(--mint)] bg-[var(--moss)] p-5 sm:p-6 text-[var(--forest-deep)] shadow-lg transition-all"
+        className="rounded-3xl border border-[#dcd6c8] bg-white p-5 sm:p-7 shadow-xl transition-all text-[var(--ink)]"
       >
-        <p className="text-xs font-semibold tracking-wider text-[var(--forest)] uppercase">
-          Pendaftaran Berhasil!
-        </p>
-        <h2 className="mt-1 text-2xl font-bold tracking-tight">
-          Selamat, tiket Anda sudah aktif
-        </h2>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Harap simpan kode pemulihan Anda sebelum membuka halaman tiket.
-        </p>
-
-        <div className="mt-5 rounded-xl border border-[var(--line)] bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold text-[var(--muted)]">KODE TIKET</p>
-          <p className="mt-1 font-mono text-2xl font-bold text-[var(--ink)]">
-            {response.ticketCode}
-          </p>
-        </div>
-
-        <div className="mt-4 rounded-xl border border-[var(--gold)] bg-[var(--candle)] p-4 text-[var(--ink)]">
-          <div className="flex items-center gap-1.5 font-semibold text-xs text-[var(--gold)] uppercase tracking-wide">
-            <svg className="w-4 h-4 text-amber-700 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            <span>Wajib Disimpan — Kode Pemulihan Rahasia</span>
-          </div>
-          <p className="mt-1 text-xs text-[var(--muted)]">
-            Jika tautan tiket hilang atau Anda ganti perangkat, Anda hanya bisa
-            membuka tiket dengan kode ini.
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <code className="rounded-lg bg-white/90 px-3 py-2 font-mono text-xs sm:text-sm font-semibold tracking-wide select-all border border-[var(--line)]">
-              {response.recoveryCode}
-            </code>
-            <button
-              className="min-h-11 rounded-lg bg-[var(--forest)] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[var(--forest-deep)] active:scale-95 transition inline-flex items-center gap-1.5"
-              onClick={() => copyRecoveryCode(response.recoveryCode)}
-              type="button"
-            >
-              {copied ? (
-                <>
-                  <svg
-                    className="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Tersalin!</span>
-                </>
-              ) : (
-                <>
-                  <svg
-                    className="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                  <span>Salin Kode</span>
-                </>
-              )}
-            </button>
-            <button
-              className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3.5 py-2 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--cream)] active:scale-95 transition flex items-center gap-1.5"
-              onClick={() =>
-                sendRecoveryToWA(response.ticketPath, response.recoveryCode)
-              }
-              type="button"
-              title="Kirim kode dan link tiket ke nomor WA pribadi sendiri sebagai backup"
-            >
-              <svg
-                className="h-3.5 w-3.5 text-emerald-600"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-              <span>Simpan ke WA Saya</span>
-            </button>
-          </div>
-          {copyError ? (
-            <p className="mt-2 text-xs text-[var(--red)]">
-              Tidak dapat menyalin otomatis. Silakan pilih dan salin kode di atas secara manual.
-            </p>
-          ) : null}
-          {copied ? (
-            <p className="mt-2 text-xs text-[var(--forest)] font-semibold flex items-center gap-1.5">
-              <svg
-                className="h-3.5 w-3.5 shrink-0"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
+        {/* Header Konfirmasi */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-5 border-b border-[#ece7dc]">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[11px] font-bold text-emerald-800 tracking-wider uppercase">
+              <svg className="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              <span>Kode pemulihan tersalin ke papan klip! Simpan di catatan atau kirim ke diri sendiri.</span>
+              <span>Pendaftaran Berhasil</span>
+            </span>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-[var(--forest-deep)]">
+              Tiket Anda Sudah Aktif
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-[var(--muted)]">
+              Simpan kode tiket dan kode pemulihan Anda sebelum membuka halaman tiket.
             </p>
-          ) : null}
+          </div>
         </div>
 
+        {/* Voucher Pass / Kartu Tiket */}
+        <div className="mt-5 rounded-2xl border border-[#e5dfd3] bg-[#fbf9f4] p-4 sm:p-5 relative overflow-hidden">
+          {/* Bagian Atas: Kode Tiket */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-bold tracking-wider text-[var(--muted)] uppercase">
+                Kode Tiket Resmi
+              </p>
+              <p className="mt-1 font-mono text-3xl font-extrabold text-[var(--forest-deep)] tracking-wider">
+                {response.ticketCode}
+              </p>
+            </div>
+            <div className="text-left sm:text-right">
+              <span className="inline-block rounded-lg bg-emerald-100/80 px-2.5 py-1 text-[11px] font-semibold text-[var(--forest-deep)]">
+                Natal PWK UNNES 2026
+              </span>
+            </div>
+          </div>
+
+          {/* Garis Perforasi / Tiket Perforated Line */}
+          <div className="my-5 border-t-2 border-dashed border-[#ded7c8] relative">
+            <div className="absolute -left-7 -top-2.5 h-5 w-5 rounded-full bg-white border border-[#dcd6c8]" />
+            <div className="absolute -right-7 -top-2.5 h-5 w-5 rounded-full bg-white border border-[#dcd6c8]" />
+          </div>
+
+          {/* Bagian Bawah: Kode Pemulihan Rahasia */}
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700 tracking-wide uppercase">
+              <svg className="w-4 h-4 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span>Kode Pemulihan Cadangan</span>
+            </div>
+            <p className="mt-1 text-xs text-[var(--muted)] leading-relaxed">
+              Gunakan nomor WhatsApp & kode rahasia ini jika link tiket hilang atau ingin membuka tiket dari perangkat lain.
+            </p>
+
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+              <code className="rounded-xl bg-white px-3.5 py-2 font-mono text-sm font-bold tracking-wide select-all border border-[#dcd6c8] text-stone-900 shadow-2xs">
+                {response.recoveryCode}
+              </code>
+              <button
+                className="min-h-11 rounded-xl bg-[var(--forest)] px-4 py-2 text-xs font-semibold text-white hover:bg-[var(--forest-deep)] active:scale-95 transition inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                onClick={() => copyRecoveryCode(response.recoveryCode)}
+                type="button"
+              >
+                {copied ? (
+                  <>
+                    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>Tersalin!</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    <span>Salin Kode</span>
+                  </>
+                )}
+              </button>
+              <button
+                className="min-h-11 rounded-xl border border-[#dcd6c8] bg-white px-4 py-2 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--cream)] active:scale-95 transition inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                onClick={() => sendRecoveryToWA(response.ticketPath, response.recoveryCode)}
+                type="button"
+                title="Kirim kode dan link tiket ke nomor WA pribadi sebagai backup"
+              >
+                <svg className="h-3.5 w-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+                <span>Simpan ke WA Saya</span>
+              </button>
+            </div>
+
+            {copyError ? (
+              <p className="mt-2.5 text-xs text-[var(--red)]">
+                Tidak dapat menyalin otomatis. Silakan salin kode di atas secara manual.
+              </p>
+            ) : null}
+            {copied ? (
+              <p className="mt-2.5 text-xs text-[var(--forest)] font-semibold flex items-center gap-1.5">
+                <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>Kode pemulihan tersalin ke papan klip! Simpan di catatan atau kirim ke diri sendiri.</span>
+              </p>
+            ) : null}
+            {waShared ? (
+              <p className="mt-2.5 text-xs text-emerald-700 font-semibold flex items-center gap-1.5">
+                <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>Tautan dan kode tiket telah dibuka untuk disimpan ke WhatsApp.</span>
+              </p>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Konfirmasi Simpan & Tombol Aksi */}
         {!codeSaved ? (
-          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-[var(--gold)] bg-[var(--candle)] p-3.5 text-xs text-[var(--ink)]">
+          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/50 p-3.5 text-xs text-stone-800">
             <input
               id="confirm-saved"
               type="checkbox"
@@ -334,18 +339,18 @@ export default function RegistrationForm({
               className="mt-0.5 h-4 w-4 rounded accent-[var(--forest)] cursor-pointer"
             />
             <label htmlFor="confirm-saved" className="cursor-pointer select-none leading-relaxed">
-              <strong>Saya sudah menyalin / menyimpan kode pemulihan di atas.</strong>
-              {" "}Saya mengerti bahwa kode ini tidak akan ditampilkan lagi setelah halaman ditutup.
+              <strong>Saya sudah menyalin atau menyimpan kode pemulihan di atas.</strong>
+              {" "}Saya mengerti bahwa kode ini diperlukan jika ingin membuka tiket dari perangkat lain.
             </label>
           </div>
         ) : null}
 
-        <div className="mt-5 flex flex-col sm:flex-row gap-2.5">
+        <div className="mt-5 flex flex-col sm:flex-row gap-3">
           <a
-            className={`flex-1 min-h-12 inline-flex items-center justify-center rounded-full px-5 text-sm font-semibold text-white shadow-sm transition active:scale-95 text-center ${
+            className={`flex-1 min-h-12 inline-flex items-center justify-center rounded-xl px-5 text-sm font-semibold !text-white visited:!text-white hover:!text-white focus:!text-white shadow-sm transition active:scale-95 text-center ${
               codeSaved
-                ? "bg-[var(--forest)] hover:bg-[var(--forest-deep)]"
-                : "bg-gray-400 hover:bg-gray-500 opacity-80"
+                ? "bg-[var(--forest)] hover:bg-[var(--forest-deep)] cursor-pointer"
+                : "bg-stone-400 hover:bg-stone-500 opacity-80 cursor-pointer"
             }`}
             href={response.ticketPath}
             onClick={(e) => {
@@ -359,10 +364,10 @@ export default function RegistrationForm({
               }
             }}
           >
-            Buka Halaman Tiket →
+            <span>Buka Halaman Tiket →</span>
           </a>
           <button
-            className="min-h-12 rounded-full border border-[var(--line)] bg-white px-5 text-sm font-semibold text-[var(--ink)] hover:bg-[var(--cream)] transition active:scale-95 text-center"
+            className="min-h-12 rounded-xl border border-[#dcd6c8] bg-white px-5 text-sm font-semibold text-[var(--ink)] hover:bg-[var(--cream)] transition active:scale-95 text-center cursor-pointer"
             onClick={() => shareTicket(response.ticketPath)}
             type="button"
           >

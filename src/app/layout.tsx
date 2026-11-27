@@ -22,6 +22,27 @@ export const metadata: Metadata = {
       { url: "/images/logos/logo-natal-pwk-2026.png" },
     ],
   },
+  openGraph: {
+    title: "Natal PWK UNNES 2026 - Pendaftaran & Tiket",
+    description: "Rayakan Natal PWK UNNES 2026 bersama kami. Perayaan iman, kebersamaan, dan sukacita. Daftar sekarang untuk mendapatkan tiket resmi.",
+    siteName: "Natal PWK UNNES 2026",
+    images: [
+      {
+        url: "/images/logos/logo-natal-pwk-2026.png",
+        width: 512,
+        height: 512,
+        alt: "Logo Natal PWK UNNES 2026",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Natal PWK UNNES 2026",
+    description: "Rayakan Natal PWK UNNES 2026 bersama kami. Daftar sekarang untuk mendapatkan tiket resmi.",
+    images: ["/images/logos/logo-natal-pwk-2026.png"],
+  },
 };
 
 export const viewport: Viewport = {

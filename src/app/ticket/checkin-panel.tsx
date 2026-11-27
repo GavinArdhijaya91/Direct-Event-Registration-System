@@ -148,10 +148,13 @@ export default function CheckinPanel({
     now <= (closesAt ? new Date(closesAt).getTime() : Number.NEGATIVE_INFINITY);
 
   return (
-    <section className="mt-7 border-t border-[var(--line)] pt-6">
-      <div className="flex items-center gap-2">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--moss)] text-xs text-[var(--forest-deep)]">
-          📍
+    <section className="mt-8 border-t border-[var(--line)] pt-6">
+      <div className="flex items-center gap-2.5">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--moss)] text-[var(--forest)] shrink-0">
+          <svg className="w-4 h-4 text-[var(--forest)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
         </span>
         <h2 className="text-lg font-semibold text-[var(--forest-deep)]">
           Presensi Mandiri di Lokasi
@@ -160,21 +163,29 @@ export default function CheckinPanel({
 
       <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
         {opensAt && closesAt
-          ? `Check-in dibuka ${new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(new Date(opensAt))}–${new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(new Date(closesAt))} WIB.`
-          : "Jadwal check-in belum dikonfigurasi."}
+          ? `Check-in dibuka mulai pukul ${new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(new Date(opensAt))} sampai dengan ${new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(new Date(closesAt))} WIB.`
+          : "Jadwal check-in belum dikonfigurasi oleh panitia."}
       </p>
 
-      <div className="mt-4 rounded-2xl bg-[var(--cream)] p-4 border border-[var(--line)] text-xs sm:text-sm text-[var(--ink)]">
-        <p className="font-semibold text-[var(--forest)]">
-          🎯 Cara Presensi (Satu QR untuk Semua):
-        </p>
-        <p className="mt-1 text-[var(--muted)] leading-relaxed">
-          Tekan tombol di bawah untuk membuka kamera HP, lalu arahkan ke <strong>QR Code Presensi</strong> yang ditampilkan panitia di layar proyektor panggung atau standing banner pintu masuk.
+      <div className="mt-4 rounded-2xl bg-[var(--cream)] p-4 sm:p-5 border border-[var(--line)] text-xs sm:text-sm text-[var(--ink)]">
+        <div className="flex items-center gap-2 font-semibold text-[var(--forest)]">
+          <svg className="w-4 h-4 text-[var(--forest)] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          <p className="font-semibold text-[var(--forest)]">
+            Petunjuk Presensi Mandiri
+          </p>
+        </div>
+        <p className="mt-1.5 text-[var(--muted)] leading-relaxed">
+          Tekan tombol di bawah untuk membuka pemindai kamera HP, kemudian arahkan kamera ke <strong>QR Code Presensi</strong> yang ditampilkan panitia di layar proyektor panggung atau banner pintu masuk aula.
         </p>
       </div>
 
       <button
-        className="mt-4 min-h-12 w-full rounded-full bg-[var(--forest)] px-6 font-semibold text-white shadow-md hover:bg-[var(--forest-deep)] active:scale-[0.99] transition disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 min-h-12 w-full rounded-full bg-[var(--forest)] px-6 py-3.5 font-semibold text-white shadow-md hover:bg-[var(--forest-deep)] active:scale-[0.99] transition disabled:cursor-not-allowed disabled:opacity-50 inline-flex items-center justify-center gap-2 text-sm"
         disabled={!canCheckIn || busy}
         onClick={() => {
           setError(null);
@@ -183,16 +194,19 @@ export default function CheckinPanel({
         }}
         type="button"
       >
-        {busy
-          ? "Memproses presensi…"
-          : scanning
-            ? "Kamera aktif — arahkan ke QR proyektor…"
-            : (
-                <>
-                  📷 Scan QR Presensi
-                  <span className="hidden sm:inline"> di Layar Proyektor / Banner</span>
-                </>
-              )}
+        {busy ? (
+          <span>Memproses presensi…</span>
+        ) : scanning ? (
+          <span>Kamera aktif, silakan arahkan ke QR proyektor</span>
+        ) : (
+          <>
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+            <span>Scan QR Presensi di Layar Proyektor / Banner</span>
+          </>
+        )}
       </button>
 
       {scanning ? (
@@ -257,9 +271,12 @@ export default function CheckinPanel({
       </div>
 
       {message ? (
-        <p aria-live="polite" className="mt-4 rounded-xl bg-[var(--moss)] px-4 py-3 text-sm font-semibold text-[var(--forest-deep)] shadow-sm">
-          ✓ {message}
-        </p>
+        <div aria-live="polite" className="mt-4 rounded-xl bg-[var(--moss)] px-4 py-3 text-sm font-semibold text-[var(--forest-deep)] shadow-sm flex items-center gap-2">
+          <svg className="w-4 h-4 text-[var(--forest)] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span>{message}</span>
+        </div>
       ) : null}
       {error ? (
         <div className="mt-4 rounded-xl bg-[var(--rose)] px-4 py-3 text-sm leading-6 text-[var(--red)] border border-[var(--red)]/20" role="alert">

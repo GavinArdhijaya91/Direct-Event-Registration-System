@@ -27,6 +27,9 @@ export function getPrismaClient() {
   try {
     const url = new URL(connectionString);
     url.searchParams.delete("sslmode");
+    url.searchParams.delete("sslrootcert");
+    url.searchParams.delete("sslcert");
+    url.searchParams.delete("sslkey");
     poolConfig = {
       connectionString: url.toString(),
       ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: false },
