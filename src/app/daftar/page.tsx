@@ -138,7 +138,7 @@ export default async function DaftarPage() {
                   </div>
                   <div className="rounded-xl bg-gray-50/80 p-3 sm:p-0 sm:bg-transparent">
                     <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider mb-0.5">KUOTA</p>
-                    <p className="text-sm font-semibold text-emeral leading-snug">{remaining} tersisa</p>
+                    <p className="text-sm font-semibold text-emeral leading-snug">Tersisa {remaining}</p>
                   </div>
                 </div>
               </div>

@@ -133,7 +133,7 @@ export default async function Home() {
           <div>
             <p className="detail-label">Pendaftaran</p>
             {canRegister ? (
-              <p className="detail-value"><span className="status-dot" /> Dibuka · {remaining} kuota peserta tersisa</p>
+              <p className="detail-value"><span className="status-dot" /> Dibuka · Tersisa {remaining} kuota peserta</p>
             ) : isFull ? (
               <p className="detail-value status-closed">Kuota penuh</p>
             ) : (
