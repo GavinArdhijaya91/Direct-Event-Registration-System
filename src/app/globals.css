@@ -531,6 +531,14 @@ a.btn-light:focus {
   object-fit: contain;
 }
 
+/* Baris lokasi: ikon dan teks sejajar sebagai satu kesatuan. */
+.venue-location-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  vertical-align: middle;
+}
+
 /* Hiasan poster hanya tampil pada hasil cetak. */
 .venue-poster-decor,
 .venue-poster-footer,
@@ -573,6 +581,10 @@ a.btn-light:focus {
   /* Ikon dekoratif antarmuka tidak ikut tercetak. */
   .admin-shell.is-printing-qr svg {
     display: none !important;
+  }
+
+  .admin-shell.is-printing-qr .venue-location-line svg {
+    display: inline-block !important;
   }
 
   .admin-shell.is-printing-qr > .admin-modal {

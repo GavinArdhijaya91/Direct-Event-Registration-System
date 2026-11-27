@@ -104,7 +104,11 @@ export default function AdminPresensiPage() {
             <strong>Alur Presensi di Tempat</strong>
           </p>
           <ol className="admin-guide">
-            <li>Buka <em>Tampilkan QR presensi</em> di layar proyektor aula.</li>
+            <li>
+              Buka halaman QR presensi di <strong>laptop</strong> atau{" "}
+              <strong>HP panitia registrasi</strong>, lalu tayangkan ke{" "}
+              <strong>proyektor aula</strong> atau tunjukkan langsung ke peserta.
+            </li>
             <li>Peserta memindai QR langsung dari halaman tiket digital mereka di ponsel.</li>
             <li>Aktivitas scan yang berhasil akan langsung muncul pada log terkini di bawah.</li>
           </ol>

@@ -288,8 +288,10 @@ export default function AdminVenueQrModal({
               {eventName || "Natal PWK 2026"}
             </h3>
             <p className="admin-section-note">
-              <AdminIcon name="pin" style={{ width: 13, height: 13, verticalAlign: -2 }} />{" "}
-              {eventLocation || "L4, FEB UNNES"}
+              <span className="venue-location-line">
+                <AdminIcon name="pin" style={{ fontSize: "0.85em" }} />
+                <span>{eventLocation || "L4, FEB UNNES"}</span>
+              </span>
             </p>
             <p className="admin-section-note no-print" style={{ marginTop: "0.6rem" }}>
               Mode QR:{" "}
@@ -378,6 +380,10 @@ export default function AdminVenueQrModal({
                     .
                   </li>
                 </ol>
+                <p className="admin-help" style={{ marginTop: "0.6rem" }}>
+                  Panitia registrasi: buka QR ini di laptop atau HP masing-masing,
+                  lalu tayangkan lewat proyektor atau tunjukkan langsung ke peserta.
+                </p>
                 {qrData?.mode === "STATIC" ? (
                   <p className="admin-help" style={{ marginTop: "0.6rem" }}>
                     Kamera bermasalah? Tunjukkan kode tiket EVT-XXXX peserta ke
