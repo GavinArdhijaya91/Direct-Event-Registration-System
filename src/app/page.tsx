@@ -323,7 +323,6 @@ export default async function Home() {
           <span className="info-icon" aria-hidden="true">♡</span>
           <h3>Kapasitas acara</h3>
           <p className="capacity-number">{settings?.maxCapacity ?? 250}</p>
-          <p className="capacity-caption">peserta dapat merayakan bersama</p>
           <p className="capacity-remaining">Sisa kuota: {remaining}</p>
         </div>
       </section>
