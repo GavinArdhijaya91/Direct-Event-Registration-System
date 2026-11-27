@@ -1,5 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
-import type { InformationSource } from "@/generated/prisma/client";
+import { toDbInformationSource } from "@/lib/information-source";
 import { getPrismaClient } from "@/lib/prisma";
 import {
   createRecoveryCode,
@@ -8,17 +8,6 @@ import {
   hashCredential,
 } from "@/lib/ticket-credentials";
 import type { RegistrationInput } from "@/lib/registration";
-
-function toDbInformationSource(
-  source: RegistrationInput["informationSource"],
-): InformationSource {
-  switch (source) {
-    case "TEMAN_GRUP_GEREJA":
-      return "WHATSAPP_GROUP";
-    default:
-      return source;
-  }
-}
 
 type RegistrationOutcome =
   | { status: "registered"; ticketCode: string; ticketToken: string; recoveryCode: string }

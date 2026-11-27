@@ -1,4 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
+import { DEFAULT_INFORMATION_SOURCE } from "@/lib/information-source";
 import { getPrismaClient } from "@/lib/prisma";
 import {
   createRecoveryCode,
@@ -171,7 +172,7 @@ export async function registerWalkinAttendee(
             studyProgram: input.studyProgram ?? null,
             category: input.category,
             institution: input.institution,
-            informationSource: input.informationSource ?? "WHATSAPP_GROUP",
+            informationSource: input.informationSource ?? DEFAULT_INFORMATION_SOURCE,
             status: "HADIR",
             checkedInAt: now,
             checkinMethod: "MANUAL_ADMIN",

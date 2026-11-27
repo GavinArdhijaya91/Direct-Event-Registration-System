@@ -37,7 +37,7 @@ type RegistrationResponse =
       fieldErrors?: FieldErrors;
     }
   | {
-      status: "duplicate" | "closed" | "full" | "unavailable";
+      status: "duplicate" | "closed" | "full" | "unavailable" | "rate-limited";
       message?: string;
     };
 
@@ -62,7 +62,7 @@ function isRegistrationResponse(value: unknown): value is RegistrationResponse {
     );
   }
 
-  return ["invalid", "duplicate", "closed", "full", "unavailable"].includes(
+  return ["invalid", "duplicate", "closed", "full", "unavailable", "rate-limited"].includes(
     String(response.status),
   );
 }
@@ -117,7 +117,11 @@ export default function RegistrationForm({
         body = await result.json();
       } catch {
         setRequestError(
-          "Layanan pendaftaran tidak dapat memproses permintaan sekarang.",
+          result.status >= 500
+            ? `Layanan pendaftaran sedang terganggu (HTTP ${result.status}). Coba lagi beberapa saat.`
+            : result.status === 429
+              ? "Terlalu banyak percobaan. Coba lagi nanti atau gunakan jaringan lain."
+              : `Respons layanan tidak dapat dibaca (HTTP ${result.status}). Coba lagi; bila berulang, hubungi panitia.`,
         );
         return;
       }
@@ -185,11 +189,13 @@ export default function RegistrationForm({
         ? "Pendaftaran ditutup oleh panitia."
         : response?.status === "full"
           ? "Kuota peserta sudah penuh."
-          : response?.status === "unavailable"
-            ? "Layanan pendaftaran sedang tidak tersedia."
-            : response?.status === "invalid"
-              ? response.message
-              : null;
+          : response?.status === "rate-limited"
+            ? "Terlalu banyak percobaan pendaftaran. Coba lagi nanti."
+            : response?.status === "unavailable"
+              ? "Layanan pendaftaran sedang tidak tersedia."
+              : response?.status === "invalid"
+                ? response.message
+                : null;
 
   if (response?.status === "registered") {
     return (

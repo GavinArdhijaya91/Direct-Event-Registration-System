@@ -35,10 +35,10 @@ enum CampusType {
 
 enum InformationSource {
   INSTAGRAM
-  WHATSAPP_GROUP
+  GRUP_WA
   TEMAN_KATING
   POSTER_KAMPUS
-  GEREJA
+  GEREJA_PMK
 }
 
 enum CheckinMethod {
