@@ -101,7 +101,7 @@ export default function AdminPresensiPage() {
         <AdminIcon name="info" />
         <div>
           <p style={{ margin: "0 0 0.25rem" }}>
-            <strong>Alur Presensi di Venue Aula:</strong>
+            <strong>Alur Presensi di Tempat</strong>
           </p>
           <ol className="admin-guide">
             <li>Buka <em>Tampilkan QR presensi</em> di layar proyektor aula.</li>
