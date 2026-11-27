@@ -3803,6 +3803,14 @@ a[href].inline-flex:hover {
   font-size: 0.9em;
 }
 
+/* Di HP tombol ada di kiri, jadi menu harus membuka ke kanan dari tepi tombol. */
+@media (max-width: 680px) {
+  .admin-export-menu {
+    left: 0;
+    right: auto;
+  }
+}
+
 @media (max-width: 480px) {
   .admin-export-menu {
     width: calc(100vw - 3rem);
