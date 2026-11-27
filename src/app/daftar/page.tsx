@@ -3,6 +3,7 @@ import Image from "next/image";
 import RegistrationForm from "@/app/registration-form";
 import TicketRecoveryForm from "@/app/ticket-recovery-form";
 import RevealObserver from "@/app/reveal-observer";
+import ChristmasAudioPlayer from "@/app/christmas-audio-player";
 import { getPrismaClient } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -45,6 +46,7 @@ export default async function DaftarPage() {
         ))}
       </div>
       <RevealObserver />
+      <ChristmasAudioPlayer />
       <header className="site-header registration-header" data-reveal>
         <div className="site-header-inner">
           <Link

@@ -7,6 +7,7 @@ import WibClock from "@/app/ticket/wib-clock";
 import ShareTicketButton from "@/app/ticket/share-ticket-button";
 import TicketQrCode from "@/app/ticket/ticket-qr-code";
 import RevealObserver from "@/app/reveal-observer";
+import ChristmasAudioPlayer from "@/app/christmas-audio-player";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -71,6 +72,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
   return (
     <main className="ticket-page" data-reveal-root>
       <RevealObserver />
+      <ChristmasAudioPlayer />
       <div className="mb-3 w-full max-w-[42rem]" data-reveal>
         <Link
           href="/"

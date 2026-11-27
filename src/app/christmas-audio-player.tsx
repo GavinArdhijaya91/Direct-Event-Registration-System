@@ -101,7 +101,7 @@ export default function ChristmasAudioPlayer() {
         </span>
 
         <span className="whitespace-nowrap">
-          {isPlaying ? "Matikan musik" : "Hidupkan musik"}
+          {isPlaying ? "Musik Natal: Nyala" : "Hidupkan musik"}
         </span>
 
         {/* Pulse wave indicator when active */}
