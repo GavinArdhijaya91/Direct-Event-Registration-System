@@ -3970,7 +3970,7 @@ a[href].inline-flex:hover {
   padding: 0.5rem 0.7rem;
   border: 1px solid #dcd6c7;
   border-radius: 0.5rem;
-  background: #fff;
+  background-color: #fff;
   color: var(--a-ink);
   font-size: var(--a-sm);
   line-height: 1.4;
@@ -3987,6 +3987,21 @@ a[href].inline-flex:hover {
   border-color: var(--a-forest);
   outline: 2px solid rgb(6 78 59 / 15%);
   outline-offset: 1px;
+}
+
+/* Panah semua dropdown ditarik sedikit ke dalam, tidak mepet ke tepi kotak. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%236b7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.85rem;
+}
+
+.admin-select {
+  padding-right: 2.25rem;
 }
 
 .admin-help {

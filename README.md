@@ -87,7 +87,7 @@ Kalau kode pemulihan ikut hilang, tidak ada pemulihan otomatis. Peserta perlu di
 
 - Buka pendaftaran dan tentukan kuota di halaman Pengaturan.
 - Isi jadwal buka dan tutup check-in dalam WIB.
-- Pilih mode QR: dinamis untuk proyektor, atau statis untuk poster cetak.
+- Pilih mode QR: dinamis untuk proyektor, atau statis untuk poster cetak. Tombol "Cetak poster" hanya muncul pada mode statis.
 - Siapkan QR presensi di layar dan uji dengan satu atau dua perangkat.
 
 **Saat acara**

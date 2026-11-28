@@ -115,6 +115,7 @@ Pemilik produk menerima penggunaan QR statis dengan pemantauan petugas, dengan p
   - Menggunakan HMAC-SHA256 stateless berbasis interval 180 detik.
   - Server memvalidasi window saat ini serta memberi toleransi 1 window sebelumnya/sesudahnya (grace period) untuk mengakomodasi latensi sinyal HP di aula.
   - Panel admin menyediakan saklar toggle antara Mode Dinamis (proyektor aula) dan Mode Statis (poster cetak).
+  - Tombol "Cetak poster" beserta catatan persiapan cetak hanya tersedia bila mode Statis dipilih.
   - Peserta dapat memindai QR dinamis atau mengetik token 6-karakter jika kamera silau dari proyektor.
 
 Check-in manual harus melakukan transisi status yang sama, hanya tersedia pada jendela check-in, mempertahankan timestamp check-in pertama, dan merekam metode `MANUAL_ADMIN`.

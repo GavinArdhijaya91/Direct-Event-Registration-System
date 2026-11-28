@@ -170,6 +170,7 @@ export default function AdminVenueQrModal({
 
   const currentQrSrc =
     qrData && qrImage?.payload === qrData.payload ? qrImage.src : null;
+  const isStaticMode = qrData?.mode === "STATIC";
 
   const toggleFullscreen = async () => {
     try {
@@ -402,15 +403,17 @@ export default function AdminVenueQrModal({
               </div>
             </div>
 
-            <p
-              className="venue-qr-tip admin-help no-print"
-              style={{ marginTop: "1rem", maxWidth: "30rem", textAlign: "center" }}
-            >
-              Sebelum mencetak: pada dialog cetak, buka{" "}
-              <strong>Setelan lanjutan</strong> lalu hapus centang{" "}
-              <strong>Header dan footer</strong> supaya URL dan nomor halaman
-              tidak ikut tercetak.
-            </p>
+            {isStaticMode ? (
+              <p
+                className="venue-qr-tip admin-help no-print"
+                style={{ marginTop: "1rem", maxWidth: "30rem", textAlign: "center" }}
+              >
+                Sebelum mencetak: pada dialog cetak, buka{" "}
+                <strong>Setelan lanjutan</strong> lalu hapus centang{" "}
+                <strong>Header dan footer</strong> supaya URL dan nomor halaman
+                tidak ikut tercetak.
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -431,13 +434,15 @@ export default function AdminVenueQrModal({
           >
             <AdminIcon name="download" /> Unduh QR
           </button>
-          <button
-            className="admin-btn admin-btn-ghost"
-            onClick={handlePrint}
-            type="button"
-          >
-            <AdminIcon name="calendar" /> Cetak poster
-          </button>
+          {isStaticMode ? (
+            <button
+              className="admin-btn admin-btn-ghost"
+              onClick={handlePrint}
+              type="button"
+            >
+              <AdminIcon name="calendar" /> Cetak poster
+            </button>
+          ) : null}
           {isFullscreen ? (
             <button
               className="admin-btn admin-btn-danger"
