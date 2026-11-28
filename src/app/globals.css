@@ -593,7 +593,7 @@ a.btn-light:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 0;
     overflow: visible;
     padding: 0;
     background: #fff;
@@ -611,7 +611,9 @@ a.btn-light:focus {
     background: #fff;
   }
 
-  /* Poster: bingkai hijau mengisi halaman, isi dipusatkan vertikal. */
+  /* Poster: bingkai hijau mengisi area cetak A3, isi dipusatkan vertikal.
+     Tinggi memakai mm, bukan vh: vh saat cetak mengikuti tinggi kertas penuh
+     sehingga bersama margin @page bisa melewati area cetak dan memicu halaman 2. */
   .venue-qr-print {
     position: relative;
     box-sizing: border-box;
@@ -620,9 +622,9 @@ a.btn-light:focus {
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 100vh;
+    height: 392mm; /* A3 420mm dikurangi margin @page 14mm x 2 */
     margin: 0;
-    padding: 18mm 16mm;
+    padding: 12mm;
     border: 3mm solid #14532d;
     background: #fff;
     text-align: center;
@@ -2218,7 +2220,7 @@ a.btn-light:focus {
   }
 
   .footer-inner {
-    width: min(100% - 1.5rem, 1320px);
+    width: min(100% - 2.5rem, 1320px);
     min-height: 0;
     display: flex;
     justify-content: space-between;
@@ -4674,6 +4676,7 @@ a[href].inline-flex:hover {
   .admin-dialog { max-height: calc(100dvh - 3rem); }
 
   /* Modal QR presensi lebih pendek agar tidak tertutup bilah browser di HP. */
+  .venue-qr-head { text-align: left; }
   .venue-qr-main { margin-top: 0.55rem !important; }
   .venue-qr-guide { margin-top: 0.6rem !important; }
   .venue-qr-guide .admin-card-body { padding: 0.7rem; }

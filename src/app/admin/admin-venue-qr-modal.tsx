@@ -229,7 +229,7 @@ export default function AdminVenueQrModal({
         ref={containerRef}
         aria-labelledby="venue-qr-title"
         aria-modal="true"
-        className={`admin-dialog admin-dialog--wide flex flex-col items-center text-center transition-all ${
+        className={`admin-dialog admin-dialog--wide flex flex-col items-center text-center max-[680px]:text-left transition-all ${
           isFullscreen
             ? "admin-dialog--fullscreen justify-center overflow-auto py-8"
             : ""
@@ -237,7 +237,7 @@ export default function AdminVenueQrModal({
         role="dialog"
       >
         {!isFullscreen && (
-          <div className="admin-dialog-head no-print" style={{ width: "100%" }}>
+          <div className="admin-dialog-head venue-qr-head no-print" style={{ width: "100%" }}>
             <div>
               <h2 className="admin-dialog-title" id="venue-qr-title">
                 <AdminIcon name="monitor" /> QR presensi untuk proyektor
