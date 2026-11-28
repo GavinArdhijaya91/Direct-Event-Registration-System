@@ -1278,7 +1278,8 @@ a.btn-light:focus {
   isolation: isolate;
   width: 100%;
   margin: 0 auto;
-  padding: 4rem 1.5rem 0;
+  /* Ruang atas untuk rangkaian lampu agar tidak menimpa bintang tema. */
+  padding: 5rem 1.5rem 0;
   text-align: center;
 }
 
@@ -2107,7 +2108,8 @@ a.btn-light:focus {
   .verse-section {
     width: min(100% - 2.5rem, 1120px);
     margin: 0 auto;
-    padding: 2.5rem 0.5rem 0;
+    /* Beri ruang agar rangkaian lampu tidak menimpa bintang di atas tema. */
+    padding: 5.5rem 0.5rem 0;
   }
 
   .verse-section blockquote {
