@@ -85,7 +85,7 @@ export default async function Home() {
           <div className="hero-copy" data-reveal>
             <p className="hero-eyebrow"><span aria-hidden="true">✦</span> Perayaan Natal PWK UNNES 2026</p>
             <h1 className="hero-title">
-              Terang Natal,
+              Terang Natal
               <br />
               <span>menuntun langkah kita.</span>
             </h1>
