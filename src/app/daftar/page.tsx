@@ -82,10 +82,18 @@ export default async function DaftarPage() {
             <span aria-hidden="true">✦</span> Perayaan Natal PWK UNNES 2026
           </p>
           <h1 className="registration-hero-title">
-            Formulir Pendaftaran
+            {canRegister
+              ? "Formulir Pendaftaran"
+              : isFull
+                ? "Kuota Pendaftaran Penuh"
+                : "Pendaftaran Ditutup"}
           </h1>
           <p className="registration-hero-description">
-            Isi data diri Anda untuk mendapatkan tiket Natal PWK UNNES 2026
+            {canRegister
+              ? "Isi data diri Anda untuk mendapatkan tiket Natal PWK UNNES 2026"
+              : isFull
+                ? "Kuota peserta Natal PWK UNNES 2026 sudah habis."
+                : "Pendaftaran Natal PWK UNNES 2026 sedang ditutup oleh panitia."}
           </p>
         </div>
 
@@ -149,20 +157,22 @@ export default async function DaftarPage() {
         </div>
 
         <div className="mb-8 flex flex-col sm:flex-row justify-center gap-2.5 sm:gap-3" data-reveal>
-          <div className="relative group">
-            <a
-              href="#daftar"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--emeral)] bg-[var(--emeral)] px-6 py-2.5 text-sm font-semibold !text-white shadow-sm hover:bg-[var(--emeral-dark)] hover:!text-white transition"
-              title="Isi formulir pendaftaran peserta baru"
-            >
-              <span className="!text-white font-semibold">Formulir Pendaftaran</span>
-              <span aria-hidden="true" className="!text-white transition-transform group-hover:translate-y-0.5">↓</span>
-            </a>
-            <div className="hover-hint pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
-              Isi data pendaftaran peserta baru
-              <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
+          {canRegister ? (
+            <div className="relative group">
+              <a
+                href="#daftar"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[var(--emeral)] bg-[var(--emeral)] px-6 py-2.5 text-sm font-semibold !text-white shadow-sm hover:bg-[var(--emeral-dark)] hover:!text-white transition"
+                title="Isi formulir pendaftaran peserta baru"
+              >
+                <span className="!text-white font-semibold">Formulir Pendaftaran</span>
+                <span aria-hidden="true" className="!text-white transition-transform group-hover:translate-y-0.5">↓</span>
+              </a>
+              <div className="hover-hint pointer-events-none absolute left-1/2 -bottom-9 -translate-x-1/2 whitespace-nowrap rounded-md bg-[var(--forest-deep)] px-2.5 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 z-20">
+                Isi data pendaftaran peserta baru
+                <span className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[var(--forest-deep)]" />
+              </div>
             </div>
-          </div>
+          ) : null}
           <div className="relative group">
             <a
               href="#pemulihan"
@@ -180,39 +190,93 @@ export default async function DaftarPage() {
         </div>
 
         <section id="daftar" className="registration-section" data-reveal>
-          <div className="section-header mb-8">
-            <p className="text-sm font-semibold text-emeral uppercase tracking-wider mb-2">
-              DAFTAR BARU
-            </p>
-            <h2 className="section-title">Data Peserta</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Isi formulir dengan data yang valid
-            </p>
-          </div>
+          {canRegister ? (
+            <>
+              <div className="section-header mb-8">
+                <p className="text-sm font-semibold text-emeral uppercase tracking-wider mb-2">
+                  DAFTAR BARU
+                </p>
+                <h2 className="section-title">Data Peserta</h2>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Isi formulir dengan data yang valid
+                </p>
+              </div>
 
-          {/* Privacy Notice */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="registration-privacy bg-blush border border-blush-dark rounded-xl p-4">
-              <p className="text-sm font-semibold text-ink mb-2 flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-emerald-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <path d="m9 12 2 2 4-4" />
-                </svg>
-                <span>Privasi Data</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                Nomor WhatsApp dan data identitas yang Anda berikan hanya akan digunakan untuk 
-                keperluan acara ini. Kami berkomitmen untuk melindungi privasi Anda. 
-                Pastikan untuk menyimpan tautan tiket dan kode pemulihan dengan aman.
-              </p>
-            </div>
-          </div>
+              {/* Privacy Notice */}
+              <div className="max-w-3xl mx-auto mb-8">
+                <div className="registration-privacy bg-blush border border-blush-dark rounded-xl p-4">
+                  <p className="text-sm font-semibold text-ink mb-2 flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-emerald-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                    <span>Privasi Data</span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Nomor WhatsApp dan data identitas yang Anda berikan hanya akan digunakan untuk
+                    keperluan acara ini. Kami berkomitmen untuk melindungi privasi Anda.
+                    Pastikan untuk menyimpan tautan tiket dan kode pemulihan dengan aman.
+                  </p>
+                </div>
+              </div>
 
-          <div className="max-w-3xl mx-auto">
-            <div className="card-premium registration-form-card">
-              <RegistrationForm canRegister={canRegister} />
-            </div>
-          </div>
+              <div className="max-w-3xl mx-auto">
+                <div className="card-premium registration-form-card">
+                  <RegistrationForm />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="section-header mb-8">
+                <p className="text-sm font-semibold text-emeral uppercase tracking-wider mb-2">
+                  PENDAFTARAN
+                </p>
+                <h2 className="section-title">
+                  {isFull ? "Kuota Penuh" : "Pendaftaran Ditutup"}
+                </h2>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  {isFull
+                    ? "Semua tempat sudah terisi, jadi formulir pendaftaran tidak ditampilkan."
+                    : "Panitia sedang menutup pendaftaran, jadi formulir tidak ditampilkan."}
+                </p>
+              </div>
+
+              <div className="max-w-3xl mx-auto">
+                <div className="card-premium registration-form-card">
+                  <div className="flex flex-col items-center gap-4 px-5 py-10 text-center sm:px-10">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--line)] bg-[var(--cream)] text-[var(--forest)]">
+                      <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-[var(--forest-deep)]">
+                      {isFull ? "Kuota peserta sudah habis" : "Formulir pendaftaran tidak tersedia"}
+                    </h3>
+                    <p className="max-w-md text-sm leading-6 text-[var(--muted)]">
+                      {isFull
+                        ? "Pendaftaran untuk Natal PWK UNNES 2026 sudah penuh. Data peserta baru tidak dikumpulkan lagi."
+                        : "Pendaftaran Natal PWK UNNES 2026 sedang ditutup oleh panitia. Data peserta baru tidak dikumpulkan sampai pendaftaran dibuka kembali."}
+                    </p>
+                    <p className="max-w-md text-sm leading-6 text-[var(--ink)]">
+                      Sudah mendaftar sebelumnya? Tiket tetap bisa dibuka lewat menu{" "}
+                      <a className="font-semibold text-[var(--forest)] underline" href="#pemulihan">
+                        Pulihkan Tiket
+                      </a>{" "}
+                      di bawah.
+                    </p>
+                    <Link
+                      href="/"
+                      className="btn btn-outline inline-flex min-h-11 items-center justify-center"
+                    >
+                      ← Kembali ke Beranda
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </section>
 
         <section

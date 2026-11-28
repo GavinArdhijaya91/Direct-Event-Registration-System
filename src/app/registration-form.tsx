@@ -67,11 +67,7 @@ function isRegistrationResponse(value: unknown): value is RegistrationResponse {
   );
 }
 
-export default function RegistrationForm({
-  canRegister,
-}: {
-  canRegister: boolean;
-}) {
+export default function RegistrationForm() {
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState<RegistrationResponse | null>(null);
   const [requestError, setRequestError] = useState<string | null>(null);
@@ -894,7 +890,7 @@ export default function RegistrationForm({
       <div className="w-full pt-2">
         <button
           className="group min-h-12 w-full rounded-full bg-gradient-to-r from-[var(--emeral)] to-[var(--forest)] px-6 text-base font-semibold !text-white shadow-md hover:from-[var(--forest)] hover:to-[var(--forest-deep)] hover:!text-white hover:shadow-lg active:scale-[0.99] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={!canRegister || isPending}
+          disabled={isPending}
           type="submit"
           title="Kirim pendaftaran dan dapatkan tiket acara"
         >
@@ -903,8 +899,6 @@ export default function RegistrationForm({
               <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
               <span className="!text-white">Memproses pendaftaran…</span>
             </span>
-          ) : !canRegister ? (
-            <span className="!text-white">Pendaftaran tidak tersedia</span>
           ) : (
             <span className="inline-flex items-center justify-center gap-2 !text-white">
               <span className="!text-white font-semibold">Daftar Sekarang</span>
