@@ -75,7 +75,7 @@ Panel ini memakai **satu kata sandi bersama**. Setiap tindakan tetap tercatat, t
 4. **Scan saat check-in.** Pada jadwal yang sudah ditentukan server, peserta memindai QR yang ditayangkan panitia. Bila kamera bermasalah, panitia bisa membantu lewat check-in manual.
 5. **Lihat status.** Setelah check-in berhasil, halaman tiket menampilkan status hadir dan waktu check-in dari server.
 
-**Kalau tautan tiket hilang:** buka menu "Sudah Daftar / Cek Tiket", lalu masukkan nomor WhatsApp dan kode pemulihan. Sistem akan menerbitkan tautan baru dan mencabut tautan yang lama. Nomor WhatsApp saja tidak cukup.
+**Kalau tautan tiket hilang:** buka menu "Sudah Daftar / Cek Tiket", lalu masukkan nomor WhatsApp dan kode pemulihan. Sistem akan menerbitkan tautan baru dan mencabut tautan yang lama. Kode pemulihan tidak berubah, jadi tetap bisa dipakai bila tautan baru hilang lagi. Nomor WhatsApp saja tidak cukup.
 
 Kalau kode pemulihan ikut hilang, tidak ada pemulihan otomatis. Peserta perlu dibantu panitia.
 

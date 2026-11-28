@@ -62,7 +62,12 @@ export async function POST(request: Request) {
   const parsed = recoverySchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { status: "invalid", message: "Masukkan nomor dan kode pemulihan yang valid." },
+      {
+        status: "invalid",
+        message:
+          parsed.error.issues[0]?.message ??
+          "Masukkan nomor dan kode pemulihan yang valid.",
+      },
       { status: 400 },
     );
   }
@@ -99,7 +104,6 @@ export async function POST(request: Request) {
     {
       status: "recovered",
       ticketPath: `/ticket/${result.ticketToken}`,
-      recoveryCode: result.recoveryCode,
     },
     { headers: { "Cache-Control": "no-store" } },
   );

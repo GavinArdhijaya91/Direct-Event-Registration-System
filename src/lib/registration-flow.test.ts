@@ -243,7 +243,7 @@ function fakeRecoveryClient() {
   };
 }
 
-test("pemulihan merotasi token tiket dan kode pemulihan", async () => {
+test("pemulihan merotasi token tiket tanpa mengganti kode pemulihan", async () => {
   const { client, updates, audits, ticketTokenHash, recoveryCodeHash } =
     fakeRecoveryClient();
   const result = await recoverTicket("6281234567890", "kode-lama", client);
@@ -262,8 +262,23 @@ test("pemulihan merotasi token tiket dan kode pemulihan", async () => {
     recoveryCodeHash,
   });
   assert.equal(updates[0].data.ticketTokenHash, hashCredential(result.ticketToken));
-  assert.equal(updates[0].data.recoveryCodeHash, hashCredential(result.recoveryCode));
+  assert.equal("recoveryCodeHash" in updates[0].data, false);
   assert.notEqual(result.ticketToken, "token-lama");
+});
+
+test("kode pemulihan yang sama masih bisa dipakai setelah pemulihan", async () => {
+  const { client, updates } = fakeRecoveryClient();
+
+  const pertama = await recoverTicket("6281234567890", "kode-lama", client);
+  const kedua = await recoverTicket("6281234567890", "kode-lama", client);
+
+  assert.equal(pertama.recovered, true);
+  assert.equal(kedua.recovered, true);
+  assert.equal(updates.length, 2);
+  assert.equal(
+    updates.every((update) => !("recoveryCodeHash" in update.data)),
+    true,
+  );
 });
 
 test("kode pemulihan yang salah tidak merotasi kredensial", async () => {

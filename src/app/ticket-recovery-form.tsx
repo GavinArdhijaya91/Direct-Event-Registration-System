@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useTransition, type FormEvent } from "react";
+import { validateRecoveryInput } from "@/lib/ticket-recovery-input";
 
 type RecoveryResponse = {
   status: string;
   ticketPath?: string;
-  recoveryCode?: string;
   message?: string;
 };
 
@@ -22,27 +22,31 @@ function isRecoveryResponse(value: unknown): value is RecoveryResponse {
     value.status !== "recovered" ||
     ("ticketPath" in value &&
       typeof value.ticketPath === "string" &&
-      /^\/ticket\/[A-Za-z0-9_-]{43}$/.test(value.ticketPath) &&
-      "recoveryCode" in value &&
-      typeof value.recoveryCode === "string" &&
-      /^[A-F0-9]{32}$/.test(value.recoveryCode))
+      /^\/ticket\/[A-Za-z0-9_-]{43}$/.test(value.ticketPath))
   );
 }
 
 export default function TicketRecoveryForm() {
   const [pending, startTransition] = useTransition();
   const [ticketPath, setTicketPath] = useState<string | null>(null);
-  const [recoveryCode, setRecoveryCode] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setTicketPath(null);
-    setRecoveryCode(null);
     setMessage(null);
 
     const form = event.currentTarget;
     const payload = Object.fromEntries(new FormData(form).entries());
+    const input = validateRecoveryInput({
+      whatsappNumber: String(payload.whatsappNumber ?? ""),
+      recoveryCode: String(payload.recoveryCode ?? ""),
+    });
+
+    if (!input.valid) {
+      setMessage(input.message);
+      return;
+    }
 
     startTransition(async () => {
       let response: Response;
@@ -50,10 +54,20 @@ export default function TicketRecoveryForm() {
         response = await fetch("/api/tickets/recover", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            whatsappNumber: input.whatsappNumber,
+            recoveryCode: input.recoveryCode,
+          }),
         });
       } catch {
         setMessage("Koneksi gagal. Periksa jaringan lalu coba lagi.");
+        return;
+      }
+
+      if (response.status === 429) {
+        setMessage(
+          "Terlalu banyak percobaan pemulihan. Tunggu sekitar 15 menit sebelum mencoba lagi.",
+        );
         return;
       }
 
@@ -70,9 +84,8 @@ export default function TicketRecoveryForm() {
         return;
       }
 
-      if (body.status === "recovered" && body.ticketPath && body.recoveryCode) {
+      if (body.status === "recovered" && body.ticketPath) {
         setTicketPath(body.ticketPath);
-        setRecoveryCode(body.recoveryCode);
         form.reset();
         return;
       }
@@ -92,16 +105,11 @@ export default function TicketRecoveryForm() {
             Tiket berhasil dipulihkan. Tautan tiket sebelumnya sudah tidak
             berlaku.
           </p>
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--cream)] px-4 py-3">
-            <p className="text-sm font-semibold">Kode pemulihan baru</p>
-            <p className="mt-2 break-all rounded-lg bg-white px-3 py-2 font-mono text-sm tracking-wider">
-              {recoveryCode}
-            </p>
-            <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-              Simpan kode ini sekarang. Kode lama tidak berlaku dan kode baru
-              hanya ditampilkan sekali.
-            </p>
-          </div>
+          <p className="text-sm leading-6 text-[var(--ink)]">
+            Kode pemulihan yang Anda masukkan masih berlaku dan tidak perlu
+            disimpan ulang. Simpan tautan baru ini; kalau hilang lagi, cukup
+            gunakan nomor WhatsApp dan kode pemulihan yang sama.
+          </p>
           <a
             className="inline-flex min-h-11 items-center rounded-full bg-[var(--forest)] px-5 font-semibold text-white hover:bg-[var(--forest-deep)] hover:text-white"
             href={ticketPath}
@@ -110,7 +118,16 @@ export default function TicketRecoveryForm() {
           </a>
         </div>
       ) : (
-        <form className="space-y-4" onSubmit={submit}>
+        <form className="space-y-4" noValidate onSubmit={submit}>
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--cream)] px-4 py-3 text-sm leading-6 text-[var(--ink)]">
+            <p className="font-semibold">Bedakan dua kode ini</p>
+            <p className="text-[var(--muted)]">
+              Kode tiket <code className="font-mono">EVT-XXXX</code> hanya untuk
+              check-in manual. Pemulihan memakai{" "}
+              <strong>kode pemulihan 32 karakter</strong> yang muncul sekali
+              setelah pendaftaran atau dikirim lewat tombol “Simpan ke WA Saya”.
+            </p>
+          </div>
           <div>
             <label
               className="mb-1.5 block text-sm font-semibold text-[var(--ink)]"
@@ -128,27 +145,36 @@ export default function TicketRecoveryForm() {
               required
               type="tel"
             />
+            <p className="mt-1.5 text-xs leading-5 text-[var(--muted)]">
+              Pakai nomor yang diisi saat daftar. Boleh diawali 08 atau +62.
+            </p>
           </div>
           <div>
             <label
               className="mb-1.5 block text-sm font-semibold text-[var(--ink)]"
               htmlFor="recovery-code"
             >
-              Kode pemulihan
+              Kode pemulihan (32 karakter)
             </label>
             <input
+              aria-describedby="recovery-code-help"
               autoCapitalize="characters"
               autoComplete="off"
               className="min-h-12 w-full rounded-xl border border-[#d2ccc0] bg-white px-4 font-mono text-base uppercase tracking-wider text-stone-900 placeholder:text-stone-400 hover:border-stone-400 focus:border-[var(--forest)] focus:outline-none focus:ring-4 focus:ring-[var(--forest)]/15 transition-all shadow-2xs text-center sm:text-left"
               id="recovery-code"
               maxLength={32}
-              minLength={32}
               name="recoveryCode"
-              pattern="[A-Fa-f0-9]{32}"
-              placeholder="Contoh: a1b2c3d4..."
+              placeholder="A1B2C3D4E5F60718293A4B5C6D7E8F90"
               required
               spellCheck={false}
             />
+            <p
+              className="mt-1.5 text-xs leading-5 text-[var(--muted)]"
+              id="recovery-code-help"
+            >
+              Huruf A–F dan angka 0–9, bukan kode EVT-XXXX. Kode ini tetap
+              berlaku setelah pemulihan.
+            </p>
           </div>
           {message ? (
             <p aria-live="polite" className="text-sm leading-6 text-[var(--red)] font-medium" role="alert">
@@ -173,9 +199,12 @@ export default function TicketRecoveryForm() {
             )}
           </button>
           <p className="text-xs leading-5 text-[#526358]">
+            Nomor WhatsApp saja tidak cukup. Bila kode pemulihan ikut hilang,
+            tidak ada pemulihan otomatis — hubungi panitia untuk dibantu.
             Untuk melindungi data peserta, pesan kegagalan tidak membedakan
             nomor atau kode yang tidak cocok. Pemulihan akan menerbitkan
-            tautan dan kode pemulihan baru, lalu mencabut yang sebelumnya.
+            tautan baru dan mencabut tautan yang sebelumnya. Kode pemulihan
+            tidak berubah.
           </p>
         </form>
       )}

@@ -238,6 +238,9 @@ export default function RegistrationForm({
               <p className="mt-1 font-mono text-3xl font-extrabold text-[var(--forest-deep)] tracking-wider">
                 {response.ticketCode}
               </p>
+              <p className="mt-1 text-[11px] text-[var(--muted)]">
+                Kode tampilan untuk check-in manual — bukan kode pemulihan.
+              </p>
             </div>
             <div className="text-left sm:text-right">
               <span className="inline-block rounded-lg bg-emerald-100/80 px-2.5 py-1 text-[11px] font-semibold text-[var(--forest-deep)]">
@@ -262,7 +265,7 @@ export default function RegistrationForm({
               <span>Kode Pemulihan Cadangan</span>
             </div>
             <p className="mt-1 text-xs text-[var(--muted)] leading-relaxed">
-              Gunakan nomor WhatsApp & kode rahasia ini jika link tiket hilang atau ingin membuka tiket dari perangkat lain.
+              32 karakter (A–F, 0–9), berbeda dengan kode tiket EVT-XXXX di atas. Gunakan nomor WhatsApp & kode ini jika link tiket hilang atau ingin membuka tiket dari perangkat lain.
             </p>
 
             <div className="mt-3.5 flex min-w-0 flex-wrap items-center gap-2">

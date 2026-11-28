@@ -1,11 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { Prisma, type PrismaClient } from "@/generated/prisma/client";
 import { getPrismaClient } from "@/lib/prisma";
-import {
-  createRecoveryCode,
-  createTicketToken,
-  hashCredential,
-} from "@/lib/ticket-credentials";
+import { createTicketToken, hashCredential } from "@/lib/ticket-credentials";
 
 const fakeRecoveryCodeHash = hashCredential("invalid-recovery-code");
 
@@ -22,7 +18,6 @@ export async function recoverTicket(
 ) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const ticketToken = createTicketToken();
-    const newRecoveryCode = createRecoveryCode();
 
     try {
       const result = await prisma.$transaction(
@@ -51,7 +46,6 @@ export async function recoverTicket(
             },
             data: {
               ticketTokenHash: hashCredential(ticketToken),
-              recoveryCodeHash: hashCredential(newRecoveryCode),
             },
           });
 
@@ -76,7 +70,6 @@ export async function recoverTicket(
         return {
           recovered: true as const,
           ticketToken,
-          recoveryCode: newRecoveryCode,
         };
       }
 

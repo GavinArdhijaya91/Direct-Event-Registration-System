@@ -64,11 +64,11 @@ export default function HeroActions() {
         {isRecoverLoading ? (
           <span className="inline-flex items-center gap-1.5 text-white font-medium">
             <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            <span>Membuka cek tiket…</span>
+            <span>Membuka pemulihan…</span>
           </span>
         ) : (
           <>
-            Sudah punya tiket? <span>Cek di sini</span>
+            Sudah mendaftar? <span>Pulihkan tiket</span>
           </>
         )}
       </Link>
